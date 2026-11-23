@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-# 构建 Vite 前端产物。
+# 构建工作台前端；本地启动见 README，运行时静态资源由下方 nginx 阶段托管。
 FROM --platform=$BUILDPLATFORM oven/bun:1.3.9 AS web-build
 
 WORKDIR /app/web

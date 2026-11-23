@@ -1,3 +1,4 @@
+# PostgreSQL 服务端配置；数据库密码通过部署环境注入。
 services:
   postgres:
     container_name: open-ai-canvas-postgres

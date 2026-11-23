@@ -1,3 +1,4 @@
+# 服务端镜像构建配置；首次在本机体验请使用 docker-compose.yml。
 services:
   migrate:
     image: open-ai-canvas-backend:server

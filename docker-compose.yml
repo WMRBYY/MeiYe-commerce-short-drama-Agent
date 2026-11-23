@@ -1,3 +1,4 @@
+# 本地体验入口：在仓库根目录运行 docker compose up -d --build。
 services:
   backend:
     image: open-ai-canvas-backend:local

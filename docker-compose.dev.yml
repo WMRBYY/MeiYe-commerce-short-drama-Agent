@@ -1,3 +1,4 @@
+# 开发环境：通过当前源码构建开发容器，用于本机迭代。
 name: open-ai-canvas-dev
 
 services:

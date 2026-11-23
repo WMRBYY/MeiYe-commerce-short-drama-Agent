@@ -1,3 +1,4 @@
+# 本地构建后端与 Web 镜像，使用命名卷保存服务数据。
 services:
   backend:
     image: open-ai-canvas-backend:local

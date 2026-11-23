@@ -1,3 +1,4 @@
+# 镜像部署配置需要独立准备数据库、访问地址与服务凭证。
 services:
   postgres:
     image: postgres:17-alpine
