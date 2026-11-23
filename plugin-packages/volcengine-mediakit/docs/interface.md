@@ -22,7 +22,7 @@
 | `bitrate` | `providerOptions.….bitrate` | 10-150000 kbps，同时给出时优先于 `bitrate_level`。 |
 | `client_token` | 宿主幂等键 | 同一次提交重试不会重复创建任务。 |
 
-未接入 `media_output_destination`、`callback_url`、`callback_args`、`queue_id`：结果统一由宿主轮询并落到影策资源存储。
+未接入 `media_output_destination`、`callback_url`、`callback_args`、`queue_id`：结果统一由宿主轮询并落到梅野资源存储。
 
 ### 耗时与计费
 
@@ -41,7 +41,7 @@
   "id": "volcengine-mediakit",
   "name": "火山 MediaKit 视频画质增强工具",
   "version": "1.0.0",
-  "author": "Volcengine / 影策",
+  "author": "Volcengine / 梅野",
   "description": "火山 MediaKit 视频处理工具，用于画质增强，不是视频生成模型；支持 720p、1080p、2K、4K 目标分辨率。",
   "permissions": [
     "generation.run",

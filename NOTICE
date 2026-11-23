@@ -1,11 +1,9 @@
-Open AI Canvas
-Copyright (C) 2026 ddcat and contributors
+Meiye（梅野）项目声明
 
-This project is licensed under the MIT License.
-The complete license text is provided in LICENSE.
+本项目是梅野（Meiye）基于 Open AI Canvas 上游源码进行的二次开发。上游原始版权与 MIT 许可证声明保留在根目录 LICENSE 及相应组件的许可证文件中。
 
-This distribution includes third-party and inherited material under permissive open-source licenses. Required copyright and license notices are retained in LICENSE files and in the corresponding package directories.
+梅野（Meiye）维护者在此基础上继续维护三模式工作台、服务端、部署配置及相关文档。后续改动不改变上游代码或第三方依赖原有的版权归属和许可条件。
 
-Material changes in this repository are maintained by the Open AI Canvas contributors. They include a multi-user Go backend, task processing and analytics, private resource storage, canvas sharing, film-production workflows, canvas UI refactoring, and cloud Agent integrations.
+本仓库包含第三方及继承的开源组件。对应版权与许可证声明保留在各组件目录。web/public/icons 中的第三方产品名称与标识属于各自所有者，不表示其对本项目的认可。
 
-Third-party packages remain subject to the licenses declared by their respective authors. Product names and logos under web/public/icons are the property of their respective owners and do not imply endorsement.
+项目联系邮箱：449282092@qq.com。

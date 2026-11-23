@@ -30,11 +30,11 @@
 
 - [yingce-bridge 断连、恢复与分布式执行可靠性](design/yingce-bridge-reliability.md)：Chubby/RIFL/Sagas/Ray/Beldi 论文与 Temporal/Kubernetes/KubeEdge 对照；启动授权、有限离线执行、账本核对、取消语义、结果交付与故障注入矩阵（研究与协议提案，未实施）。
 
-- [影策品牌首页](design/story-creation-homepage.md)：六幕电影卷轴、公开入口、故事素材、工作台预览与响应式降级。
+- [梅野品牌首页](design/story-creation-homepage.md)：六幕电影卷轴、公开入口、故事素材、工作台预览与响应式降级。
 
 - [插件平台与市场演进调研](design/plugin-platform-and-marketplace-research.md)：插件机制代码审计、对外回应、外部 SDK 与隔离运行时、独立插件验收、受控目录到公开市场的分阶段方案（调研建议，未实施）。
 
-- [多平台账号池最终指导方案](design/account-pool-design.mdx)：影策后端通用账号池框架、平台适配标准 `yingce.accountpool/v1`、独立适配服务、LibTV（官方 MCP）与即梦（官方 dreamina CLI）接入、页面内扫码添加账号、多档位调度、价格沿用渠道模型、部署约束、分期与 P0 验证清单（最终指导方案，未实施）。
+- [多平台账号池最终指导方案](design/account-pool-design.mdx)：梅野后端通用账号池框架、平台适配标准 `yingce.accountpool/v1`、独立适配服务、LibTV（官方 MCP）与即梦（官方 dreamina CLI）接入、页面内扫码添加账号、多档位调度、价格沿用渠道模型、部署约束、分期与 P0 验证清单（最终指导方案，未实施）。
 
 - [站点及外观与皮肤主题设计合同](design/site-appearance-and-skins.mdx)：品牌一致性、登录页与邮件、SEO/备案、三层皮肤令牌、无闪屏启动顺序和验收边界。
 
@@ -50,7 +50,7 @@
 
 - [AI 审美批改画布插件方案](design/ai-art-critique-solution.md)：云端视觉分析、并行 Reviewer、问题定位、AI 修改提示词与前端 SVG 标注的职责边界和交互设计。
 
-- [LLM、Image、Video 主流请求协议全景与影策兼容性调查](design/model-request-protocol-landscape.md)：主流原生协议、聚合网关、图片/视频异步任务、参考素材 role、当前插件映射缺口与 MiniMax H3 专项审计。
+- [LLM、Image、Video 主流请求协议全景与梅野兼容性调查](design/model-request-protocol-landscape.md)：主流原生协议、聚合网关、图片/视频异步任务、参考素材 role、当前插件映射缺口与 MiniMax H3 专项审计。
 
 - **历史归档，停止实施**：[编辑器预设插件化实施规格](plans/editor-preset-plugin-implementation.md)：参考 open-vetta 万物皆可插件，把编辑器做成预设插件的分阶段实施计划（SDK v2、命令状态机、8 个 editor 预设插件（含 AI 助手）、后端转写/导出任务、权限执行校验、AI 对话式剪辑），含产品视图、接口草案与文件规划。
 - **历史归档，停止实施**：[编辑器实施 Runbook](plans/editor-implementation-runbook.md)：分步执行计划——M0~M6 里程碑 + 原子步明细（每步改动文件/验证/完成标准）、依赖关系、验证命令速查、高风险步与回退。解决「一次性实施效果差」：每步可验证、可回退、看得见进度。

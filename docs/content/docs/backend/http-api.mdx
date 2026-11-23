@@ -532,9 +532,9 @@ CANVAS_BACKEND_DATA_DIR=/明确的数据目录 ./migrate-schema repair-canvas-re
 
 ## OIDC 登录
 
-在身份提供方创建机密客户端，开启授权码流程和 PKCE S256，在提供方登记 `https://<影策域名>/api/auth/oidc/callback`。将签发方、客户端 ID、客户端密钥和完整回调分别设为后端环境变量 `CANVAS_OIDC_ISSUER`、`CANVAS_OIDC_CLIENT_ID`、`CANVAS_OIDC_CLIENT_SECRET`、`CANVAS_OIDC_REDIRECT_URL`。官方生产 Compose 从部署环境传入这些变量。回调和登录入口使用同一 HTTPS 域名。配置生效后，`GET /auth/settings` 的 `oidcEnabled` 为 true，登录表单显示 OIDC 入口。
+在身份提供方创建机密客户端，开启授权码流程和 PKCE S256，在提供方登记 `https://<梅野域名>/api/auth/oidc/callback`。将签发方、客户端 ID、客户端密钥和完整回调分别设为后端环境变量 `CANVAS_OIDC_ISSUER`、`CANVAS_OIDC_CLIENT_ID`、`CANVAS_OIDC_CLIENT_SECRET`、`CANVAS_OIDC_REDIRECT_URL`。官方生产 Compose 从部署环境传入这些变量。回调和登录入口使用同一 HTTPS 域名。配置生效后，`GET /auth/settings` 的 `oidcEnabled` 为 true，登录表单显示 OIDC 入口。
 
-默认按公开注册开关决定是否允许首次开户。仅员工可访问时，关闭公开注册，再将 `CANVAS_OIDC_ALLOWED_GROUP` 设为专用组的完整名称或 ID，并让提供方在签名 ID Token 的 `groups` 数组中返回该值。每次 OIDC 登录都校验组成员身份，缺少匹配组时拒绝登录。首次开户要求同意协议，创建普通用户。启用了短信和邮箱双重注册验证时，仍拒绝 OAuth 首次开户。账号按签发方和 `sub` 识别，不按邮箱合并。撤销组权限会拒绝后续 OIDC 登录。需要终止已有会话时，请同时停用影策账号。
+默认按公开注册开关决定是否允许首次开户。仅员工可访问时，关闭公开注册，再将 `CANVAS_OIDC_ALLOWED_GROUP` 设为专用组的完整名称或 ID，并让提供方在签名 ID Token 的 `groups` 数组中返回该值。每次 OIDC 登录都校验组成员身份，缺少匹配组时拒绝登录。首次开户要求同意协议，创建普通用户。启用了短信和邮箱双重注册验证时，仍拒绝 OAuth 首次开户。账号按签发方和 `sub` 识别，不按邮箱合并。撤销组权限会拒绝后续 OIDC 登录。需要终止已有会话时，请同时停用梅野账号。
 
 `GET /auth/oidc/start` 接收站内 `next` 和 `acceptedTerms=true`，将协议状态保存在一次性 OAuth state。回调匹配发起浏览器的安全 Cookie，并校验签名、签发方、受众、有效期和 nonce。发现、令牌、公钥请求沿用后端出站地址限制，要求 HTTPS，不跟随重定向，单次响应上限 1 MiB。发起和回调按 IP 限流，不把令牌写入会话 Cookie 或登录日志。
 

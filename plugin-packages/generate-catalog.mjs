@@ -662,9 +662,9 @@ add({
 });
 
 add({
-  id: "yingce-wan3-video", providerId: "yingce-wan3-video", name: "影策 Wan 3.0 Video", vendor: "影策", capability: "video",
+  id: "yingce-wan3-video", providerId: "yingce-wan3-video", name: "梅野 Wan 3.0 Video", vendor: "梅野", capability: "video",
   baseUrl: "https://service-980e596b.example.invalid", auth: bearer, params: videoParams, requiresPublicMediaUrls: true,
-  notes: "适用于影策网关的 /v1/videos Wan 3.0 profile。请求沿用现有 NewAPI 媒体任务结构，但 Wan 3.0 音频参考使用 input.media[].type=reference_audio；旧通用协议的 reference_voice 不属于 Wan 3.0 media.type 枚举。",
+  notes: "适用于梅野网关的 /v1/videos Wan 3.0 profile。请求沿用现有 NewAPI 媒体任务结构，但 Wan 3.0 音频参考使用 input.media[].type=reference_audio；旧通用协议的 reference_voice 不属于 Wan 3.0 media.type 枚举。",
   validations: [
     { assert: and(gte(ref("request.duration"), 2), lte(ref("request.duration"), 30)), message: "Wan 3.0 视频时长须为 2–30 秒" },
     { assert: lte(len(ref("request.images")), 10), message: "Wan 3.0 最多支持 10 张参考图" },

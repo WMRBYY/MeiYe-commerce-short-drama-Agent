@@ -65,7 +65,7 @@
   "id": "autodl-comfyui",
   "name": "AutoDL ComfyUI 视频与音频",
   "version": "2.5.0",
-  "author": "影策社区",
+  "author": "梅野社区",
   "description": "通过 AutoDL.Art ComfyUI 工作流 API 接入异步视频生成。",
   "permissions": [
     "generation.run",

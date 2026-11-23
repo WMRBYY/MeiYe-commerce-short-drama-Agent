@@ -435,7 +435,7 @@ func resolveEmailSender(value EmailSettingValue, brandName string) EmailSettingV
 }
 
 func inheritsBrandSender(name string) bool {
-	return name == "" || name == DefaultBrandName || name == "影策" // Existing saved default sender names keep following the site brand.
+	return name == "" || name == DefaultBrandName || name == "梅野" || name == "\u5f71\u7b56" // Existing saved default sender names keep following the site brand.
 }
 
 // smtpSessionTimeout 限制一次投递的总时长；没有读写期限时，465 端口误配 STARTTLS 会一直等欢迎语，

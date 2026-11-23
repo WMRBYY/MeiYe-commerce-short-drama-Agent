@@ -97,7 +97,7 @@
 |---|---|---|---|---|
 | M6.1 | `web/src/lib/timeline/ai-command-schema.ts` + `web/test/fixtures/ai-commands.golden.json`（新建） | per-op 命令 JSON schema（与 M2.1 handler 同源维护）、`aiCommandSchemaVersion` 版本化；fail-closed 校验函数 | 新增 `web/test/ai-command-schema.test.ts` | 合法/非法 payload 全覆盖；单条非法整批拒绝；错误回填格式稳定 ✅（14 用例全绿；golden op 集与 EDITOR_COMMAND_OPS 黄金同步断言通过） |
 | M6.2 | `web/src/lib/timeline/timeline-summary.ts`（新建） | 时间线结构化精简摘要（轨道/片段/时长/关键属性，不含媒体二进制） | 新增 `web/test/timeline-summary.test.ts` | 摘要确定性强（同输入同输出）；大对象排除 ✅（16 用例全绿；折叠上限/中文字幕统计/空态覆盖） |
-| M6.3 | `web/src/lib/plugins/builtin/editor/editor-ai-assistant.tsx` | AI 助手：右上悬浮对话面板（OpenAI Canvas 风格，由顶部工具栏 Sparkles 入口开合；面板内文本模型选择器 + 消息流 + 空态引导 + 输入条）、命令执行链路（≤3 条直执行 / >3 条 diff 预览待确认）、宿主 registry 拒绝 failTurn 回填失败标记 | typecheck + M6.1/M6.2 测试 + `bun run build` ✅ | 自然语言→命令→撤销全链路代码侧就绪（≤3 条直执行按条入撤销栈，撤销按条回退）；非法命令回填错误；与画布会话上下文隔离（历史存 `historyRef`，仅时间线上下文入提示词）✅（浏览器冒烟待用户确认） |
+| M6.3 | `web/src/lib/plugins/builtin/editor/editor-ai-assistant.tsx` | AI 助手：右上悬浮对话面板（画布内 AI 对话面板风格，由顶部工具栏 Sparkles 入口开合；面板内文本模型选择器 + 消息流 + 空态引导 + 输入条）、命令执行链路（≤3 条直执行 / >3 条 diff 预览待确认）、宿主 registry 拒绝 failTurn 回填失败标记 | typecheck + M6.1/M6.2 测试 + `bun run build` ✅ | 自然语言→命令→撤销全链路代码侧就绪（≤3 条直执行按条入撤销栈，撤销按条回退）；非法命令回填错误；与画布会话上下文隔离（历史存 `historyRef`，仅时间线上下文入提示词）✅（浏览器冒烟待用户确认） |
 
 ## 3. 依赖关系
 

@@ -9,7 +9,7 @@ const manifest: PluginManifest = {
     name: "火山方舟 Seedance 官方视频生成",
     version: "1.0.0",
     description: "火山方舟官方 Seedance 视频生成接口。",
-    author: "影策",
+    author: "梅野",
     permissions: [],
     contributes: {
         providers: [

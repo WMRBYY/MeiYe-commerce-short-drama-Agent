@@ -2,20 +2,20 @@
 
 > 状态：架构提案，未实施。本文定义目标结构和验收合同，不代表已有设备端能力。
 > 日期：2026-11-12。
-> 产品原则：影策 Web 仍是工作区、Agent、任务、资产与权限的主产品；yingce-bridge 是用户安装的本地执行代理，只补足浏览器不能安全访问的本机能力。
+> 产品原则：梅野 Web 仍是工作区、Agent、任务、资产与权限的主产品；yingce-bridge 是用户安装的本地执行代理，只补足浏览器不能安全访问的本机能力。
 
 配套专题：[断连、恢复与分布式执行可靠性](yingce-bridge-reliability.md)。该文记录论文与成熟系统的证据、启动协议、异常处理矩阵和故障注入验收；本文与专题共同构成提案，尚无运行验证。
 
 ## 1. 设计结论
 
-建设独立的 `yingce-bridge` 客户端：本机生成设备密钥，用户在已登录的影策 Web 页面确认绑定；Bridge 主动通过 TLS WebSocket 连接影策服务端，接收已授权的结构化任务，在本机适配器中执行，并把状态和经用户授权的结果回报给服务端。服务端保存设备、能力、任务与回执，负责账号权限、选择设备、排队和审计；Bridge 负责本机密钥、进程、文件、模型、GPU 和应用访问。
+建设独立的 `yingce-bridge` 客户端：本机生成设备密钥，用户在已登录的梅野 Web 页面确认绑定；Bridge 主动通过 TLS WebSocket 连接梅野服务端，接收已授权的结构化任务，在本机适配器中执行，并把状态和经用户授权的结果回报给服务端。服务端保存设备、能力、任务与回执，负责账号权限、选择设备、排队和审计；Bridge 负责本机密钥、进程、文件、模型、GPU 和应用访问。
 
 这不是 Web 产品的桌面副本。桌面侧只保留安装、启动、账号绑定、本地权限设置、运行状态、任务确认和故障诊断等控制面。创作工作区、Agent 对话、项目/画布、任务总览和资产管理继续使用 Web。
 
 推荐拆为两个进程/职责：
 
 - `yingce-bridge` Go 核心进程：设备身份、出站长连接、任务执行、能力报告、适配器、受控文件访问和本地执行账本。核心没有通用远程 Shell、任意路径访问或任意 URL 代理。
-- `yingce-bridge-ui` 轻量本机控制壳：处理首次绑定、系统通知、目录选择、信任/权限确认、连接状态和更新。可用 Tauri 2 包装核心 sidecar，但它不复制影策 Web 的业务界面。Tauri sidecar 权限也必须按固定命令/参数收紧，不能把 shell 命令接口开放给 WebView。
+- `yingce-bridge-ui` 轻量本机控制壳：处理首次绑定、系统通知、目录选择、信任/权限确认、连接状态和更新。可用 Tauri 2 包装核心 sidecar，但它不复制梅野 Web 的业务界面。Tauri sidecar 权限也必须按固定命令/参数收紧，不能把 shell 命令接口开放给 WebView。
 
 Web 与 Bridge 的控制通道走设备发起的 WSS。大文件不塞进 WSS；需要同步时使用按任务和对象签发的短期上传/下载凭证。v1 不做 P2P、用户局域网发现或服务端发起的任意内网连接。
 
@@ -42,7 +42,7 @@ Web 与 Bridge 的控制通道走设备发起的 WSS。大文件不塞进 WSS；
 
 ### 3.1 目标
 
-- 一个影策账号可以登记、查看、命名、暂停和撤销多台设备。
+- 一个梅野账号可以登记、查看、命名、暂停和撤销多台设备。
 - 每台设备独立公布可执行能力、适配器/模型/工作流版本、在线状态、并发槽和粗粒度负载；默认不公布用户名、磁盘路径、完整软件清单或原始网络地址。
 - Web Agent 和用户流程能按能力、数据位置和用户偏好创建本地任务；服务端负责排队和挑选符合条件的在线设备。
 - Bridge 在用户明确授予的本机权限内调用 ComfyUI、Ollama、选定 CLI/MCP 和后续桌面应用适配器。
@@ -63,7 +63,7 @@ Web 与 Bridge 的控制通道走设备发起的 WSS。大文件不塞进 WSS；
 
 ```mermaid
 flowchart LR
-  U[影策 Web<br/>Agent / 项目 / 任务] -->|HTTPS: 创建任务、查看设备| API[影策 Go API]
+  U[梅野 Web<br/>Agent / 项目 / 任务] -->|HTTPS: 创建任务、查看设备| API[梅野 Go API]
   API --> DB[(DB<br/>设备 / 能力 / 任务 / 回执)]
   API <-->|WSS: Bridge 主动连接| B[yingce-bridge 核心]
   B --> J[(本地 WAL<br/>attempt / receipt)]
@@ -84,7 +84,7 @@ flowchart LR
 | 后端 `bridge` 域 | 设备授权、设备状态、能力快照、任务准入、匹配调度、lease/epoch、事件/回执审计、撤销 | 从公网主动扫描用户电脑；以任务正文自报字段决定设备归属；持久保存本机路径、密钥或完整模型目录。 |
 | Bridge 核心 | 设备密钥和本地策略、WSS、adapter 调用、进程生命周期、文件根、资源预算、本地 WAL 和状态回报 | 执行任意 shell 拼接；接受无本机授权的云端权限提升；在断线重连后默默重复不确定副作用。 |
 | 本机控制壳 | 系统浏览器绑定、目录/应用授权、弹窗确认、通知、诊断和更新 | 暴露通用 `exec`、任意读写文件或任意网络请求 IPC 给 WebView。 |
-| Adapter | 把稳定能力合同映射为一个具体受控工具/本机服务/应用 API | 修改影策账号权限；将只读标记作为授权依据；隐式外发文件或改变 adapter 指向的服务端点。 |
+| Adapter | 把稳定能力合同映射为一个具体受控工具/本机服务/应用 API | 修改梅野账号权限；将只读标记作为授权依据；隐式外发文件或改变 adapter 指向的服务端点。 |
 
 ### 4.2 信任边界
 
@@ -98,10 +98,10 @@ flowchart LR
 
 ### 5.1 绑定流程
 
-使用类似 OAuth Device Authorization Grant 的一次性设备码流程；Web 登录继续由影策现有 Cookie/session 完成，Bridge 不收集用户密码或浏览器 Cookie。
+使用类似 OAuth Device Authorization Grant 的一次性设备码流程；Web 登录继续由梅野现有 Cookie/session 完成，Bridge 不收集用户密码或浏览器 Cookie。
 
 1. Bridge 首次启动时生成独立 Ed25519 设备密钥对和随机 `deviceInstanceId`。私钥放系统密钥库（macOS Keychain、Windows Credential Manager/DPAPI、Linux Secret Service）；不放配置文件或日志。
-2. 用户在本机 UI 点“绑定影策账号”。Bridge 请求指定服务域的短期 `device_code` 和人类可读 `user_code`，在系统浏览器打开该服务域固定的 `/settings/bridge/pair`。
+2. 用户在本机 UI 点“绑定梅野账号”。Bridge 请求指定服务域的短期 `device_code` 和人类可读 `user_code`，在系统浏览器打开该服务域固定的 `/settings/bridge/pair`。
 3. 用户登录后，Web 页面显示服务域、设备名称、指纹、操作系统、客户端版本和申请的基础能力权限；用户确认后才建立设备记录。
 4. Bridge 以私钥签名轮询挑战，交换设备绑定的短期 access token 与轮换 refresh token。刷新令牌仅存 OS 密钥库；刷新复用、旧令牌复用或异常设备副本导致撤销/重新绑定。
 5. Bridge 建立 WSS，证明设备密钥、协议版本和服务实例；服务端为连接递增 `connectionEpoch`。同一 daemon 重连可接管旧连接，旧连接不再有实时命令权限；原 attempt 的历史回执通过新连接进入核对入口。不同 daemon/账本同时使用同一设备身份时进入冲突隔离，不允许相互踢线后轮流执行。
@@ -178,7 +178,7 @@ flowchart LR
 
 ### 7.1 哪些任务由 Bridge 执行
 
-v1 建立独立 `BridgeJob` 执行域，用于本地工具、模型和工作流动作；任务可由 Web Agent 提议，也可由用户直接发起。BridgeJob 不等同既有账务 `Task`，不自动扣影策积分，也不把本机工作流结果直接伪装成云端生成任务。
+v1 建立独立 `BridgeJob` 执行域，用于本地工具、模型和工作流动作；任务可由 Web Agent 提议，也可由用户直接发起。BridgeJob 不等同既有账务 `Task`，不自动扣梅野积分，也不把本机工作流结果直接伪装成云端生成任务。
 
 现有云端媒体任务继续走既有 provider/worker。未来若需将现有 billable task 路由到本机，必须先为 `executionTarget` 增加明确合同和账务/结果归档事务，并保证现有 `ClaimNextTask` 过滤 Bridge 目标。上线先后顺序是：加入云 worker 排除条件和迁移测试，再启用 Bridge task producer；回滚时不能让旧 Bridge 任务被云 worker 误领。
 
@@ -281,7 +281,7 @@ Job 与 artifact API 的写入必须检查只读模式守卫、用户归属和�
 
 ## 9. Web 与 Agent 交互
 
-影策 Web 新增“本地设备”设置页：设备名/在线状态/最后在线、Bridge 版本、能力和工作流摘要、授权 scope、正在运行的任务、撤销/暂停入口。默认不展示原始路径。
+梅野 Web 新增“本地设备”设置页：设备名/在线状态/最后在线、Bridge 版本、能力和工作流摘要、授权 scope、正在运行的任务、撤销/暂停入口。默认不展示原始路径。
 
 任务创建时使用明确目标模式：
 
@@ -340,7 +340,7 @@ WebSocket 路由需在 Nginx 明确 upgrade、限制读写超时并做最大帧�
 
 | 风险 | 防护 | 不得声称 |
 | --- | --- | --- |
-| 恶意/失陷 Web 页面触发本机动作 | Web API 账号审批 + server-signed operation grant + 本地 grant/能力 scope 交集；对写入/外发本机确认；固定服务域 | “因为登录了影策所以所有设备动作都可信”。 |
+| 恶意/失陷 Web 页面触发本机动作 | Web API 账号审批 + server-signed operation grant + 本地 grant/能力 scope 交集；对写入/外发本机确认；固定服务域 | “因为登录了梅野所以所有设备动作都可信”。 |
 | 恶意 CLI/MCP | v1 默认可信 adapter；安装时展示 executable、版本、工具和权限；调用时展示参数摘要；受 OS 用户权限运行 | “MCP roots/readOnlyHint/argv allowlist/Tauri 已自动沙箱”。 |
 | 浏览器或任务伪造路径 | Web/Agent 不传绝对路径；设备返回短期 handle；本机安全打开并核对文件身份 | “hash 等于文件授权”。 |
 | 未授权外传 | egress policy 在 capability 和 job 两侧显式声明；原件/预览/文本分别许可；artifact 的用户确认和一次性传输 grant | “本机处理所以数据不会出网”。 |
@@ -419,14 +419,14 @@ Agent 注册 `bridge.*` 工具、操作审批与结构化任务。后端 schedul
 - BridgeJob 是否与现有 Agent 运行/账务额度关联；默认是否允许 local-auto；用户如何定义第三方远程节点的费用/外发确认。
 - 桌面轻 UI 使用 Tauri 2 的最小范围、IPC schema、sidecar command allowlist 和更新签名策略。
 - 现有 `framefield-local-runtime` v2 的模块迁移顺序、与新 Bridge 并存期限和停用条件。
-- 影策已有站点部署如何启用 `/api/bridge`；设备管理、WSS 连接和 artifact transfer 的租户/配额/保留周期。
+- 梅野已有站点部署如何启用 `/api/bridge`；设备管理、WSS 连接和 artifact transfer 的租户/配额/保留周期。
 
 ## 17. 外部事实来源
 
 故障处理的论文、原文位置和成熟系统对照见 [可靠性专题第 2 节与参考资料](yingce-bridge-reliability.md)。以下保留产品与接口事实来源；实际实现须锁定目标版本测试。
 
 - Tauri 2 Sidecar 与 capability 参数限制：[Sidecar](https://v2.tauri.app/develop/sidecar/)。此配置限制 WebView 可启动哪些 sidecar 命令，不隔离该进程可访问的操作系统资源。
-- OAuth 2.0 Device Authorization Grant：[RFC 8628](https://www.rfc-editor.org/rfc/rfc8628)。本设计采用一次性用户码交互形态，不代表当前影策已有 OAuth device endpoint。
+- OAuth 2.0 Device Authorization Grant：[RFC 8628](https://www.rfc-editor.org/rfc/rfc8628)。本设计采用一次性用户码交互形态，不代表当前梅野已有 OAuth device endpoint。
 - ComfyUI API 路由与队列/执行行为：[server.py](https://github.com/comfy-org/ComfyUI/blob/master/server.py)。提交 `/prompt` 返回 prompt ID；重复 prompt ID 不是幂等保证；不带目标 ID 的 interrupt 是全局操作。
 - ComfyUI MiniMax H3 Partner/API 节点：[MiniMax H3 workflow](https://github.com/comfy-org/docs/blob/main/tutorials/partner-nodes/minimax/minimax-h3.mdx)、[Cloud nodes overview](https://github.com/comfy-org/docs/blob/main/cloud-nodes/overview.mdx)、[Partner node credentials](https://github.com/comfy-org/docs/blob/main/built-in-nodes/partner-node/video/minimax/minimax-text-to-video.mdx)。须逐项按本文的 locality/egress/cost 字段呈现。
 - Ollama 本地 API、认证、流和运行模型：[API introduction](https://docs.ollama.com/api/introduction)、[Authentication](https://docs.ollama.com/api/authentication)、[Streaming](https://docs.ollama.com/api/streaming)、[Tags](https://docs.ollama.com/api/tags)、[Running models](https://docs.ollama.com/api/ps)。默认本机 API 无认证，Bridge 不应将其开放转发。

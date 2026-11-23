@@ -196,7 +196,8 @@ func TestSenderNameBrandsRegistrationAndPasswordResetEmails(t *testing.T) {
 		wantName string
 	}{
 		{name: "default inherits appearance", fromName: DefaultBrandName, wantName: "HIMA Studio"},
-		{name: "legacy default inherits appearance", fromName: "影策", wantName: "HIMA Studio"},
+		{name: "legacy default inherits appearance", fromName: "\u5f71\u7b56", wantName: "HIMA Studio"},
+		{name: "Meiye default inherits appearance", fromName: "梅野", wantName: "HIMA Studio"},
 		{name: "empty inherits appearance", fromName: "", wantName: "HIMA Studio"},
 		{name: "custom sender overrides appearance", fromName: "Custom Canvas", wantName: "Custom Canvas"},
 		{name: "custom sender is trimmed", fromName: "  自定义工作台  ", wantName: "自定义工作台"},
@@ -278,7 +279,7 @@ func newPasswordResetTestService(t *testing.T) (*Service, *gorm.DB) {
 	if err := db.AutoMigrate(&model.User{}, &model.AuthSession{}, &model.LoginLog{}, &model.EmailVerificationCode{}, &model.SystemSetting{}, &model.EmailLog{}); err != nil {
 		t.Fatal(err)
 	}
-	settingJSON, err := json.Marshal(EmailSettingValue{Enabled: true, Host: "smtp.example.com", Port: 587, Encryption: "starttls", FromEmail: "noreply@example.com", FromName: "影策", RegistrationAllowedDomains: []string{"example.com"}})
+	settingJSON, err := json.Marshal(EmailSettingValue{Enabled: true, Host: "smtp.example.com", Port: 587, Encryption: "starttls", FromEmail: "noreply@example.com", FromName: "梅野", RegistrationAllowedDomains: []string{"example.com"}})
 	if err != nil {
 		t.Fatal(err)
 	}

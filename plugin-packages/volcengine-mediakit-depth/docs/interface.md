@@ -18,7 +18,7 @@
 | `model` | 固定 `standard` | 唯一支持的深度估计档位；不使用系统渠道的模型别名作为上游档位。 |
 | `client_token` | `request.extra.idempotencyKey` | 宿主幂等键，空时省略。 |
 
-不开放 `providerOptions`、回调、队列或 `media_output_destination`，结果沿用宿主轮询和资源入库。源视频必须是当前用户可访问的影策资源，沿用公网素材转换、出站 SSRF、配额与任务权限校验。
+不开放 `providerOptions`、回调、队列或 `media_output_destination`，结果沿用宿主轮询和资源入库。源视频必须是当前用户可访问的梅野资源，沿用公网素材转换、出站 SSRF、配额与任务权限校验。
 
 ## 响应与错误
 
@@ -47,7 +47,7 @@ Stub 回归不代表真实服务验收。真实效果、处理耗时、HEVC 跨�
   "id": "volcengine-mediakit-depth",
   "name": "火山 MediaKit 视频相对深度估计工具",
   "version": "1.0.0",
-  "author": "Volcengine / 影策",
+  "author": "Volcengine / 梅野",
   "description": "火山 MediaKit 视频处理工具，用于逐帧估计相对深度；默认关闭，不是视频生成模型。",
   "enabled": false,
   "permissions": [

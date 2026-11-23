@@ -150,7 +150,7 @@ func TestCheckWritableDirectory(t *testing.T) {
 func TestComposeProjectNameUsesInstallDirectory(t *testing.T) {
 	cases := map[string]string{
 		"/opt/yingce":           "yingce",
-		"/srv/Open AI Canvas_2": "openaicanvas_2",
+		"/srv/Meiye_2": "meiye_2",
 		"/":                     "open-ai-canvas",
 		"/srv/!!!":              "open-ai-canvas",
 	}

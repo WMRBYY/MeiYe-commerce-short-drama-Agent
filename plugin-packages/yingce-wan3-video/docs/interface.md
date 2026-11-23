@@ -1,4 +1,4 @@
-# 影策 Wan 3.0 Video 接口字段
+# 梅野 Wan 3.0 Video 接口字段
 
 ## 协议身份
 
@@ -76,7 +76,7 @@
 
 ## 兼容边界
 
-适用于影策网关的 /v1/videos Wan 3.0 profile。请求沿用现有 NewAPI 媒体任务结构，但 Wan 3.0 音频参考使用 input.media[].type=reference_audio；旧通用协议的 reference_voice 不属于 Wan 3.0 media.type 枚举。
+适用于梅野网关的 /v1/videos Wan 3.0 profile。请求沿用现有 NewAPI 媒体任务结构，但 Wan 3.0 音频参考使用 input.media[].type=reference_audio；旧通用协议的 reference_voice 不属于 Wan 3.0 media.type 枚举。
 
 <!-- YINGCE_MANIFEST_CONTRACT_START -->
 ## Manifest 完整接口定义
@@ -87,10 +87,10 @@
 {
   "apiVersion": "yingce.plugin/v2",
   "id": "yingce-wan3-video",
-  "name": "影策 Wan 3.0 Video",
+  "name": "梅野 Wan 3.0 Video",
   "version": "2.0.0",
-  "author": "影策 / MeiyeAI",
-  "description": "影策 Wan 3.0 Video 独立请求协议插件。",
+  "author": "梅野 / MeiyeAI",
+  "description": "梅野 Wan 3.0 Video 独立请求协议插件。",
   "documentation": "<当前插件的完整 documentation，由 README.md 与 docs/interface.md 拼接而成；为避免 JSON 递归，此处不重复展开正文。>",
   "permissions": [
     "generation.run",
@@ -110,7 +110,7 @@
     "providers": [
       {
         "id": "yingce-wan3-video",
-        "label": "影策 Wan 3.0 Video",
+        "label": "梅野 Wan 3.0 Video",
         "capabilities": [
           "video"
         ],

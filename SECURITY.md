@@ -6,7 +6,7 @@
 
 ## 报告漏洞
 
-请不要通过公开 Issue 披露尚未修复的漏洞。若本仓库启用了 GitHub 私密漏洞报告，请在 Security 页使用 Report a vulnerability；否则通过已有的私下协作渠道联系本仓库维护者。
+请不要通过公开 Issue 披露尚未修复的漏洞。若本仓库启用了 GitHub 私密漏洞报告，请在 Security 页使用 Report a vulnerability；也可以将报告发至 [449282092@qq.com](mailto:449282092@qq.com)。
 
 报告中请包含受影响版本、复现步骤、影响范围和可行的缓解建议。请勿访问、下载或修改不属于你的数据，也不要对公开实例进行持续压测。
 

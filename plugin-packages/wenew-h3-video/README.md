@@ -1,6 +1,6 @@
 # WeNew API H3 Video
 
-影策官方声明式协议插件，适配 [WeNew API](https://service-b4f3308e.example.invalid/) 的 MiniMax H3 视频生成产品。
+梅野官方声明式协议插件，适配 [WeNew API](https://service-b4f3308e.example.invalid/) 的 MiniMax H3 视频生成产品。
 
 - Provider：`wenew-h3-video`
 - 产品代码：`h3_video`

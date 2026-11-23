@@ -1,4 +1,4 @@
-# 影策 Wan 3.0 Video
+# 梅野 Wan 3.0 Video
 
 该目录是独立官方协议插件源码。后端从生成的 `yingce-wan3-video.yingce-plugin` 包加载，不依赖系统内置 `host:` 适配器。
 

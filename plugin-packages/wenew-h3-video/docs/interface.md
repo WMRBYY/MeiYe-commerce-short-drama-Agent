@@ -14,7 +14,7 @@
 
 | 统一字段 | 上游字段 | 约束与默认值 |
 | --- | --- | --- |
-| `model` | 不发给上游 | 影策模型显示名；上游 `product` 固定 `h3_video`。 |
+| `model` | 不发给上游 | 梅野模型显示名；上游 `product` 固定 `h3_video`。 |
 | `prompt` | `params.prompt` | 必填原始提示词。参考素材按顺序使用 `<Picture N>`、`<Audio N>`。 |
 | `images` | `inputs.images` 或 `inputs.first_frame` / `inputs.last_frame` | 按 order 排序；普通图片作为参考图。首尾帧角色映射成独立对象，各最多1张。 |
 | `audios` | `inputs.audios` | 最多3段，至少搭配1张参考图；每段2–15秒、合计≤15秒。 |
@@ -88,7 +88,7 @@ H3 固定输出带声音的 MP4（H.264 + AAC，24帧/秒），没有 `params.au
   "id": "wenew-h3-video",
   "name": "WeNew API H3 Video",
   "version": "1.0.0",
-  "author": "WeNew API / 影策",
+  "author": "WeNew API / 梅野",
   "description": "适配 WeNew API MiniMax H3 视频任务接口的声明式协议插件。",
   "permissions": [
     "generation.run",
@@ -136,7 +136,7 @@ H3 固定输出带声音的 MP4（H.264 + AAC，24帧/秒），没有 `params.au
             "type": "string",
             "required": true,
             "mapping": "model",
-            "description": "影策中的模型显示名；请求产品固定为 h3_video。"
+            "description": "梅野中的模型显示名；请求产品固定为 h3_video。"
           },
           {
             "name": "prompt",

@@ -201,7 +201,7 @@ test("后台协议正文为空时展示完整默认协议和隐私入口", async
         await act(async () => terms.click());
         expect(document.body.textContent).toContain("一、账号与验证码安全");
         expect(document.body.textContent).toContain("四、积分与付费功能");
-        expect(document.body.textContent).toContain("test-user-1d5d61@example.invalid");
+        expect(document.body.textContent).toContain("449282092@qq.com");
         expect(document.body.textContent).not.toContain("服务协议内容待补充");
         expect(document.querySelector('.phone-auth-policy-content a[href="/privacy"]')?.textContent).toBe("查看隐私政策");
         expect(f.host.querySelector<HTMLInputElement>('input[type="checkbox"]')!.checked).toBe(false);

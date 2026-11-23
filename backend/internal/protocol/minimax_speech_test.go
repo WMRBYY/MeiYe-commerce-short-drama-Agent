@@ -11,14 +11,14 @@ func TestMiniMaxSpeechModelsBuildAndParse(t *testing.T) {
 	for _, model := range models {
 		t.Run(model, func(t *testing.T) {
 			spec, err := adapter.BuildCreate(context.Background(), RequestContext{Request: GenerationRequest{
-				Model: model, Prompt: "你好，欢迎来到影策。", Extra: map[string]any{"audioVoice": "male-qn-jingying", "audioSpeed": "1.25", "audioFormat": "mp3"},
+				Model: model, Prompt: "你好，欢迎来到梅野。", Extra: map[string]any{"audioVoice": "male-qn-jingying", "audioSpeed": "1.25", "audioFormat": "mp3"},
 			}})
 			if err != nil {
 				t.Fatal(err)
 			}
 			body := manifestTestBody(t, spec)
 			voice := body["voice_setting"].(map[string]any)
-			if spec.Path != "/v1/t2a_v2" || body["model"] != model || body["text"] != "你好，欢迎来到影策。" || body["stream"] != false || body["output_format"] != "url" || voice["voice_id"] != "male-qn-jingying" || voice["speed"] != 1.25 {
+			if spec.Path != "/v1/t2a_v2" || body["model"] != model || body["text"] != "你好，欢迎来到梅野。" || body["stream"] != false || body["output_format"] != "url" || voice["voice_id"] != "male-qn-jingying" || voice["speed"] != 1.25 {
 				t.Fatalf("request = %#v", body)
 			}
 		})
