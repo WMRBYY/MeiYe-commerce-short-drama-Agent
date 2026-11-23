@@ -228,7 +228,7 @@ export default function SystemUpdatePage() {
                                 <dt>发布时间</dt>
                                 <dd>{formatDate(status?.latestRelease?.publishedAt)}</dd>
                                 <dt>代码仓库</dt>
-                                <dd>{status?.repository || "WMRBYY/Ww-E-commerce-short-drama-Agent"}</dd>
+                                <dd>{status?.repository || "WMRBYY/MeiYe-commerce-short-drama-Agent"}</dd>
                             </dl>
                             {status?.latestRelease ? (
                                 <div className="admin-system-update-notes">

@@ -60,7 +60,7 @@ let calls: InternalAxiosRequestConfig[];
 let failSave: boolean;
 
 function availableRelease() {
-    return { version: "v2.0.0", name: "v2.0.0", body: "release", url: "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/tag/v2.0.0", publishedAt: "2026-11-11T00:00:00Z", prerelease: false };
+    return { version: "v2.0.0", name: "v2.0.0", body: "release", url: "https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent/releases/tag/v2.0.0", publishedAt: "2026-11-11T00:00:00Z", prerelease: false };
 }
 
 async function settle() {
@@ -102,7 +102,7 @@ beforeEach(() => {
     server = {
         supported: true,
         connected: true,
-        repository: "WMRBYY/Ww-E-commerce-short-drama-Agent",
+        repository: "WMRBYY/MeiYe-commerce-short-drama-Agent",
         deployment: "docker-compose-host-updater",
         currentVersion: "v1.0.0",
         latestRelease: availableRelease(),

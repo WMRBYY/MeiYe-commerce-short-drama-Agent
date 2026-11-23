@@ -55,7 +55,7 @@
 安装 Git、Docker 和 Docker Compose；在有仓库读取权限的终端执行：
 
 ```sh
-git clone https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent.git
+git clone https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent.git
 cd Ww-E-commerce-short-drama-Agent
 docker compose up -d --build
 ```

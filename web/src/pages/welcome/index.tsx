@@ -16,7 +16,7 @@ import "./welcome.css";
 import { Select } from "@/components/ui/base/select";
 
 const StoryReel = lazy(() => import("./story-reel"));
-const github = "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent";
+const github = "https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent";
 
 export default function WelcomePage() {
     const [look, setLook] = useState(getWelcomeLook);

@@ -162,11 +162,11 @@ func TestComposeProjectNameUsesInstallDirectory(t *testing.T) {
 }
 
 func TestImmutableImageRefsUseConfiguredMeiyeRepository(t *testing.T) {
-	images := immutableImageRefs("WMRBYY/Ww-E-commerce-short-drama-Agent", "v1.2.3")
+	images := immutableImageRefs("WMRBYY/MeiYe-commerce-short-drama-Agent", "v1.2.3")
 	want := deploymentImages{
-		backend: "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-backend:1.2.3",
-		web:     "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-web:1.2.3",
-		agent:   "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-agent:1.2.3",
+		backend: "ghcr.io/wmrbyy/meiye-commerce-short-drama-agent-backend:1.2.3",
+		web:     "ghcr.io/wmrbyy/meiye-commerce-short-drama-agent-web:1.2.3",
+		agent:   "ghcr.io/wmrbyy/meiye-commerce-short-drama-agent-agent:1.2.3",
 	}
 	if images != want {
 		t.Fatalf("immutableImageRefs() = %#v, want %#v", images, want)

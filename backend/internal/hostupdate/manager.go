@@ -72,7 +72,7 @@ type Manager struct {
 func NewManager(config Config) (*Manager, error) {
 	config.Repository = strings.TrimSpace(config.Repository)
 	if config.Repository == "" {
-		config.Repository = "WMRBYY/Ww-E-commerce-short-drama-Agent"
+		config.Repository = "WMRBYY/MeiYe-commerce-short-drama-Agent"
 	}
 	if config.InstallDir == "" {
 		config.InstallDir = "/opt/open-ai-canvas"

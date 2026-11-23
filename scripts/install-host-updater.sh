@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 INSTALL_DIR="${INSTALL_DIR:-/opt/open-ai-canvas}"
-REPOSITORY="${REPOSITORY:-WMRBYY/Ww-E-commerce-short-drama-Agent}"
+REPOSITORY="${REPOSITORY:-WMRBYY/MeiYe-commerce-short-drama-Agent}"
 SOCKET_DIR="${CANVAS_UPDATER_SOCKET_DIR:-/run/open-ai-canvas-updater}"
 UPDATER_BIN="/usr/local/bin/open-ai-canvas-host-updater"
 UPDATER_ENV="/etc/open-ai-canvas-updater.env"

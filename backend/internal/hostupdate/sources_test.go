@@ -133,7 +133,7 @@ func TestSourcesRestartRecoversInterruptedProbe(t *testing.T) {
 
 func TestSourcesGitHubRoutingAndCredentialIsolation(t *testing.T) {
 	for _, sources := range []Sources{{"direct", "ghcr"}, {"gh_proxy", "nju"}} {
-		for _, original := range []string{"https://api.github.com/repos/WMRBYY/Ww-E-commerce-short-drama-Agent/releases?per_page=30", "https://raw.githubusercontent.com/WMRBYY/Ww-E-commerce-short-drama-Agent/v2.0.0/docker-compose.deploy.yml", "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS"} {
+		for _, original := range []string{"https://api.github.com/repos/WMRBYY/MeiYe-commerce-short-drama-Agent/releases?per_page=30", "https://raw.githubusercontent.com/WMRBYY/MeiYe-commerce-short-drama-Agent/v2.0.0/docker-compose.deploy.yml", "https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS"} {
 			t.Run(sources.GitHubSource+original, func(t *testing.T) {
 				m := sourceManager(t)
 				m.config.GitHubToken = "private-test-token"
@@ -175,10 +175,10 @@ func TestSourcesProxyDoesNotFallbackOrFollowExternalRedirect(t *testing.T) {
 					t.Fatalf("unexpected direct request: %s", r.URL)
 				}
 				response := sourceResponse(status, "")
-				response.Header.Set("Location", "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS")
+				response.Header.Set("Location", "https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS")
 				return response, nil
 			})
-			if _, err := m.githubGet(context.Background(), "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS", Sources{"gh_proxy", "nju"}, ""); err == nil {
+			if _, err := m.githubGet(context.Background(), "https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS", Sources{"gh_proxy", "nju"}, ""); err == nil {
 				t.Fatal("failure reported success")
 			}
 			if calls != 1 {
@@ -196,7 +196,7 @@ func TestSourcesDirectRedirectDoesNotLeakAPIToken(t *testing.T) {
 		calls++
 		if calls == 1 {
 			response := sourceResponse(http.StatusFound, "")
-			response.Header.Set("Location", "https://raw.githubusercontent.com/WMRBYY/Ww-E-commerce-short-drama-Agent/main/VERSION")
+			response.Header.Set("Location", "https://raw.githubusercontent.com/WMRBYY/MeiYe-commerce-short-drama-Agent/main/VERSION")
 			return response, nil
 		}
 		if r.Header.Get("Authorization") != "" {
@@ -204,7 +204,7 @@ func TestSourcesDirectRedirectDoesNotLeakAPIToken(t *testing.T) {
 		}
 		return sourceResponse(200, "v2.0.0"), nil
 	})
-	response, err := m.githubGet(context.Background(), "https://api.github.com/repos/WMRBYY/Ww-E-commerce-short-drama-Agent/releases", Sources{"direct", "ghcr"}, "")
+	response, err := m.githubGet(context.Background(), "https://api.github.com/repos/WMRBYY/MeiYe-commerce-short-drama-Agent/releases", Sources{"direct", "ghcr"}, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +220,7 @@ func TestSourcesRejectInvalidChecksumAndOversizedAsset(t *testing.T) {
 	}
 	m := sourceManager(t)
 	m.httpClient.Transport = sourceTransport(func(*http.Request) (*http.Response, error) { return sourceResponse(200, "oversized"), nil })
-	if _, err := m.downloadReleaseAsset("https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/file", 3, Sources{"gh_proxy", "nju"}); err == nil {
+	if _, err := m.downloadReleaseAsset("https://github.com/WMRBYY/MeiYe-commerce-short-drama-Agent/releases/download/v2.0.0/file", 3, Sources{"gh_proxy", "nju"}); err == nil {
 		t.Fatal("oversized download accepted")
 	}
 }
