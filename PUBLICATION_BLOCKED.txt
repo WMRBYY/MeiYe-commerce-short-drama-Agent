@@ -1,4 +1,2 @@
-PRIVATE TEST CANDIDATE ONLY. Not cleared for public release.
-The owner authorized upload to a private GitHub repository for testing.
-Do not change repository visibility to public until feature isolation,
-privacy review, licensing review, builds and regression checks are complete.
+发布状态：私有测试。
+公开发布前，请完成回归、构建、隐私及许可复核，并由仓库所有者决定是否调整可见性。
