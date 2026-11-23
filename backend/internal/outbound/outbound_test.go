@@ -14,10 +14,10 @@ import (
 func TestOutboundTransportUsesEnvironmentProxyAndHonorsNoProxy(t *testing.T) {
 	t.Setenv("HTTP_PROXY", "http://192.0.2.10:10808")
 	t.Setenv("HTTPS_PROXY", "http://192.0.2.10:10808")
-	t.Setenv("NO_PROXY", ".se7endot.top,100.64.0.0/10")
+	t.Setenv("NO_PROXY", ".example.com,100.64.0.0/10")
 	transport := newOutboundTransport(resolveOutboundHost)
 
-	proxiedRequest, _ := http.NewRequest(http.MethodGet, "https://service-bc291bf4.example.invalid/v1/models", nil)
+	proxiedRequest, _ := http.NewRequest(http.MethodGet, "https://service.example.net/v1/models", nil)
 	proxyURL, err := transport.Proxy(proxiedRequest)
 	if err != nil {
 		t.Fatal(err)
@@ -27,7 +27,7 @@ func TestOutboundTransportUsesEnvironmentProxyAndHonorsNoProxy(t *testing.T) {
 		t.Fatalf("proxy = %v, want %v", proxyURL, wantProxy)
 	}
 
-	directRequest, _ := http.NewRequest(http.MethodGet, "https://service-86b1ecaf.example.invalid/v1/models", nil)
+	directRequest, _ := http.NewRequest(http.MethodGet, "https://api.example.com/v1/models", nil)
 	proxyURL, err = transport.Proxy(directRequest)
 	if err != nil {
 		t.Fatal(err)
@@ -42,7 +42,7 @@ func TestConfiguredProxyHostIsTrustedAsDeploymentEgress(t *testing.T) {
 	if !configuredProxyHost("192.0.2.10") {
 		t.Fatal("configuredProxyHost() rejected the configured private proxy")
 	}
-	if configuredProxyHost("192.0.2.10") {
+	if configuredProxyHost("192.0.2.11") {
 		t.Fatal("configuredProxyHost() accepted an unrelated private host")
 	}
 }

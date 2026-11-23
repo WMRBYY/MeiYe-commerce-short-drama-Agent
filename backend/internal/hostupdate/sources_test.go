@@ -133,7 +133,7 @@ func TestSourcesRestartRecoversInterruptedProbe(t *testing.T) {
 
 func TestSourcesGitHubRoutingAndCredentialIsolation(t *testing.T) {
 	for _, sources := range []Sources{{"direct", "ghcr"}, {"gh_proxy", "nju"}} {
-		for _, original := range []string{"https://api.github.com/repos/ddcat-ai/open-ai-canvas/releases?per_page=30", "https://raw.githubusercontent.com/ddcat-ai/open-ai-canvas/v2.0.0/docker-compose.deploy.yml", "https://github.com/ddcat-ai/open-ai-canvas/releases/download/v2.0.0/SHA256SUMS"} {
+		for _, original := range []string{"https://api.github.com/repos/WMRBYY/Ww-E-commerce-short-drama-Agent/releases?per_page=30", "https://raw.githubusercontent.com/WMRBYY/Ww-E-commerce-short-drama-Agent/v2.0.0/docker-compose.deploy.yml", "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS"} {
 			t.Run(sources.GitHubSource+original, func(t *testing.T) {
 				m := sourceManager(t)
 				m.config.GitHubToken = "private-test-token"
@@ -175,10 +175,10 @@ func TestSourcesProxyDoesNotFallbackOrFollowExternalRedirect(t *testing.T) {
 					t.Fatalf("unexpected direct request: %s", r.URL)
 				}
 				response := sourceResponse(status, "")
-				response.Header.Set("Location", "https://github.com/ddcat-ai/open-ai-canvas/releases/download/v2.0.0/SHA256SUMS")
+				response.Header.Set("Location", "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS")
 				return response, nil
 			})
-			if _, err := m.githubGet(context.Background(), "https://github.com/ddcat-ai/open-ai-canvas/releases/download/v2.0.0/SHA256SUMS", Sources{"gh_proxy", "nju"}, ""); err == nil {
+			if _, err := m.githubGet(context.Background(), "https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/SHA256SUMS", Sources{"gh_proxy", "nju"}, ""); err == nil {
 				t.Fatal("failure reported success")
 			}
 			if calls != 1 {
@@ -196,7 +196,7 @@ func TestSourcesDirectRedirectDoesNotLeakAPIToken(t *testing.T) {
 		calls++
 		if calls == 1 {
 			response := sourceResponse(http.StatusFound, "")
-			response.Header.Set("Location", "https://raw.githubusercontent.com/ddcat-ai/open-ai-canvas/main/VERSION")
+			response.Header.Set("Location", "https://raw.githubusercontent.com/WMRBYY/Ww-E-commerce-short-drama-Agent/main/VERSION")
 			return response, nil
 		}
 		if r.Header.Get("Authorization") != "" {
@@ -204,7 +204,7 @@ func TestSourcesDirectRedirectDoesNotLeakAPIToken(t *testing.T) {
 		}
 		return sourceResponse(200, "v2.0.0"), nil
 	})
-	response, err := m.githubGet(context.Background(), "https://api.github.com/repos/ddcat-ai/open-ai-canvas/releases", Sources{"direct", "ghcr"}, "")
+	response, err := m.githubGet(context.Background(), "https://api.github.com/repos/WMRBYY/Ww-E-commerce-short-drama-Agent/releases", Sources{"direct", "ghcr"}, "")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -220,7 +220,7 @@ func TestSourcesRejectInvalidChecksumAndOversizedAsset(t *testing.T) {
 	}
 	m := sourceManager(t)
 	m.httpClient.Transport = sourceTransport(func(*http.Request) (*http.Response, error) { return sourceResponse(200, "oversized"), nil })
-	if _, err := m.downloadReleaseAsset("https://github.com/ddcat-ai/open-ai-canvas/releases/download/v2.0.0/file", 3, Sources{"gh_proxy", "nju"}); err == nil {
+	if _, err := m.downloadReleaseAsset("https://github.com/WMRBYY/Ww-E-commerce-short-drama-Agent/releases/download/v2.0.0/file", 3, Sources{"gh_proxy", "nju"}); err == nil {
 		t.Fatal("oversized download accepted")
 	}
 }
@@ -250,7 +250,7 @@ func TestSourcesMirrorDigestsAndComposeEnvironment(t *testing.T) {
 	sources := Sources{"direct", "nju"}
 	images := sources.images(m.config.Repository, "v2.0.0")
 	for _, image := range []string{images.backend, images.web, images.agent} {
-		if !strings.HasPrefix(image, "ghcr.nju.edu.cn/ddcat-ai/") || !strings.HasSuffix(image, ":2.0.0") {
+		if !strings.HasPrefix(image, "ghcr.nju.edu.cn/wmrbyy/") || !strings.HasSuffix(image, ":2.0.0") {
 			t.Fatal(image)
 		}
 	}
@@ -290,7 +290,7 @@ func TestSourcesMirrorDigestsAndComposeEnvironment(t *testing.T) {
 		t.Fatal("mirror digest was not persisted", err)
 	}
 	m.runner = sourceRunner(func(_ context.Context, _ string, _ []string, _ []string, out, _ io.Writer) error {
-		return json.NewEncoder(out).Encode([]string{"ghcr.io/ddcat-ai/open-ai-canvas-backend@sha256:" + strings.Repeat("a", 64)})
+		return json.NewEncoder(out).Encode([]string{"ghcr.io/unrelated/project-backend@sha256:" + strings.Repeat("a", 64)})
 	})
 	if _, err := m.verifyImages(images); err == nil {
 		t.Fatal("digest from wrong registry accepted")
@@ -313,7 +313,7 @@ func TestSourcesProbeIsAsyncAndChecksSelectedResources(t *testing.T) {
 			<-release
 			return sourceResponse(200, `[{"tag_name":"v2.0.0"}]`), nil
 		case strings.HasSuffix(r.URL.Path, "SHA256SUMS"):
-			return sourceResponse(200, strings.Repeat("a", 64)+"  open-ai-canvas-host-updater-linux-"+runtime.GOARCH), nil
+			return sourceResponse(200, strings.Repeat("a", 64)+"  meiye-host-updater-linux-"+runtime.GOARCH), nil
 		default:
 			return sourceResponse(200, "services: {}"), nil
 		}

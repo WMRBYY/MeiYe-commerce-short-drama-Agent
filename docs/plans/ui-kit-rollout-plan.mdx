@@ -2,7 +2,7 @@
 
 状态：已接受（2026-09-05）。关联：决策记录 [ADR-0008](../adr/0008-ui-component-layer-antd-replacement.md)；组件编写规范 [ui-design-system](./ui-design-system.mdx)。
 
-**视觉数值权威源（AI 消费入口）**：`/Users/zhugeyue/Desktop/project/bigdate/github-source-code/composio-brand-package/`（与 open-ai-canvas 同级的兄弟仓库目录，下称「规范包」）。改造本项目配色/字体/间距时，**数值一律以该规范包为唯一权威源**，消费规则见 §2.4，禁止凭记忆或截图自拟色值/字号/间距。
+**视觉数值权威源（AI 消费入口）**：`本项目的视觉规范包`（作为独立视觉规范包，下称「规范包」）。改造本项目配色/字体/间距时，**数值一律以该规范包为唯一权威源**，消费规则见 §2.4，禁止凭记忆或截图自拟色值/字号/间距。
 
 本方案是本次 UI 治理的**唯一实施计划**，统管两件事：① 把 `web/src/components/ui` 重建为自研组件层（代号 Celadon UI）；② 按功能对等批次替换 AntD，最终脱离 `antd` 依赖。参考对象：**composio-brand-package**（唯一视觉数值权威源，直接采用其配色/字体/间距/圆角体系）+ **dbx**（组织与契约纪律，优秀项保留）+ **BoardUI**（设计深度：语义 token 状态矩阵、复合排版工具、react-aria 无障碍原语、动效纪律、agentic 应用层，弥补 dbx 短板）。
 

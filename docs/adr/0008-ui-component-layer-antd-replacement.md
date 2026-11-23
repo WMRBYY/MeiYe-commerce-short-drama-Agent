@@ -1,6 +1,6 @@
 # ADR-0008: 自研 UI 组件层（Celadon UI）——吸收 dbx 组织纪律与 BoardUI 设计体系，分阶段替换 AntD
 
-状态：已接受。日期：2026-09-05（初版）；2026-09-05（修订 1：吸收 BoardUI 设计体系）；2026-09-05（修订 2：视觉数值基准改为直接采用 composio-brand-package，见 D3 与「考虑过的方案」末条）。来源：`web/src/components/ui` 混乱整治；参考 dbx（`apps/desktop/src/components/ui`）、BoardUI（`boardui/`）的组织形态与设计纪律，以及 composio-brand-package（`../../../composio-brand-package/`，与 open-ai-canvas 同级的兄弟目录，设计 token 唯一数值权威源）；AntD 依赖面证据来自清点脚本复核（数字见「背景」）。
+状态：已接受。日期：2026-09-05（初版）；2026-09-05（修订 1：吸收 BoardUI 设计体系）；2026-09-05（修订 2：视觉数值基准改为直接采用 composio-brand-package，见 D3 与「考虑过的方案」末条）。来源：`web/src/components/ui` 混乱整治；参考 dbx（`apps/desktop/src/components/ui`）、BoardUI（`boardui/`）的组织形态与设计纪律，以及 composio-brand-package（`../../../composio-brand-package/`，独立的视觉规范包目录，设计 token 唯一数值权威源）；AntD 依赖面证据来自清点脚本复核（数字见「背景」）。
 
 ## 背景
 

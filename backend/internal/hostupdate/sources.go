@@ -93,7 +93,7 @@ func (m *Manager) githubGet(ctx context.Context, original string, sources Source
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Set("User-Agent", "open-ai-canvas-host-updater")
+	request.Header.Set("User-Agent", "Meiye-host-updater")
 	if accept != "" {
 		request.Header.Set("Accept", accept)
 	}

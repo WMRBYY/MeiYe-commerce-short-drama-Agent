@@ -1,4 +1,4 @@
-// 服务商目录：读取 ai.yingce.tv 托管的推荐服务商，验证管理员 Key，并一键创建
+// 服务商目录：读取推荐服务商，验证管理员密钥，并一键创建
 // 系统渠道 + 推荐模型 + 规格档（成本与加价售价）。
 //
 // 目录只提供模板；Base URL、协议、成本一律从服务端快照重新读取，不信任浏览器传值。
@@ -120,18 +120,18 @@ func (s *Service) AdminProviderCatalog(ctx context.Context, actor *model.User, r
 	}
 	view := &ProviderCatalogView{Source: snapshot.State, Tags: []providercatalog.Tag{}, Providers: []ProviderCatalogItem{}}
 	if snapshot.State == providercatalog.SourceUnavailable {
-		view.Notice = "无法访问 ai.yingce.tv 服务商目录，请确认远程目录已部署且 HTTPS 可用。可继续使用自定义配置。"
+		view.Notice = "暂时无法访问远程服务商目录，请确认目录地址可用。你仍可继续使用自定义配置。"
 	} else if snapshot.State == providercatalog.SourceCache {
 		view.Notice = "远程目录暂不可用，正在使用本地缓存。"
 	}
-	if snapshot.State != providercatalog.SourceDisabled {
-		snapshot.Catalog = providercatalog.WithBundled(snapshot.Catalog)
-	}
+	snapshot.Catalog = providercatalog.WithBundled(snapshot.Catalog)
 	if snapshot.Catalog == nil {
 		return view, nil
 	}
 	fetchedAt := snapshot.FetchedAt
-	view.FetchedAt = &fetchedAt
+	if !fetchedAt.IsZero() {
+		view.FetchedAt = &fetchedAt
+	}
 	view.UpdatedAt = snapshot.Catalog.UpdatedAt
 	view.Tags = append(view.Tags, snapshot.Catalog.Tags...)
 	counts, err := s.repo.CatalogProviderChannelCounts()
@@ -204,9 +204,7 @@ func (s *Service) catalogModelProtocol(entry providercatalog.Model) (string, str
 func (s *Service) activeCatalogProvider(ctx context.Context, id string) (providercatalog.Provider, error) {
 	source := s.providerCatalogSource()
 	snapshot := source.Get(ctx)
-	if snapshot.State != providercatalog.SourceDisabled {
-		snapshot.Catalog = providercatalog.WithBundled(snapshot.Catalog)
-	}
+	snapshot.Catalog = providercatalog.WithBundled(snapshot.Catalog)
 	provider, ok := snapshot.Catalog.FindActive(strings.TrimSpace(id), source.Now())
 	if !ok {
 		return providercatalog.Provider{}, NotFound("服务商不存在或推广期已结束")

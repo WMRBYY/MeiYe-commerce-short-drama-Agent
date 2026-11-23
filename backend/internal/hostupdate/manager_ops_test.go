@@ -149,15 +149,27 @@ func TestCheckWritableDirectory(t *testing.T) {
 
 func TestComposeProjectNameUsesInstallDirectory(t *testing.T) {
 	cases := map[string]string{
-		"/opt/yingce":           "yingce",
+		"/opt/yingce":  "yingce",
 		"/srv/Meiye_2": "meiye_2",
-		"/":                     "open-ai-canvas",
-		"/srv/!!!":              "open-ai-canvas",
+		"/":            "open-ai-canvas",
+		"/srv/!!!":     "open-ai-canvas",
 	}
 	for installDir, want := range cases {
 		if got := composeProjectName(installDir); got != want {
 			t.Errorf("composeProjectName(%q) = %q, want %q", installDir, got, want)
 		}
+	}
+}
+
+func TestImmutableImageRefsUseConfiguredMeiyeRepository(t *testing.T) {
+	images := immutableImageRefs("WMRBYY/Ww-E-commerce-short-drama-Agent", "v1.2.3")
+	want := deploymentImages{
+		backend: "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-backend:1.2.3",
+		web:     "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-web:1.2.3",
+		agent:   "ghcr.io/wmrbyy/ww-e-commerce-short-drama-agent-agent:1.2.3",
+	}
+	if images != want {
+		t.Fatalf("immutableImageRefs() = %#v, want %#v", images, want)
 	}
 }
 

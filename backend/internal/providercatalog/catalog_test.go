@@ -38,7 +38,7 @@ const sampleCatalog = `{
 }`
 
 func TestParseNormalizesAndDropsInvalidEntries(t *testing.T) {
-	catalog, warnings, err := Parse([]byte(sampleCatalog), "https://service-013bd784.example.invalid")
+	catalog, warnings, err := Parse([]byte(sampleCatalog), "https://catalog.example.com")
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -49,7 +49,7 @@ func TestParseNormalizesAndDropsInvalidEntries(t *testing.T) {
 	if acme.Connection.BaseURL != "https://api.acme.example/v1" {
 		t.Fatalf("connection = %#v", acme.Connection)
 	}
-	if acme.Logo != "https://service-013bd784.example.invalid/v1/logos/acme.svg" {
+	if acme.Logo != "https://catalog.example.com/v1/logos/acme.svg" {
 		t.Fatalf("logo = %q", acme.Logo)
 	}
 	if len(acme.Models) != 6 {
@@ -89,7 +89,7 @@ func TestParseRecommendedModelLimitPerProvider(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			catalog, warnings, err := Parse(body, "https://service-013bd784.example.invalid")
+			catalog, warnings, err := Parse(body, "https://catalog.example.com")
 			if err != nil {
 				t.Fatal(err)
 			}

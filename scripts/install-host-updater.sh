@@ -3,7 +3,7 @@
 set -Eeuo pipefail
 
 INSTALL_DIR="${INSTALL_DIR:-/opt/open-ai-canvas}"
-REPOSITORY="${REPOSITORY:-ddcat-ai/open-ai-canvas}"
+REPOSITORY="${REPOSITORY:-WMRBYY/Ww-E-commerce-short-drama-Agent}"
 SOCKET_DIR="${CANVAS_UPDATER_SOCKET_DIR:-/run/open-ai-canvas-updater}"
 UPDATER_BIN="/usr/local/bin/open-ai-canvas-host-updater"
 UPDATER_ENV="/etc/open-ai-canvas-updater.env"
@@ -48,7 +48,7 @@ install_binary() {
         aarch64|arm64) arch="arm64" ;;
         *) fail "不支持的 CPU 架构：$(uname -m)" ;;
     esac
-    asset="open-ai-canvas-host-updater-linux-${arch}"
+    asset="meiye-host-updater-linux-${arch}"
     temporary="$(mktemp)"
     checksum_file="$(mktemp)"
     curl -fsSL "https://github.com/${REPOSITORY}/releases/download/${RELEASE_TAG}/${asset}" -o "$temporary"

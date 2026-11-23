@@ -1,9 +1,9 @@
-# 追加到 192.0.2.10 的 /etc/caddy/Caddyfile，然后 `caddy validate` + `systemctl reload caddy`。
-# 目录文件：/srv/yingce-catalog/v1/catalog.json（root 可写，644）
-# Logo：    /srv/yingce-catalog/v1/logos/*.svg
-ai.yingce.tv {
+# 将此配置合并到 Caddyfile，替换为自有域名后先运行 `caddy validate` 再加载。
+# 目录文件：/srv/meiye-catalog/v1/catalog.json（root 可写，644）
+# Logo：    /srv/meiye-catalog/v1/logos/*.svg
+catalog.example.com {
 	encode zstd gzip
-	root * /srv/yingce-catalog
+	root * /srv/meiye-catalog
 	header /v1/catalog.json Cache-Control "public, max-age=60"
 	header /v1/catalog.json Content-Type "application/json; charset=utf-8"
 	file_server

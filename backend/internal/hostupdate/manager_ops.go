@@ -160,7 +160,7 @@ func (m *Manager) prepareUpdaterBinary(targetVersion string, sources Sources) (s
 		return "", errors.New("未配置 Host Updater 二进制路径")
 	}
 	baseURL := fmt.Sprintf("https://github.com/%s/releases/download/%s/", m.config.Repository, targetVersion)
-	asset := "open-ai-canvas-host-updater-linux-" + runtime.GOARCH
+	asset := "meiye-host-updater-linux-" + runtime.GOARCH
 	checksums, err := m.downloadReleaseAsset(baseURL+"SHA256SUMS", 1<<20, sources)
 	if err != nil {
 		return "", fmt.Errorf("下载 Host Updater 校验清单：%w", err)
@@ -233,12 +233,18 @@ type deploymentImages struct {
 }
 
 func immutableImageRefs(repository, version string) deploymentImages {
-	owner := strings.SplitN(repository, "/", 2)[0]
+	parts := strings.SplitN(repository, "/", 2)
+	owner := strings.ToLower(parts[0])
+	name := "meiye"
+	if len(parts) == 2 && strings.TrimSpace(parts[1]) != "" {
+		name = strings.ToLower(strings.TrimSpace(parts[1]))
+	}
+	imageBase := "ghcr.io/" + owner + "/" + name
 	tag := strings.TrimPrefix(version, "v")
 	return deploymentImages{
-		backend: "ghcr.io/" + owner + "/open-ai-canvas-backend:" + tag,
-		web:     "ghcr.io/" + owner + "/open-ai-canvas-web:" + tag,
-		agent:   "ghcr.io/" + owner + "/open-ai-canvas-yingce-agent:" + tag,
+		backend: imageBase + "-backend:" + tag,
+		web:     imageBase + "-web:" + tag,
+		agent:   imageBase + "-agent:" + tag,
 	}
 }
 

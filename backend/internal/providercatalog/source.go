@@ -8,6 +8,7 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"strings"
@@ -16,8 +17,8 @@ import (
 )
 
 const (
-	DefaultURL      = "https://service-013bd784.example.invalid/v1/catalog.json"
-	DefaultLogoBase = "https://service-013bd784.example.invalid"
+	DefaultURL      = ""
+	DefaultLogoBase = ""
 	// 只有管理员打开目录时才会读取；超过该时间按需同步刷新一次。
 	staleAfter = 5 * time.Minute
 )
@@ -64,10 +65,17 @@ type Source struct {
 }
 
 func NewSource(dataDir string, client *http.Client) *Source {
+	catalogURL := strings.TrimSpace(os.Getenv("CANVAS_PROVIDER_CATALOG_URL"))
+	logoBase := strings.TrimSpace(os.Getenv("CANVAS_PROVIDER_CATALOG_LOGO_BASE"))
+	if logoBase == "" {
+		if parsed, err := url.Parse(catalogURL); err == nil && parsed.Scheme == "https" && parsed.Host != "" {
+			logoBase = parsed.Scheme + "://" + parsed.Host
+		}
+	}
 	source := &Source{
-		url:      DefaultURL,
-		logoBase: DefaultLogoBase,
-		disabled: strings.TrimSpace(os.Getenv("CANVAS_PROVIDER_CATALOG_DISABLED")) == "1",
+		url:      catalogURL,
+		logoBase: logoBase,
+		disabled: strings.TrimSpace(os.Getenv("CANVAS_PROVIDER_CATALOG_DISABLED")) == "1" || catalogURL == "",
 		client:   client,
 		now:      time.Now,
 	}

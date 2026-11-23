@@ -1,8 +1,9 @@
 <h1 align="center">Ww · 梅野工作台</h1>
 <p align="center"><strong>写下一个故事，拍成一部短剧；拍下一件商品，做出一组商品图。</strong></p>
+<p align="center"><a href="https://meiyeai.cn/" target="_blank" rel="noopener noreferrer"><img src="assets/online-experience.svg" width="176" height="42" alt="在线体验梅野工作台"></a></p>
 <p align="center"><a href="#电商工作台">电商工作台</a> · <a href="#短剧模式">短剧模式</a> · <a href="#本地启动">本地启动</a> · <a href="docs/index.md">开发文档</a> · <a href="SECURITY.md">安全策略</a> · <a href="#许可证">许可证</a></p>
 
-梅野（Meiye）基于 Open AI Canvas 二次开发，把创作、短剧和电商放在同一个工作台。写短剧时，可以按集整理原文，把台词、动作和运镜拆成分镜；做商品图时，从一张参考图开始换背景、试穿或编排详情页。需要比较几个方向时，就在自由画布上把文字和画面放在一起。
+梅野（Meiye）把创作、短剧和电商放在同一个工作台。写短剧时，可以按集整理原文，把台词、动作和运镜拆成分镜；做商品图时，从一张参考图开始换背景、试穿或编排详情页。需要比较几个方向时，就在自由画布上把文字和画面放在一起。
 
 ![短剧制作台：左侧按集选章，右侧查看《末班车的来信》第一集的三段六镜](docs/images/studio.webp)
 
@@ -69,12 +70,12 @@ docker compose up -d --build
 | --- | --- |
 | [web](web/README.md) | 三种工作模式、画布与管理界面 |
 | [backend](backend/README.md) | 账号、项目、任务与数据存储 |
-| [yingce-agent](yingce-agent/README.md) | 独立的 Agent 会话运行时 |
+| [Agent](yingce-agent/README.md) | 独立的 Agent 会话运行时 |
 | [plugin-packages](plugin-packages/README.md) | 模型协议、支付插件与打包方式 |
 | [docker](docker/README.md) · [scripts](scripts/README.md) · [tools](tools/README.md) | 容器、开发校验与维护工具 |
 
 ## 许可证
 
-梅野（Meiye）基于 [Open AI Canvas](https://github.com/ddcat-ai/open-ai-canvas) 二次开发，采用 [MIT 协议](LICENSE)。上游原始版权与许可证声明保留；后续项目维护说明见 [NOTICE](NOTICE)。第三方组件按各自附带的许可证和版权声明使用。
+梅野（Meiye）基于 Open AI Canvas 二次开发，采用 [MIT 协议](LICENSE)。上游原始版权与许可证声明保留；后续项目维护说明见 [NOTICE](NOTICE)。第三方组件按各自附带的许可证和版权声明使用。
 
 项目联系邮箱：[449282092@qq.com](mailto:449282092@qq.com)。

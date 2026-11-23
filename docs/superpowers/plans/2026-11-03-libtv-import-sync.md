@@ -1,6 +1,6 @@
 # 第三方画布导入同步修复计划
 
-关联问题：[Issue #953](https://github.com/ddcat-ai/open-ai-canvas/issues/953)。
+关联上游 Issue #953。
 
 > 执行流程：按 `superpowers:executing-plans` 逐项完成，测试先复现再修复。
 

@@ -2,11 +2,45 @@ package providercatalog
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 	"time"
 )
+
+func TestNewSourceUsesBundledCatalogWhenRemoteURLIsUnset(t *testing.T) {
+	t.Setenv("CANVAS_PROVIDER_CATALOG_URL", "")
+	t.Setenv("CANVAS_PROVIDER_CATALOG_LOGO_BASE", "")
+	t.Setenv("CANVAS_PROVIDER_CATALOG_DISABLED", "")
+
+	snapshot := NewSource("", http.DefaultClient).Get(context.Background())
+	if snapshot.State != SourceDisabled || snapshot.Catalog != nil {
+		t.Fatalf("default source = %#v, want disabled without a remote catalog", snapshot)
+	}
+	bundled := WithBundled(snapshot.Catalog)
+	if len(bundled.Providers) != 2 {
+		t.Fatalf("bundled providers = %d, want 2", len(bundled.Providers))
+	}
+}
+
+func TestNewSourceReadsConfiguredRemoteURL(t *testing.T) {
+	var requests int
+	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		w.Header().Set("Content-Type", "application/json")
+		_ = json.NewEncoder(w).Encode(Catalog{SchemaVersion: SchemaVersion, UpdatedAt: "2026-11-23T00:00:00Z"})
+	}))
+	defer server.Close()
+	t.Setenv("CANVAS_PROVIDER_CATALOG_URL", server.URL)
+	t.Setenv("CANVAS_PROVIDER_CATALOG_LOGO_BASE", "")
+	t.Setenv("CANVAS_PROVIDER_CATALOG_DISABLED", "")
+
+	snapshot := NewSource("", server.Client()).Get(context.Background())
+	if snapshot.State != SourceLive || snapshot.Catalog == nil || requests != 1 {
+		t.Fatalf("configured source = %#v, requests = %d", snapshot, requests)
+	}
+}
 
 func TestCachedReadsDoNotWaitForRefresh(t *testing.T) {
 	started := make(chan struct{})

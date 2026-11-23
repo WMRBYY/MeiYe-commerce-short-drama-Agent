@@ -1173,7 +1173,7 @@ Agent 已不再注入、召回或写入下列经验条目，记忆设置页只�
 
 ## 服务商目录 API
 
-均需管理员权限，返回统一信封。目录来自 `https://service-013bd784.example.invalid/v1/catalog.json`（静态 JSON），`CANVAS_PROVIDER_CATALOG_DISABLED=1` 时关闭。
+均需管理员权限，返回统一信封。远程目录通过 `CANVAS_PROVIDER_CATALOG_URL` 配置为静态 JSON；未配置时仅显示内置目录。设置 `CANVAS_PROVIDER_CATALOG_DISABLED=1` 可关闭远程读取，内置目录仍可用。
 
 | 方法 | 路径 | 说明 |
 | --- | --- | --- |

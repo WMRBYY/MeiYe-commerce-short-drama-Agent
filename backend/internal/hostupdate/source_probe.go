@@ -63,7 +63,7 @@ func (m *Manager) runSourceProbe(sources Sources) {
 	}
 	m.recordProbeCheck(1, "目标版本文件可读取，docker compose config 通过", err)
 
-	asset := "open-ai-canvas-host-updater-linux-" + runtime.GOARCH
+	asset := "meiye-host-updater-linux-" + runtime.GOARCH
 	url := fmt.Sprintf("https://github.com/%s/releases/download/%s/SHA256SUMS", m.config.Repository, release.Version)
 	checksums, err := m.downloadReleaseAsset(url, 1<<20, sources)
 	if err == nil {

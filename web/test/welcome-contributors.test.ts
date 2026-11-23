@@ -6,20 +6,11 @@ import { parseContributors } from "../src/pages/welcome/contributors-parse";
 
 const identityAvatar = (path: string) => path;
 
-test("welcome contributors parse the README HTML table", () => {
+test("welcome contributors do not reuse a historical contact roster", () => {
     const readme = readFileSync(resolve(import.meta.dir, "../../README.md"), "utf8");
     const people = parseContributors(readme, identityAvatar);
 
-    expect(people.length).toBeGreaterThanOrEqual(20);
-    expect(people[0]).toMatchObject({
-        name: "爱笑的毛毛虫",
-        avatar: "assets/user-sikongyue.png",
-        email: "test-user-7bcebc@example.invalid",
-    });
-    expect(people.some((person) => person.name === "ddCat")).toBe(false);
-    expect(people.some((person) => person.name === "morrow" && person.email === "test-user-43ff1f@example.invalid" && person.signature === "最难不过坚持")).toBe(true);
-    expect(people.some((person) => person.name === "Wyatt_K" && person.avatar === "assets/user-Wyatt_K.png" && person.signature === "千里之行，始于足下。")).toBe(true);
-    expect(people.some((person) => person.name === "亿媒网老宋" && person.avatar === "assets/user-song.jpg" && person.email === "test-user-7acd5b@example.invalid" && person.signature === "全国10W+媒体、自媒体，助力企业品牌传播")).toBe(true);
+    expect(people).toEqual([]);
 });
 
 test("welcome contributors still parse markdown pipe tables", () => {
