@@ -1,0 +1,38 @@
+.app-user-workspace .app-workspace-sidebar-brand-row { justify-content: space-between; }
+.app-user-workspace .app-workspace-sidebar-brand-button { flex: 1 1 auto; }
+/* ?????logo ??????????????????????????????????????12px???
+   logo ??????????????????????????8px + ?????? 6px + ????????2px?????????????????*/
+.app-user-workspace .app-workspace-sidebar-nav:not(.is-collapsed) .app-workspace-sidebar-brand-row { padding-left: 12px; }
+.app-user-workspace .app-workspace-sidebar-nav:not(.is-collapsed) .app-workspace-sidebar-brand-button { justify-content: flex-start; padding-left: 16px; }
+.app-user-workspace .app-workspace-sidebar-collapse-toggle { display: grid; width: 30px; height: 30px; flex: 0 0 auto; place-items: center; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--user-ink-muted); cursor: pointer; transition: background .18s ease, color .18s ease, border-color .18s ease; }
+.app-user-workspace .app-workspace-sidebar-collapse-toggle:hover { border-color: var(--user-border); background: var(--user-surface); color: var(--user-ink); }
+.app-user-workspace .app-workspace-sidebar-collapse-toggle:focus-visible,
+.app-user-workspace .app-workspace-sidebar-updates:focus-visible { outline: 2px solid var(--control-focus-ring); outline-offset: 2px; }
+.app-user-workspace .app-workspace-sidebar-brand-row:has(.is-collapsed) { flex-direction: column; gap: 4px; padding-inline: 8px; }
+.app-user-workspace .app-workspace-sidebar-brand-row:has(.is-collapsed) .app-workspace-sidebar-brand-button { flex: 0 0 auto; }
+.app-user-workspace .app-workspace-sidebar-collapse-toggle.is-collapsed { margin-inline: auto; }
+.app-user-workspace .app-workspace-sidebar-profile-row { gap: 2px; }
+.app-user-workspace .app-workspace-sidebar-profile { padding-inline: 4px; }
+.app-user-workspace .app-workspace-sidebar-profile-copy { gap: 0; }
+.app-user-workspace .app-workspace-sidebar-updates { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border: 0; border-radius: 10px; background: transparent; color: var(--user-ink-muted); cursor: pointer; }
+.app-user-workspace .app-workspace-sidebar-updates:hover { background: var(--user-surface-hover); color: var(--user-ink); }
+
+/* 首页改版：导航项的 New 角标与图标微动效（强调色随白天 / 夜间主题取值）。 */
+.app-workspace-nav-new-badge {
+    display: inline-flex;
+    align-items: center;
+    height: 16px;
+    padding: 0 5px;
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--meiye-accent, #2a6df4) 14%, transparent);
+    color: var(--meiye-accent, #2a6df4);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .02em;
+}
+.app-workspace-nav-link .app-workspace-nav-icon svg { transition: transform .35s cubic-bezier(.22, 1, .36, 1); }
+.app-workspace-nav-link:hover .app-workspace-nav-icon svg { transform: scale(1.1) rotate(-4deg); }
+@media (prefers-reduced-motion: reduce) {
+    .app-workspace-nav-link .app-workspace-nav-icon svg { transition: none; }
+    .app-workspace-nav-link:hover .app-workspace-nav-icon svg { transform: none; }
+}

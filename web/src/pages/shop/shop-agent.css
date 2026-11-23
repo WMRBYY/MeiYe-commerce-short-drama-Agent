@@ -1,0 +1,240 @@
+.shop-agent-host {
+    --user-surface: var(--ms-surface);
+    --user-ink: var(--ms-text);
+    --user-ink-muted: var(--ms-muted);
+}
+.shop-agent-host[hidden] {
+    display: none;
+}
+.shop-agent-launcher {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    z-index: var(--z-panel-floating);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+    border: 1px solid var(--ms-border);
+    border-radius: 20px;
+    color: var(--ms-text);
+    background: var(--ms-surface);
+    box-shadow: var(--ms-shadow-pop);
+    cursor: pointer;
+}
+.shop-agent-launcher > svg:first-child {
+    color: var(--ms-accent-strong);
+}
+.shop-agent-panel {
+    position: fixed;
+    right: 20px;
+    top: 100px;
+    bottom: 24px;
+    z-index: var(--z-panel-floating);
+    width: min(420px, calc(100vw - 32px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background: var(--ms-surface);
+    border: 1px solid var(--ms-border);
+    border-radius: 24px;
+    box-shadow: var(--ms-shadow-pop);
+    color: var(--ms-text);
+}
+.shop-agent-panel > header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    padding: 18px;
+    border-bottom: 1px solid var(--ms-border);
+}
+.shop-agent-mark {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 14px;
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-strong);
+}
+.shop-agent-panel > header > div {
+    flex: 1;
+    display: grid;
+    gap: 3px;
+}
+.shop-agent-panel small {
+    color: var(--ms-muted);
+    font-size: 11px;
+}
+.shop-agent-panel button {
+    cursor: pointer;
+    font: inherit;
+}
+.shop-agent-panel header button {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    background: transparent;
+    color: var(--ms-muted);
+    border-radius: 10px;
+}
+.shop-agent-body {
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.shop-agent-intro > span {
+    font-size: 11px;
+    color: var(--ms-accent-strong);
+}
+.shop-agent-intro h2 {
+    margin: 8px 0;
+    font-size: 24px;
+    letter-spacing: -0.7px;
+}
+.shop-agent-intro p {
+    color: var(--ms-muted);
+    font-size: 12px;
+    line-height: 1.8;
+    margin: 0;
+}
+.shop-agent-workflows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.shop-agent-workflows > div {
+    display: flex;
+    border: 1px solid var(--ms-border);
+    border-radius: 12px;
+    background: var(--ms-surface-2);
+    overflow: hidden;
+}
+.shop-agent-workflows button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 8px;
+    border: 0;
+    background: transparent;
+    color: var(--ms-text);
+    font-size: 12px;
+}
+.shop-agent-workflows button:first-child {
+    flex: 1;
+}
+.shop-agent-workflows button:hover {
+    background: var(--ms-hover);
+    color: var(--ms-accent-strong);
+}
+.shop-agent-toolbox summary {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--ms-muted);
+}
+.shop-agent-toolbox > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6px;
+    margin-top: 12px;
+}
+.shop-agent-toolbox button {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    border: 0;
+    border-radius: 8px;
+    background: var(--ms-surface-2);
+    padding: 10px;
+    color: var(--ms-text);
+    font-size: 11px;
+}
+.shop-agent-panel .sp-canvas-chat {
+    display: grid;
+    gap: 12px;
+}
+.shop-agent-panel .sp-canvas-chat-messages {
+    max-height: none;
+    display: grid;
+    gap: 12px;
+    font-size: 13px;
+    line-height: 1.8;
+}
+.shop-agent-panel .sp-canvas-chat-message {
+    padding: 12px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    border-radius: 14px;
+    background: var(--ms-surface-2);
+}
+.shop-agent-panel .sp-canvas-chat-message[data-role="user"] {
+    background: var(--ms-accent-soft);
+}
+.shop-agent-panel .sp-canvas-chat-input {
+    display: flex;
+    gap: 8px;
+    padding: 10px;
+    border: 1px solid var(--ms-border);
+    background: var(--ms-surface-2);
+    border-radius: 16px;
+    align-items: end;
+}
+.shop-agent-panel .sp-canvas-chat-input textarea {
+    min-width: 0;
+    flex: 1;
+    resize: vertical;
+    border: 0;
+    outline: 0;
+    color: var(--ms-text);
+    background: transparent;
+    font: inherit;
+    font-size: 13px;
+}
+.shop-agent-panel .sp-canvas-chat-input button {
+    display: grid;
+    place-items: center;
+    border: 0;
+    width: 34px;
+    height: 34px;
+    border-radius: 11px;
+    background: var(--ms-accent);
+    color: var(--ms-ink);
+}
+.shop-agent-panel button:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+}
+.shop-agent-model {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    color: var(--ms-muted);
+}
+.shop-agent-model select {
+    min-width: 0;
+    flex: 1;
+    background: var(--ms-surface);
+    color: var(--ms-text);
+    border: 1px solid var(--ms-border);
+    border-radius: 8px;
+    padding: 8px;
+}
+.shop-agent-panel .sp-canvas-chat-error {
+    color: var(--ms-danger);
+    font-size: 12px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .shop-agent-host * {
+        animation: none !important;
+        transition: none !important;
+    }
+}

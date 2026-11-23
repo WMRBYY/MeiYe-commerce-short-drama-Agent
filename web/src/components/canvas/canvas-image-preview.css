@@ -1,0 +1,54 @@
+.canvas-image-preview-modal.is-interactive > .ant-modal-container > .ant-modal-body > div {
+    min-height: 0;
+    padding: 8px;
+}
+
+.canvas-image-preview-modal.is-interactive .ant-modal-body > div > div {
+    height: calc(100dvh - 128px);
+    min-height: 0;
+    padding: 0;
+    box-shadow: none;
+}
+
+.canvas-image-preview-viewport {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    cursor: grab;
+}
+
+.canvas-image-preview-viewport[data-dragging] {
+    cursor: grabbing;
+}
+
+.canvas-image-preview-viewport > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    transition: none;
+}
+
+.canvas-image-preview-help {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    max-width: calc(100% - 16px);
+    padding: 4px 8px;
+    border-radius: var(--r-md);
+    background: var(--workspace-surface-strong);
+    color: var(--workspace-text-muted);
+    font-size: var(--fs-caption);
+    text-align: center;
+    pointer-events: none;
+}

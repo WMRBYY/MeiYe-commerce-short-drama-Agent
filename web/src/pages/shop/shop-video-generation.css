@@ -1,0 +1,406 @@
+/* 生成记录中的普通视频创作。复用工作台控件，仅将输入与参数排进共用底部输入框。 */
+.svg-workspace {
+    position: absolute;
+    inset: 0;
+}
+.svg-workspace[hidden] {
+    display: none;
+}
+.svg-workspace .wb-page {
+    height: 100%;
+}
+.svg-workspace .wb-page-embedded .wb-shell {
+    display: block;
+    background: transparent;
+}
+.svg-workspace .wb-page-embedded .wb-gallery {
+    display: flex;
+    height: 100%;
+}
+.svg-workspace .wb-gallery-scroll {
+    padding-bottom: calc(var(--sim-dock-height, 0px) + var(--space-8));
+    scroll-padding-bottom: calc(var(--sim-dock-height, 0px) + var(--space-8));
+}
+.svg-workspace .wb-gallery-head {
+    align-items: flex-start;
+    flex-direction: column;
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--ms-border);
+    margin-bottom: var(--space-4);
+}
+.svg-workspace .wb-gallery-tools {
+    width: 100%;
+}
+.svg-workspace .wb-gallery-search {
+    margin-left: auto;
+}
+.svg-history-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+}
+.svg-history-filters button {
+    min-height: 28px;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--ms-border);
+    border-radius: var(--r-full);
+    background: var(--ms-surface);
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+    cursor: pointer;
+}
+.svg-history-filters button:hover {
+    background: var(--ms-hover);
+}
+.svg-history-filters button[aria-pressed="true"] {
+    border-color: color-mix(in srgb, var(--ms-accent) 32%, transparent);
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+}
+.svg-history-filters button:focus-visible {
+    outline: 2px solid var(--ms-accent-strong);
+    outline-offset: 2px;
+}
+.svg-history-day {
+    display: grid;
+    gap: var(--space-3);
+    min-width: 0;
+    margin-bottom: var(--space-5);
+}
+.svg-history-day-head {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding-block: var(--space-2);
+}
+.svg-history-day-head h3 {
+    margin: 0;
+    color: var(--ms-text);
+    font-size: var(--fs-ui);
+    font-weight: 600;
+}
+.svg-history-day-head > span {
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+}
+.svg-history-day-head > i {
+    flex: 1;
+    height: 1px;
+    margin-left: var(--space-2);
+    background: var(--ms-border);
+}
+.svg-composer.wb-shell {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    gap: 0;
+    background: transparent;
+}
+.svg-inputs {
+    display: grid;
+    grid-template-columns: minmax(184px, 28%) minmax(0, 1fr);
+    gap: var(--space-4);
+    flex: 1;
+    min-height: 0;
+    padding: var(--space-2) var(--space-6);
+    padding-right: calc(var(--space-4) + 36px);
+    overflow: hidden;
+}
+.svg-inputs > .wb-section {
+    min-width: 0;
+    min-height: 0;
+    gap: var(--space-2);
+    padding: 0;
+    border: 0;
+}
+.svg-inputs > .wb-section:first-child {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    gap: var(--space-1);
+}
+.svg-inputs .wb-section-head {
+    align-items: start;
+}
+.svg-inputs .wb-section-title span {
+    display: none;
+}
+.svg-inputs .wb-section[aria-label="画面描述"] > .wb-section-head {
+    display: none;
+}
+.svg-inputs .wb-ref-row {
+    flex-wrap: nowrap;
+    flex-shrink: 0;
+    align-items: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    scrollbar-color: var(--ms-border-strong) transparent;
+    overscroll-behavior-x: contain;
+}
+.svg-inputs :is(.wb-ref-row > *, .wb-drop) {
+    flex-shrink: 0;
+}
+.svg-inputs .wb-drop {
+    flex: 0 0 72px;
+    flex-direction: column;
+    justify-content: center;
+    gap: var(--space-1);
+    width: 72px;
+    min-height: 72px;
+    padding: var(--space-2);
+    border: 1px dashed var(--ms-border-strong);
+    border-radius: var(--r-md);
+    background: var(--ms-soft);
+}
+.svg-inputs .wb-drop-icon {
+    width: 24px;
+    height: 24px;
+    background: transparent;
+}
+.svg-inputs .wb-drop-copy strong {
+    font-size: var(--fs-label);
+    font-weight: 400;
+}
+.svg-inputs .wb-ref-add {
+    width: 40px;
+}
+.svg-inputs .wb-ref-library {
+    width: 64px;
+    background: transparent;
+}
+.svg-inputs .wb-ref {
+    width: 64px;
+    height: 72px;
+}
+.svg-inputs .wb-drop-copy small {
+    display: none;
+}
+.svg-inputs .wb-prompt {
+    flex: 1;
+    min-height: 0;
+    padding: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.svg-inputs .wb-prompt-editor {
+    flex: 1;
+    height: 0;
+    min-height: 48px;
+}
+.svg-inputs .wb-prompt-meta > span:last-child {
+    display: none;
+}
+.svg-toolbar {
+    display: flex;
+    align-items: center;
+    flex: 0 0 52px;
+    gap: var(--space-2);
+    padding: var(--space-2) var(--space-5) var(--space-3);
+    border-top: 0;
+    overflow: hidden;
+}
+.svg-controls {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    gap: var(--space-2);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.svg-controls > * {
+    flex: 0 0 auto;
+}
+.svg-controls .sp-chip {
+    max-width: 380px;
+}
+.svg-toolbar .sp-chip-label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+}
+.svg-model-label {
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    flex-shrink: 0;
+}
+.svg-spec-label {
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+}
+.svg-toolbar .wb-footer {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: var(--space-3);
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+.svg-toolbar .wb-estimate {
+    margin-left: auto;
+}
+.svg-toolbar .wb-estimate strong {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--fs-caption);
+}
+.svg-toolbar .wb-estimate > span {
+    display: none;
+}
+.svg-toolbar .wb-submit.ant-btn {
+    min-width: 36px;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border-radius: var(--r-full);
+}
+.svg-toolbar .wb-submit > span:not(.ant-btn-icon) {
+    display: none;
+}
+.svg-settings.wb-shell {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    padding: var(--space-3);
+    gap: var(--space-4);
+    background: transparent;
+}
+.svg-settings .wb-section {
+    padding: 0;
+}
+.svg-settings .wb-model-picker-inline {
+    min-width: 0;
+    border: 1px solid var(--ms-border);
+    border-radius: var(--r-lg);
+    background: var(--ms-soft);
+}
+.svg-settings .wb-model-picker-inline > summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+    min-height: 40px;
+    padding: var(--space-2) var(--space-3);
+    color: var(--ms-text);
+    font-size: var(--fs-ui);
+    cursor: pointer;
+    list-style: none;
+}
+.svg-settings .wb-model-picker-inline > summary::-webkit-details-marker {
+    display: none;
+}
+.svg-settings .wb-model-picker-inline > summary > span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+.svg-settings .wb-model-picker-inline > summary > svg {
+    flex: 0 0 16px;
+    width: 16px;
+    height: 16px;
+    color: var(--ms-muted);
+}
+.svg-settings .wb-model-picker-inline[open] > summary > svg {
+    transform: rotate(180deg);
+}
+.svg-settings .wb-model-picker-inline > summary:focus-visible,
+.svg-settings .canvas-model-picker-back:focus-visible {
+    outline: 2px solid var(--ms-accent-strong);
+    outline-offset: -2px;
+    border-radius: var(--r-md);
+}
+.svg-settings .canvas-model-picker-menu.is-inline {
+    width: 100%;
+    max-width: 100%;
+    max-height: none;
+    overflow: visible;
+    border-top: 1px solid var(--ms-border);
+}
+.svg-settings .canvas-model-picker-two-pane {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    overflow: visible;
+}
+.svg-settings .canvas-model-picker-model-pane {
+    overflow: visible;
+}
+.svg-settings .canvas-model-picker-back {
+    display: inline-flex;
+    align-self: flex-start;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 34px;
+    padding-inline: var(--space-2);
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+    cursor: pointer;
+}
+.svg-settings .canvas-model-picker-back:hover {
+    color: var(--ms-text);
+}
+@media (max-width: 760px) {
+    .svg-workspace .wb-gallery-search {
+        flex: 1;
+        width: 100%;
+        min-width: 120px;
+    }
+    .svg-inputs {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-2);
+        padding: var(--space-3);
+    }
+    .svg-inputs > .wb-section:first-child {
+        flex-shrink: 0;
+        align-self: stretch;
+        max-width: calc(100% - 36px);
+    }
+    .svg-inputs .wb-section-title span {
+        display: none;
+    }
+    .svg-inputs > .wb-section:first-child > .wb-section-head {
+        display: none;
+    }
+    .svg-inputs > .wb-section:last-child {
+        flex: 1;
+        min-height: 112px;
+    }
+    .svg-inputs .wb-prompt-editor {
+        min-height: 88px;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--ms-border-strong) transparent;
+    }
+    .svg-toolbar {
+        flex: 0 0 96px;
+        flex-wrap: wrap;
+        gap: var(--space-1);
+        padding-inline: var(--space-3);
+    }
+    .svg-controls {
+        flex: 0 0 100%;
+    }
+    .svg-toolbar .wb-footer {
+        flex: 0 0 100%;
+        justify-content: flex-end;
+    }
+    .svg-spec-label {
+        display: none;
+    }
+    .svg-toolbar .wb-submit > span:not(.ant-btn-icon) {
+        display: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .svg-composer *,
+    .svg-settings * {
+        animation: none;
+        transition: none;
+    }
+}

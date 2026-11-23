@@ -1,0 +1,534 @@
+/* 电商 / 短剧模式外壳：浅色为默认，html.dark 下切换深色。所有颜色走 --ms-* 令牌。 */
+.ms-scope,
+.ms-switcher-menu {
+    --ms-bg: #f5f6f8;
+    --ms-page: #fafafa;
+    --ms-surface: #ffffff;
+    --ms-surface-2: #f7f7f8;
+    --ms-soft: #f2f3f5;
+    --ms-hover: #f4f4f5;
+    --ms-border: #e8e8ea;
+    --ms-border-strong: #d9d9dc;
+    --ms-text: #171717;
+    --ms-text-2: #3f3f46;
+    --ms-muted: #71717a;
+    --ms-faint: #a1a1aa;
+    --ms-accent: #7cc322;
+    --ms-accent-strong: #4d8a0c;
+    --ms-accent-soft: #eaf7d6;
+    --ms-accent-text: #2f5d06;
+    --ms-ink: #111111;
+    --ms-ink-text: #ffffff;
+    --ms-danger: #ef4444;
+    --ms-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 8px 24px rgba(15, 23, 42, 0.06);
+    --ms-shadow-pop: 0 12px 40px rgba(15, 23, 42, 0.14), 0 2px 6px rgba(15, 23, 42, 0.06);
+    --ms-icon-fill: var(--ms-accent);
+    --ms-rail-gradient-start: #a3dc35;
+    --ms-rail-gradient-end: #36b68b;
+    --ms-rail-on-gradient: #183b21;
+    --ms-ease: cubic-bezier(0.22, 1, 0.36, 1);
+    color: var(--ms-text);
+    font-family: MiSans, "PingFang SC", "HarmonyOS Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+
+html.dark .ms-scope,
+html.dark .ms-switcher-menu {
+    --ms-bg: #0b0c0f;
+    --ms-page: #0f1013;
+    --ms-surface: #16171b;
+    --ms-surface-2: #1b1c21;
+    --ms-soft: #202127;
+    --ms-hover: #23252b;
+    --ms-border: #2a2c33;
+    --ms-border-strong: #3a3d45;
+    --ms-text: #f3f4f6;
+    --ms-text-2: #d4d4d8;
+    --ms-muted: #9a9ca5;
+    --ms-faint: #6b6e78;
+    --ms-accent: #a3e635;
+    --ms-accent-strong: #bef264;
+    --ms-accent-soft: rgba(163, 230, 53, 0.14);
+    --ms-accent-text: #d9f99d;
+    --ms-rail-gradient-start: #d4f879;
+    --ms-rail-gradient-end: #64dfb5;
+    --ms-rail-on-gradient: #173b27;
+    --ms-ink: #f4f4f5;
+    --ms-ink-text: #111111;
+    --ms-shadow: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px rgba(0, 0, 0, 0.35);
+    --ms-shadow-pop: 0 16px 48px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* ---------- 外壳 ---------- */
+.app-workspace-shell.is-mode-shell {
+    background: var(--ms-page);
+}
+.app-workspace-shell.is-mode-shell .app-workspace-stage {
+    background: var(--ms-page);
+}
+.ms-stage-body {
+    background: var(--ms-page);
+    color: var(--ms-text);
+}
+
+/* ---------- 左侧图标导航 ---------- */
+.ms-rail {
+    position: relative;
+    z-index: 30;
+    display: flex;
+    width: 64px;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    height: 100%;
+    padding: 12px 6px 12px;
+    border-right: 1px solid var(--ms-border);
+    background: var(--ms-surface);
+    transition:
+        background-color 0.3s var(--ms-ease),
+        border-color 0.3s var(--ms-ease);
+}
+.ms-rail-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 4px 4px 6px;
+    border-radius: 12px;
+    cursor: pointer;
+    transition:
+        background-color 0.2s var(--ms-ease),
+        transform 0.2s var(--ms-ease);
+}
+.ms-rail-brand:hover,
+.ms-rail-brand[data-open] {
+    background: var(--ms-hover);
+}
+.ms-rail-brand:active {
+    transform: scale(0.95);
+}
+.ms-rail-logo {
+    display: grid;
+    width: 32px;
+    height: 32px;
+    place-items: center;
+    border-radius: 10px;
+    /* 内置 logo 本身是彩色图标，不再放在黑底方块里缩成小图 */
+    background: transparent;
+    color: var(--ms-ink);
+    overflow: hidden;
+    transition: transform 0.35s var(--ms-ease);
+}
+.ms-rail-logo > img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.ms-rail-brand:hover .ms-rail-logo {
+    transform: rotate(-8deg) scale(1.06);
+}
+.ms-rail-mode {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ms-muted);
+}
+.ms-rail-mode::after {
+    content: "";
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-top: 4px solid currentColor;
+    transition: transform 0.2s var(--ms-ease);
+}
+.ms-rail-brand[data-open] .ms-rail-mode::after {
+    transform: rotate(180deg);
+}
+.ms-rail-nav {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    overflow-y: auto;
+    scrollbar-width: none;
+}
+.ms-rail-item {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    min-height: 54px;
+    padding: 8px 2px;
+    border-radius: 10px;
+    color: var(--ms-text-2);
+    text-decoration: none;
+    transition:
+        color 0.18s var(--ms-ease),
+        background-color 0.18s var(--ms-ease);
+}
+.ms-rail-item:hover {
+    background: var(--ms-hover);
+    color: var(--ms-text);
+}
+.ms-rail-item[data-active] {
+    color: var(--ms-text);
+}
+.ms-rail-active {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: 10px;
+    background: var(--ms-soft);
+    box-shadow: inset 0 0 0 1px var(--ms-border);
+}
+.ms-rail-icon {
+    display: grid;
+    place-items: center;
+    transition: transform 0.28s var(--ms-ease);
+}
+.ms-rail-item:hover .ms-rail-icon {
+    transform: translateY(-1px) scale(1.1);
+}
+.ms-rail-item:active .ms-rail-icon {
+    transform: scale(0.9);
+}
+.ms-rail-item[data-active] .ms-rail-icon {
+    color: var(--ms-accent-strong);
+}
+.ms-rail-label {
+    font-size: 11px;
+    line-height: 1;
+    white-space: nowrap;
+    font-weight: 500;
+}
+.ms-rail-item[data-active] .ms-rail-label {
+    font-weight: 700;
+}
+.ms-rail-badge {
+    position: absolute;
+    top: 1px;
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    padding: 0 4px;
+    border-radius: 4px;
+    font-size: 9px;
+    font-weight: 700;
+    line-height: 13px;
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+}
+.ms-rail-badge[data-kind="New"] {
+    background: #ffe4e6;
+    color: #e11d48;
+}
+html.dark .ms-rail-badge[data-kind="New"] {
+    background: rgba(244, 63, 94, 0.18);
+    color: #fda4af;
+}
+.ms-rail-foot {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding-top: 8px;
+    border-top: 1px solid var(--ms-border);
+}
+
+.ms-rail-mini {
+    display: grid;
+    width: 38px;
+    height: 38px;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--ms-muted);
+    transition:
+        background-color 0.18s,
+        color 0.18s,
+        transform 0.25s var(--ms-ease);
+}
+.ms-rail-mini:hover {
+    background: var(--ms-hover);
+    color: var(--ms-text);
+    transform: rotate(-6deg);
+}
+
+@media (max-width: 1023px) {
+    .ms-rail {
+        position: fixed;
+        inset: 0 auto 0 0;
+        transform: translateX(-100%);
+        transition: transform 0.3s var(--ms-ease);
+        box-shadow: var(--ms-shadow-pop);
+    }
+    .ms-rail[data-mobile-open] {
+        transform: none;
+    }
+}
+
+@media (max-width: 560px) {
+    .app-user-workspace .is-mode-shell .app-workspace-topbar-actions {
+        gap: var(--space-1);
+        min-width: 0;
+    }
+    .app-user-workspace .is-mode-shell .app-workspace-topbar-actions > *,
+    .app-user-workspace .is-mode-shell .app-workspace-mobile-menu {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    .app-user-workspace .is-mode-shell .app-workspace-topbar-credit-market {
+        display: none;
+    }
+    .app-user-workspace .is-mode-shell .app-workspace-topbar-credit-balance strong {
+        max-width: 20vw;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+    .app-user-workspace .is-mode-shell .language-menu-chevron {
+        display: none;
+    }
+    .app-user-workspace .is-mode-shell .app-workspace-topbar-breadcrumb:empty {
+        display: none;
+    }
+}
+
+/* ---------- 生图悬浮面板 ---------- */
+.ms-flyout {
+    position: fixed;
+    z-index: 1200;
+    width: 300px;
+    padding: 12px;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface);
+    box-shadow: var(--ms-shadow-pop);
+    transform-origin: left top;
+}
+.ms-flyout-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 2px 4px 10px;
+}
+.ms-flyout-head strong {
+    font-size: 13px;
+}
+.ms-flyout-head span {
+    font-size: 11px;
+    color: var(--ms-faint);
+}
+.ms-flyout-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+}
+.ms-flyout-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+    padding: 8px;
+    border-radius: 10px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ms-text-2);
+    text-align: left;
+    transition:
+        background-color 0.16s,
+        color 0.16s,
+        transform 0.2s var(--ms-ease);
+}
+.ms-flyout-item:hover {
+    background: var(--ms-hover);
+    color: var(--ms-text);
+    transform: translateX(2px);
+}
+.ms-flyout-item:active {
+    transform: scale(0.97);
+}
+.ms-flyout-item em {
+    margin-left: auto;
+    font-style: normal;
+    font-size: 9px;
+    color: var(--ms-faint);
+    white-space: nowrap;
+}
+.ms-flyout-item[data-soon] {
+    color: var(--ms-muted);
+}
+.ms-flyout-icon {
+    display: grid;
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 8px;
+    background: var(--ms-soft);
+    transition:
+        background-color 0.2s,
+        transform 0.3s var(--ms-ease);
+}
+.ms-flyout-item:hover .ms-flyout-icon {
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-strong);
+    transform: rotate(-6deg) scale(1.06);
+}
+
+/* ---------- 模式下拉 ---------- */
+.ms-switcher {
+    position: relative;
+    min-width: 0;
+}
+.ms-switcher-trigger {
+    outline: none;
+    border-radius: 12px;
+}
+.ms-switcher-trigger:focus-visible {
+    box-shadow: 0 0 0 2px var(--ms-accent, #7cc322);
+}
+.ms-switcher-chevron {
+    transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.ms-switcher-chevron[data-open] {
+    transform: rotate(180deg);
+}
+.ms-switcher-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    z-index: 1300;
+    width: 268px;
+    padding: 6px;
+    border: 1px solid var(--ms-border);
+    border-radius: 16px;
+    background: var(--ms-surface);
+    color: var(--ms-text);
+    box-shadow: var(--ms-shadow-pop);
+    transform-origin: top left;
+    font-family: MiSans, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+.ms-switcher[data-align="rail"] .ms-switcher-menu {
+    top: 0;
+    left: calc(100% + 10px);
+}
+.ms-switcher-menu-title {
+    padding: 6px 10px 6px;
+    font-size: 11px;
+    color: var(--ms-faint);
+    letter-spacing: 0.04em;
+}
+.ms-switcher-item {
+    position: relative;
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: 11px;
+    text-align: left;
+    transition: background-color 0.16s;
+}
+.ms-switcher-item:hover {
+    background: var(--ms-hover);
+}
+.ms-switcher-item.is-active {
+    background: var(--ms-accent-soft);
+}
+.ms-switcher-item-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex-shrink: 0;
+    place-items: center;
+    border-radius: 10px;
+    background: var(--ms-soft);
+    color: var(--ms-text-2);
+    transition:
+        transform 0.3s var(--ms-ease),
+        background-color 0.2s,
+        color 0.2s;
+}
+.ms-switcher-item:hover .ms-switcher-item-icon {
+    transform: scale(1.08) rotate(-5deg);
+}
+.ms-switcher-item[data-mode="create"] .ms-switcher-item-icon {
+    background: rgba(59, 130, 246, 0.12);
+    color: #3b82f6;
+}
+.ms-switcher-item[data-mode="ecommerce"] .ms-switcher-item-icon {
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-strong);
+}
+.ms-switcher-item[data-mode="drama"] .ms-switcher-item-icon {
+    background: rgba(244, 114, 182, 0.14);
+    color: #ec4899;
+}
+.ms-switcher-item-text {
+    display: flex;
+    min-width: 0;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+}
+.ms-switcher-item-text strong {
+    font-size: 13px;
+    font-weight: 600;
+}
+.ms-switcher-item-text small {
+    font-size: 11px;
+    color: var(--ms-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.ms-switcher-item-check {
+    color: var(--ms-accent-strong);
+}
+/* 创作模式侧栏里的下拉用全站深色/浅色的创作配色 */
+.app-workspace-sidebar .ms-switcher {
+    flex: 1;
+}
+.app-workspace-sidebar .ms-switcher-trigger > .app-workspace-sidebar-brand-button {
+    cursor: pointer;
+}
+
+/* ---------- 创作模式：对话悬浮面板与签到 ---------- */
+.ms-chat-flyout {
+    --user-ink: var(--ms-text);
+    --user-ink-muted: var(--ms-muted);
+    display: flex;
+    width: 300px;
+    max-height: min(520px, calc(100vh - 24px));
+    flex-direction: column;
+    overflow: hidden;
+    padding: 10px 6px;
+}
+.ms-chat-flyout .workspace-conversations {
+    min-height: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+.ms-rail-foot .app-workspace-sidebar-checkin.is-collapsed {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    transition:
+        transform 0.2s var(--ms-ease),
+        background 0.2s;
+}
+.ms-rail-foot .app-workspace-sidebar-checkin.is-collapsed:hover:not(:disabled) {
+    transform: translateY(-2px) scale(1.05);
+}
+.ms-flyout-item em[data-tone="board"] {
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+}

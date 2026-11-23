@@ -1,0 +1,626 @@
+[
+  {
+    "id": "/v1/product/contextual_keyword_extraction",
+    "name": "Contextual Keyword Extraction (Coming Soon)",
+    "family": "product-shot-editing",
+    "capability": "data",
+    "protocol": "",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/cutout",
+    "name": "Product Cutout",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-cutout",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/lifestyle_shot_by_image",
+    "name": "Lifestyle Product Shot by Image",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-lifestyle-shot-by-image",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/lifestyle_shot_by_text",
+    "name": "Lifestyle Product Shot by Text",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-lifestyle-shot-by-text",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/packshot",
+    "name": "Product Packshot",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-packshot",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/shadow",
+    "name": "Product Shadow",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-shadow",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/apply_effect",
+    "name": "Apply Effects",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-apply-effect",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/generate_reflections",
+    "name": "Reflections",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-generate-reflections",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/harmonize",
+    "name": "Harmonization",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-harmonize",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/refine_tires",
+    "name": "Tires Refinement",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-refine-tires",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/segment",
+    "name": "Segmentation",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-segment",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/shot_by_image",
+    "name": "Vehicle Shot by Image (Coming soon)",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/product/vehicle/shot_by_text",
+    "name": "Vehicle Shot by text",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v1-product-vehicle-shot-by-text",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v1/products/consistent_shots",
+    "name": "Consistent Product Shots (Coming Soon)",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "",
+    "required": [],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v2/ads/delayer",
+    "name": "Decompose an ad into layers",
+    "family": "ads",
+    "capability": "data",
+    "protocol": "bria-v2-ads-delayer",
+    "required": [
+      "attachments"
+    ],
+    "docs": "https://docs.bria.ai/ads"
+  },
+  {
+    "id": "/v2/ads/resize",
+    "name": "Resize an ad into other sizes",
+    "family": "ads",
+    "capability": "data",
+    "protocol": "bria-v2-ads-resize",
+    "required": [
+      "attachments",
+      "formats"
+    ],
+    "docs": "https://docs.bria.ai/ads"
+  },
+  {
+    "id": "/v2/image/edit",
+    "name": "Image Edit by Text",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit",
+    "required": [
+      "images"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/add_object_by_text",
+    "name": "Add Object by Text",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-add-object-by-text",
+    "required": [
+      "image",
+      "instruction"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/blend",
+    "name": "Image Blending",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-blend",
+    "required": [
+      "image",
+      "instruction"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/blur_background",
+    "name": "Blur Background",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-blur-background",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/colorize",
+    "name": "Colorize",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-colorize",
+    "required": [
+      "image",
+      "color"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/crop_foreground",
+    "name": "Crop out foreground",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-crop-foreground",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/enhance",
+    "name": "Enhance Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-enhance",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/erase",
+    "name": "Eraser",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-erase",
+    "required": [
+      "image",
+      "mask"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/erase_by_text",
+    "name": "Erase Object by Text",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-erase-by-text",
+    "required": [
+      "image",
+      "object_name"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/erase_foreground",
+    "name": "Erase Foreground",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-erase-foreground",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/expand",
+    "name": "Expand Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-expand",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/gen_fill",
+    "name": "Generative Fill",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-gen-fill",
+    "required": [
+      "image",
+      "mask",
+      "prompt"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/increase_resolution",
+    "name": "Increase Resolution",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-increase-resolution",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/product/cutout",
+    "name": "Product Cutout (v2)",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-product-cutout",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v2/image/edit/product/holding",
+    "name": "Product Holding",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-product-holding",
+    "required": [
+      "person_image",
+      "product_images"
+    ],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v2/image/edit/product/integrate",
+    "name": "Embed products into a scene",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-product-integrate",
+    "required": [
+      "scene",
+      "products"
+    ],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v2/image/edit/product/virtual-tryon",
+    "name": "Virtual Try-On",
+    "family": "product-shot-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-product-virtual-tryon",
+    "required": [
+      "person_image",
+      "garment_images"
+    ],
+    "docs": "https://docs.bria.ai/product-shot-editing"
+  },
+  {
+    "id": "/v2/image/edit/relight",
+    "name": "Relight Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-relight",
+    "required": [
+      "image",
+      "light_type"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/remove_background",
+    "name": "Remove Background",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-remove-background",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/remove_background/guided",
+    "name": "Guided Remove Background",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-remove-background-guided",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/replace_background",
+    "name": "Replace Background",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-replace-background",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/replace_object_by_text",
+    "name": "Replace Object by Text",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-replace-object-by-text",
+    "required": [
+      "image",
+      "instruction"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/reseason",
+    "name": "Reseason Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-reseason",
+    "required": [
+      "image",
+      "season"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/restore",
+    "name": "Restore Old Images",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-restore",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/restyle",
+    "name": "Restyle Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-restyle",
+    "required": [
+      "image",
+      "style"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/rewrite_text",
+    "name": "Rewrite",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-rewrite-text",
+    "required": [
+      "image",
+      "new_text"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/edit/sketch_to_colored_image",
+    "name": "Sketch to Image",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-edit-sketch-to-colored-image",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/image/generate",
+    "name": "Generate Image",
+    "family": "image-generation",
+    "capability": "image",
+    "protocol": "bria-v2-image-generate",
+    "required": [],
+    "docs": "https://docs.bria.ai/image-generation"
+  },
+  {
+    "id": "/v2/image/generate/lite",
+    "name": "Generate Image - Lite",
+    "family": "image-generation",
+    "capability": "image",
+    "protocol": "bria-v2-image-generate-lite",
+    "required": [],
+    "docs": "https://docs.bria.ai/image-generation"
+  },
+  {
+    "id": "/v2/image/segment/all_masks",
+    "name": "Generate all masks",
+    "family": "image-editing",
+    "capability": "image",
+    "protocol": "bria-v2-image-segment-all-masks",
+    "required": [
+      "image"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/structured_instruction/generate",
+    "name": "Generate Structured Instruction",
+    "family": "image-editing",
+    "capability": "data",
+    "protocol": "bria-v2-structured-instruction-generate",
+    "required": [
+      "images",
+      "instruction"
+    ],
+    "docs": "https://docs.bria.ai/image-editing"
+  },
+  {
+    "id": "/v2/structured_prompt/generate",
+    "name": "Generate Structured Prompt",
+    "family": "image-generation",
+    "capability": "data",
+    "protocol": "bria-v2-structured-prompt-generate",
+    "required": [],
+    "docs": "https://docs.bria.ai/image-generation"
+  },
+  {
+    "id": "/v2/structured_prompt/generate/lite",
+    "name": "Generate Structured Prompt - Lite",
+    "family": "image-generation",
+    "capability": "data",
+    "protocol": "bria-v2-structured-prompt-generate-lite",
+    "required": [],
+    "docs": "https://docs.bria.ai/image-generation"
+  },
+  {
+    "id": "/v2/structured_prompt/generate_from_diff",
+    "name": "Generate Structured Prompt from Diff",
+    "family": "image-generation",
+    "capability": "data",
+    "protocol": "bria-v2-structured-prompt-generate-from-diff",
+    "required": [
+      "structured_prompt",
+      "user_adjusted_structured_prompt"
+    ],
+    "docs": "https://docs.bria.ai/image-generation"
+  },
+  {
+    "id": "/v2/video/edit/erase",
+    "name": "Eraser",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-edit-erase",
+    "required": [
+      "video",
+      "mask"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/edit/green_screen",
+    "name": "Green Screen",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-edit-green-screen",
+    "required": [
+      "video"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/edit/increase_resolution",
+    "name": "Increase Resolution - up to 8K",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-edit-increase-resolution",
+    "required": [
+      "video"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/edit/remove_background",
+    "name": "Remove Background",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-edit-remove-background",
+    "required": [
+      "video"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/edit/replace_background",
+    "name": "Replace Background",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-edit-replace-background",
+    "required": [
+      "video",
+      "background_url"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/generate/foreground_mask",
+    "name": "Foreground Mask",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-generate-foreground-mask",
+    "required": [
+      "video"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/segment/mask_by_key_points",
+    "name": "Generate Mask by Key Points",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-segment-mask-by-key-points",
+    "required": [
+      "video",
+      "key_points"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  },
+  {
+    "id": "/v2/video/segment/mask_by_prompt",
+    "name": "Generate Mask by Prompt",
+    "family": "video-editing",
+    "capability": "video",
+    "protocol": "bria-v2-video-segment-mask-by-prompt",
+    "required": [
+      "video",
+      "prompt"
+    ],
+    "docs": "https://docs.bria.ai/video-editing"
+  }
+]

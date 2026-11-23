@@ -1,0 +1,667 @@
+{
+  "apiVersion": "yingce.plugin/v2",
+  "id": "apimart-suno",
+  "name": "APIMart Suno V6",
+  "version": "1.0.0",
+  "author": "APIMart / MeiyeAI",
+  "description": "APIMart Suno V6 音乐生成协议。",
+  "permissions": [
+    "generation.run",
+    "media.read"
+  ],
+  "configuration": {
+    "fields": [
+      {
+        "name": "apiKey",
+        "type": "secret",
+        "label": "API Key",
+        "required": true
+      }
+    ]
+  },
+  "contributes": {
+    "providers": [
+      {
+        "id": "apimart-suno",
+        "label": "APIMart Suno V6",
+        "capabilities": [
+          "audio"
+        ],
+        "scopes": [
+          "admin.system-channel",
+          "user.custom-channel",
+          "canvas",
+          "creation",
+          "agent"
+        ],
+        "baseUrl": "https://service-3347642c.example.invalid/v1",
+        "requiresPublicMediaUrls": false,
+        "auth": {
+          "type": "bearer",
+          "field": "apiKey"
+        },
+        "parameters": [
+          {
+            "name": "model",
+            "type": "string",
+            "required": true,
+            "values": [
+              "suno"
+            ],
+            "mapping": "model",
+            "description": "固定为 suno。"
+          },
+          {
+            "name": "prompt",
+            "type": "string",
+            "mapping": "prompt",
+            "description": "灵感模式为描述，自定义模式为歌词；自定义纯音乐可省略。"
+          },
+          {
+            "name": "providerOptions",
+            "type": "object",
+            "mapping": "apimart-suno.*",
+            "description": "custom、instrumental、version、custom_model_id、title、style、negative_tags、auto_lyrics、persona_id、vocal_gender、style_weight、weirdness_constraint、audio_weight、variety、max_mode、audio_format、duration。"
+          }
+        ],
+        "validations": [
+          {
+            "assert": {
+              "$eq": [
+                {
+                  "$ref": "request.model"
+                },
+                "suno"
+              ]
+            },
+            "message": "Suno 模型 ID 必须为 suno。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.version"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$in": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.version"
+                    },
+                    [
+                      "v6",
+                      "v6-wild",
+                      "v6-mini"
+                    ]
+                  ]
+                }
+              ]
+            },
+            "message": "Suno 公共版本仅支持 v6、v6-wild 或 v6-mini。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom_model_id"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$and": [
+                    {
+                      "$eq": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.version"
+                        },
+                        null
+                      ]
+                    },
+                    {
+                      "$eq": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.persona_id"
+                        },
+                        null
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "message": "custom_model_id 与 version、persona_id 互斥。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$gt": [
+                    {
+                      "$len": {
+                        "$trim": {
+                          "$ref": "request.prompt"
+                        }
+                      }
+                    },
+                    0
+                  ]
+                }
+              ]
+            },
+            "message": "灵感模式必须提供 prompt。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$ne": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.instrumental"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$gt": [
+                    {
+                      "$len": {
+                        "$trim": {
+                          "$ref": "request.prompt"
+                        }
+                      }
+                    },
+                    0
+                  ]
+                }
+              ]
+            },
+            "message": "自定义演唱模式必须提供歌词 prompt。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$ne": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.max_mode"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom"
+                    },
+                    true
+                  ]
+                }
+              ]
+            },
+            "message": "Suno Max 模式要求 custom=true。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.duration"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$and": [
+                    {
+                      "$eq": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.custom"
+                        },
+                        true
+                      ]
+                    },
+                    {
+                      "$gte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.duration"
+                        },
+                        10
+                      ]
+                    },
+                    {
+                      "$lte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.duration"
+                        },
+                        360
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "message": "Suno duration 仅在自定义模式支持 10–360 秒。"
+          },
+          {
+            "assert": {
+              "$in": [
+                {
+                  "$coalesce": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.audio_format"
+                    },
+                    "mp3"
+                  ]
+                },
+                [
+                  "mp3",
+                  "m4a",
+                  "wav"
+                ]
+              ]
+            },
+            "message": "Suno audio_format 仅支持 mp3、m4a 或 wav。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$ne": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$lte": [
+                    {
+                      "$len": {
+                        "$ref": "request.prompt"
+                      }
+                    },
+                    5000
+                  ]
+                }
+              ]
+            },
+            "message": "Suno 自定义模式歌词不能超过 5000 字符。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.custom"
+                    },
+                    true
+                  ]
+                },
+                {
+                  "$lte": [
+                    {
+                      "$len": {
+                        "$ref": "request.prompt"
+                      }
+                    },
+                    3000
+                  ]
+                }
+              ]
+            },
+            "message": "Suno 灵感模式提示词不能超过 3000 字符。"
+          },
+          {
+            "assert": {
+              "$lte": [
+                {
+                  "$len": {
+                    "$ref": "request.providerOptions.apimart-suno.title"
+                  }
+                },
+                80
+              ]
+            },
+            "message": "Suno title 不能超过 80 字符。"
+          },
+          {
+            "assert": {
+              "$lte": [
+                {
+                  "$len": {
+                    "$ref": "request.providerOptions.apimart-suno.style"
+                  }
+                },
+                1000
+              ]
+            },
+            "message": "Suno style 不能超过 1000 字符。"
+          },
+          {
+            "assert": {
+              "$in": [
+                {
+                  "$coalesce": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.variety"
+                    },
+                    "normal"
+                  ]
+                },
+                [
+                  "off",
+                  "normal",
+                  "high",
+                  "extra",
+                  "max"
+                ]
+              ]
+            },
+            "message": "Suno variety 不受支持。"
+          },
+          {
+            "assert": {
+              "$in": [
+                {
+                  "$coalesce": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.vocal_gender"
+                    },
+                    "Male"
+                  ]
+                },
+                [
+                  "Male",
+                  "Female",
+                  "m",
+                  "f",
+                  "male",
+                  "female"
+                ]
+              ]
+            },
+            "message": "Suno vocal_gender 不受支持。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.style_weight"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$and": [
+                    {
+                      "$gte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.style_weight"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "$lte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.style_weight"
+                        },
+                        1
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "message": "Suno style_weight 必须在 0–1 之间。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.weirdness_constraint"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$and": [
+                    {
+                      "$gte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.weirdness_constraint"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "$lte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.weirdness_constraint"
+                        },
+                        1
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "message": "Suno weirdness_constraint 必须在 0–1 之间。"
+          },
+          {
+            "assert": {
+              "$or": [
+                {
+                  "$eq": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.audio_weight"
+                    },
+                    null
+                  ]
+                },
+                {
+                  "$and": [
+                    {
+                      "$gte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.audio_weight"
+                        },
+                        0
+                      ]
+                    },
+                    {
+                      "$lte": [
+                        {
+                          "$ref": "request.providerOptions.apimart-suno.audio_weight"
+                        },
+                        1
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            "message": "Suno audio_weight 必须在 0–1 之间。"
+          }
+        ],
+        "create": {
+          "method": "POST",
+          "path": "/v1/music/generations",
+          "contentType": "application/json",
+          "body": {
+            "model": {
+              "$ref": "request.model"
+            },
+            "prompt": {
+              "$omitEmpty": {
+                "$ref": "request.prompt"
+              }
+            },
+            "custom": {
+              "$coalesce": [
+                {
+                  "$ref": "request.providerOptions.apimart-suno.custom"
+                },
+                false
+              ]
+            },
+            "instrumental": {
+              "$ref": "request.providerOptions.apimart-suno.instrumental"
+            },
+            "version": {
+              "$if": {
+                "condition": {
+                  "$gt": [
+                    {
+                      "$len": {
+                        "$trim": {
+                          "$ref": "request.providerOptions.apimart-suno.custom_model_id"
+                        }
+                      }
+                    },
+                    0
+                  ]
+                },
+                "then": null,
+                "else": {
+                  "$coalesce": [
+                    {
+                      "$ref": "request.providerOptions.apimart-suno.version"
+                    },
+                    "v6"
+                  ]
+                }
+              }
+            },
+            "custom_model_id": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.custom_model_id"
+              }
+            },
+            "title": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.title"
+              }
+            },
+            "style": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.style"
+              }
+            },
+            "negative_tags": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.negative_tags"
+              }
+            },
+            "auto_lyrics": {
+              "$ref": "request.providerOptions.apimart-suno.auto_lyrics"
+            },
+            "persona_id": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.persona_id"
+              }
+            },
+            "vocal_gender": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.vocal_gender"
+              }
+            },
+            "style_weight": {
+              "$ref": "request.providerOptions.apimart-suno.style_weight"
+            },
+            "weirdness_constraint": {
+              "$ref": "request.providerOptions.apimart-suno.weirdness_constraint"
+            },
+            "audio_weight": {
+              "$ref": "request.providerOptions.apimart-suno.audio_weight"
+            },
+            "variety": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.variety"
+              }
+            },
+            "max_mode": {
+              "$ref": "request.providerOptions.apimart-suno.max_mode"
+            },
+            "audio_format": {
+              "$omitEmpty": {
+                "$ref": "request.providerOptions.apimart-suno.audio_format"
+              }
+            },
+            "duration": {
+              "$ref": "request.providerOptions.apimart-suno.duration"
+            }
+          }
+        },
+        "poll": {
+          "method": "GET",
+          "path": "/v1/music/tasks/{{taskId}}"
+        },
+        "response": {
+          "taskIdPaths": [
+            "data.0.task_id",
+            "data.task_id",
+            "data.id",
+            "task_id"
+          ],
+          "statusPaths": [
+            "data.0.status",
+            "data.status",
+            "status"
+          ],
+          "messagePaths": [
+            "data.error.message",
+            "error.message",
+            "message"
+          ],
+          "errorPaths": [
+            "data.error.code",
+            "error.code",
+            "error.type"
+          ],
+          "audios": {
+            "$coalesce": [
+              {
+                "$ref": "response.data.result.music"
+              },
+              {
+                "$ref": "response.result.music"
+              }
+            ]
+          },
+          "resultEphemeral": true
+        }
+      }
+    ]
+  },
+  "documentation": "# APIMart Suno V6\n\nAPIMart 专用异步音乐生成协议。固定模型 ID 为 `suno`。`custom=false` 时 `prompt` 是灵感描述；`custom=true` 时是歌词。其他字段保留 APIMart 原名，配置在 `providerOptions.apimart-suno` 中。\n\n请求为 `POST /v1/music/generations`，查询为 `GET /v1/music/tasks/{taskId}`。创建响应读取 `data[0].task_id`，结果读取 `data.result.music[].audio_url`。媒体链接由宿主持久化。\n\n官方文档：[生成音乐](https://service-3778997d.example.invalid/cn/api-reference/audios/suno/generation)、[V6 通用约定与查询](https://service-3778997d.example.invalid/cn/api-reference/audios/suno/overview)。\n\n完整接口见 [docs/interface.md](docs/interface.md)。\n\n---\n\n# APIMart Suno V6 接口字段\n\n统一 `model` 映射上游 `model=suno`；统一 `prompt` 直接映射 `prompt`。`providerOptions.apimart-suno` 支持上游同名字段：`custom`、`instrumental`、`version`、`custom_model_id`、`title`、`style`、`negative_tags`、`auto_lyrics`、`persona_id`、`vocal_gender`、`style_weight`、`weirdness_constraint`、`audio_weight`、`variety`、`max_mode`、`audio_format`、`duration`。\n\n公共版本为 `v6`、`v6-wild`、`v6-mini`；未选择自定义模型时默认 `v6`。`custom_model_id` 与 `version`、`persona_id` 互斥。`duration` 仅自定义模式可用，范围 10–360 秒。`audio_format` 可为 `mp3`、`m4a`、`wav`。\n\n提交响应读取 `data[0].task_id`；查询读取 `data.status`、`data.error.message` 和 `data.result.music[].audio_url`。`submitted` 只表示任务已受理，媒体 URL 返回后由宿主下载保存。\n\n<!-- YINGCE_MANIFEST_CONTRACT_START -->\n## Manifest 完整接口定义\n\n以下 JSON 与插件包内实际 `manifest.json` 逐字段一致，覆盖插件身份、权限、配置、鉴权、参数、校验、创建、Agent、查询、取消、结果下载、响应和 Agent 响应映射。`documentation` 字段的值就是当前完整文档；为避免文档在自身内部无限递归，JSON 中仅用等义占位文本表示正文。\n\n```json\n{\n  \"apiVersion\": \"yingce.plugin/v2\",\n  \"id\": \"apimart-suno\",\n  \"name\": \"APIMart Suno V6\",\n  \"version\": \"1.0.0\",\n  \"author\": \"APIMart / MeiyeAI\",\n  \"description\": \"APIMart Suno V6 音乐生成协议。\",\n  \"permissions\": [\n    \"generation.run\",\n    \"media.read\"\n  ],\n  \"configuration\": {\n    \"fields\": [\n      {\n        \"name\": \"apiKey\",\n        \"type\": \"secret\",\n        \"label\": \"API Key\",\n        \"required\": true\n      }\n    ]\n  },\n  \"contributes\": {\n    \"providers\": [\n      {\n        \"id\": \"apimart-suno\",\n        \"label\": \"APIMart Suno V6\",\n        \"capabilities\": [\n          \"audio\"\n        ],\n        \"scopes\": [\n          \"admin.system-channel\",\n          \"user.custom-channel\",\n          \"canvas\",\n          \"creation\",\n          \"agent\"\n        ],\n        \"baseUrl\": \"https://service-3347642c.example.invalid/v1\",\n        \"requiresPublicMediaUrls\": false,\n        \"auth\": {\n          \"type\": \"bearer\",\n          \"field\": \"apiKey\"\n        },\n        \"parameters\": [\n          {\n            \"name\": \"model\",\n            \"type\": \"string\",\n            \"required\": true,\n            \"values\": [\n              \"suno\"\n            ],\n            \"mapping\": \"model\",\n            \"description\": \"固定为 suno。\"\n          },\n          {\n            \"name\": \"prompt\",\n            \"type\": \"string\",\n            \"mapping\": \"prompt\",\n            \"description\": \"灵感模式为描述，自定义模式为歌词；自定义纯音乐可省略。\"\n          },\n          {\n            \"name\": \"providerOptions\",\n            \"type\": \"object\",\n            \"mapping\": \"apimart-suno.*\",\n            \"description\": \"custom、instrumental、version、custom_model_id、title、style、negative_tags、auto_lyrics、persona_id、vocal_gender、style_weight、weirdness_constraint、audio_weight、variety、max_mode、audio_format、duration。\"\n          }\n        ],\n        \"validations\": [\n          {\n            \"assert\": {\n              \"$eq\": [\n                {\n                  \"$ref\": \"request.model\"\n                },\n                \"suno\"\n              ]\n            },\n            \"message\": \"Suno 模型 ID 必须为 suno。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.version\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$in\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.version\"\n                    },\n                    [\n                      \"v6\",\n                      \"v6-wild\",\n                      \"v6-mini\"\n                    ]\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno 公共版本仅支持 v6、v6-wild 或 v6-mini。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom_model_id\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$and\": [\n                    {\n                      \"$eq\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.version\"\n                        },\n                        null\n                      ]\n                    },\n                    {\n                      \"$eq\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.persona_id\"\n                        },\n                        null\n                      ]\n                    }\n                  ]\n                }\n              ]\n            },\n            \"message\": \"custom_model_id 与 version、persona_id 互斥。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$gt\": [\n                    {\n                      \"$len\": {\n                        \"$trim\": {\n                          \"$ref\": \"request.prompt\"\n                        }\n                      }\n                    },\n                    0\n                  ]\n                }\n              ]\n            },\n            \"message\": \"灵感模式必须提供 prompt。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$ne\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.instrumental\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$gt\": [\n                    {\n                      \"$len\": {\n                        \"$trim\": {\n                          \"$ref\": \"request.prompt\"\n                        }\n                      }\n                    },\n                    0\n                  ]\n                }\n              ]\n            },\n            \"message\": \"自定义演唱模式必须提供歌词 prompt。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$ne\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.max_mode\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                    },\n                    true\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno Max 模式要求 custom=true。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.duration\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$and\": [\n                    {\n                      \"$eq\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                        },\n                        true\n                      ]\n                    },\n                    {\n                      \"$gte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.duration\"\n                        },\n                        10\n                      ]\n                    },\n                    {\n                      \"$lte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.duration\"\n                        },\n                        360\n                      ]\n                    }\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno duration 仅在自定义模式支持 10–360 秒。\"\n          },\n          {\n            \"assert\": {\n              \"$in\": [\n                {\n                  \"$coalesce\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.audio_format\"\n                    },\n                    \"mp3\"\n                  ]\n                },\n                [\n                  \"mp3\",\n                  \"m4a\",\n                  \"wav\"\n                ]\n              ]\n            },\n            \"message\": \"Suno audio_format 仅支持 mp3、m4a 或 wav。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$ne\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$lte\": [\n                    {\n                      \"$len\": {\n                        \"$ref\": \"request.prompt\"\n                      }\n                    },\n                    5000\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno 自定义模式歌词不能超过 5000 字符。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                    },\n                    true\n                  ]\n                },\n                {\n                  \"$lte\": [\n                    {\n                      \"$len\": {\n                        \"$ref\": \"request.prompt\"\n                      }\n                    },\n                    3000\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno 灵感模式提示词不能超过 3000 字符。\"\n          },\n          {\n            \"assert\": {\n              \"$lte\": [\n                {\n                  \"$len\": {\n                    \"$ref\": \"request.providerOptions.apimart-suno.title\"\n                  }\n                },\n                80\n              ]\n            },\n            \"message\": \"Suno title 不能超过 80 字符。\"\n          },\n          {\n            \"assert\": {\n              \"$lte\": [\n                {\n                  \"$len\": {\n                    \"$ref\": \"request.providerOptions.apimart-suno.style\"\n                  }\n                },\n                1000\n              ]\n            },\n            \"message\": \"Suno style 不能超过 1000 字符。\"\n          },\n          {\n            \"assert\": {\n              \"$in\": [\n                {\n                  \"$coalesce\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.variety\"\n                    },\n                    \"normal\"\n                  ]\n                },\n                [\n                  \"off\",\n                  \"normal\",\n                  \"high\",\n                  \"extra\",\n                  \"max\"\n                ]\n              ]\n            },\n            \"message\": \"Suno variety 不受支持。\"\n          },\n          {\n            \"assert\": {\n              \"$in\": [\n                {\n                  \"$coalesce\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.vocal_gender\"\n                    },\n                    \"Male\"\n                  ]\n                },\n                [\n                  \"Male\",\n                  \"Female\",\n                  \"m\",\n                  \"f\",\n                  \"male\",\n                  \"female\"\n                ]\n              ]\n            },\n            \"message\": \"Suno vocal_gender 不受支持。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.style_weight\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$and\": [\n                    {\n                      \"$gte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.style_weight\"\n                        },\n                        0\n                      ]\n                    },\n                    {\n                      \"$lte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.style_weight\"\n                        },\n                        1\n                      ]\n                    }\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno style_weight 必须在 0–1 之间。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.weirdness_constraint\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$and\": [\n                    {\n                      \"$gte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.weirdness_constraint\"\n                        },\n                        0\n                      ]\n                    },\n                    {\n                      \"$lte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.weirdness_constraint\"\n                        },\n                        1\n                      ]\n                    }\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno weirdness_constraint 必须在 0–1 之间。\"\n          },\n          {\n            \"assert\": {\n              \"$or\": [\n                {\n                  \"$eq\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.audio_weight\"\n                    },\n                    null\n                  ]\n                },\n                {\n                  \"$and\": [\n                    {\n                      \"$gte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.audio_weight\"\n                        },\n                        0\n                      ]\n                    },\n                    {\n                      \"$lte\": [\n                        {\n                          \"$ref\": \"request.providerOptions.apimart-suno.audio_weight\"\n                        },\n                        1\n                      ]\n                    }\n                  ]\n                }\n              ]\n            },\n            \"message\": \"Suno audio_weight 必须在 0–1 之间。\"\n          }\n        ],\n        \"create\": {\n          \"method\": \"POST\",\n          \"path\": \"/v1/music/generations\",\n          \"contentType\": \"application/json\",\n          \"body\": {\n            \"model\": {\n              \"$ref\": \"request.model\"\n            },\n            \"prompt\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.prompt\"\n              }\n            },\n            \"custom\": {\n              \"$coalesce\": [\n                {\n                  \"$ref\": \"request.providerOptions.apimart-suno.custom\"\n                },\n                false\n              ]\n            },\n            \"instrumental\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.instrumental\"\n            },\n            \"version\": {\n              \"$if\": {\n                \"condition\": {\n                  \"$gt\": [\n                    {\n                      \"$len\": {\n                        \"$trim\": {\n                          \"$ref\": \"request.providerOptions.apimart-suno.custom_model_id\"\n                        }\n                      }\n                    },\n                    0\n                  ]\n                },\n                \"then\": null,\n                \"else\": {\n                  \"$coalesce\": [\n                    {\n                      \"$ref\": \"request.providerOptions.apimart-suno.version\"\n                    },\n                    \"v6\"\n                  ]\n                }\n              }\n            },\n            \"custom_model_id\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.custom_model_id\"\n              }\n            },\n            \"title\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.title\"\n              }\n            },\n            \"style\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.style\"\n              }\n            },\n            \"negative_tags\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.negative_tags\"\n              }\n            },\n            \"auto_lyrics\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.auto_lyrics\"\n            },\n            \"persona_id\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.persona_id\"\n              }\n            },\n            \"vocal_gender\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.vocal_gender\"\n              }\n            },\n            \"style_weight\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.style_weight\"\n            },\n            \"weirdness_constraint\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.weirdness_constraint\"\n            },\n            \"audio_weight\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.audio_weight\"\n            },\n            \"variety\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.variety\"\n              }\n            },\n            \"max_mode\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.max_mode\"\n            },\n            \"audio_format\": {\n              \"$omitEmpty\": {\n                \"$ref\": \"request.providerOptions.apimart-suno.audio_format\"\n              }\n            },\n            \"duration\": {\n              \"$ref\": \"request.providerOptions.apimart-suno.duration\"\n            }\n          }\n        },\n        \"poll\": {\n          \"method\": \"GET\",\n          \"path\": \"/v1/music/tasks/{{taskId}}\"\n        },\n        \"response\": {\n          \"taskIdPaths\": [\n            \"data.0.task_id\",\n            \"data.task_id\",\n            \"data.id\",\n            \"task_id\"\n          ],\n          \"statusPaths\": [\n            \"data.0.status\",\n            \"data.status\",\n            \"status\"\n          ],\n          \"messagePaths\": [\n            \"data.error.message\",\n            \"error.message\",\n            \"message\"\n          ],\n          \"errorPaths\": [\n            \"data.error.code\",\n            \"error.code\",\n            \"error.type\"\n          ],\n          \"audios\": {\n            \"$coalesce\": [\n              {\n                \"$ref\": \"response.data.result.music\"\n              },\n              {\n                \"$ref\": \"response.result.music\"\n              }\n            ]\n          },\n          \"resultEphemeral\": true\n        }\n      }\n    ]\n  },\n  \"documentation\": \"<当前插件的完整 documentation，由 README.md 与 docs/interface.md 拼接而成；为避免 JSON 递归，此处不重复展开正文。>\"\n}\n```\n<!-- YINGCE_MANIFEST_CONTRACT_END -->\n"
+}

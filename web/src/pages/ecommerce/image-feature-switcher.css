@@ -1,0 +1,21 @@
+/* 商品图片功能沿用商品视频的单色图标与菜单样式，这里只补未开通状态。 */
+
+/* 未开通批量换装时选项保留但不可点（视频菜单的展开动效会把透明度设回 1，这里提高优先级）。 */
+.ecs-image-feature .ecv-feature[data-open="true"] .ecv-feature-menu > button:disabled {
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+.ecs-image-feature .ecv-feature-menu > button:disabled:hover {
+    background: transparent;
+}
+.ecs-image-feature .ecv-feature-menu > button:disabled:hover .ecv-glyph-tile {
+    transform: none;
+}
+
+/* 只剩商品出图（批量换装未开放）时卡片只展示、不可切换。 */
+.ecs-image-feature .ecv-feature-card:disabled {
+    cursor: default;
+    border-color: var(--user-border);
+    box-shadow: none;
+    transform: none;
+}

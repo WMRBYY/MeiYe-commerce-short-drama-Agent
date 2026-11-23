@@ -1,0 +1,497 @@
+/* 电商模式「创作中 / 高级思考」动画。颜色走 --ms-* 令牌，页面外（电商 Agent）有回退值。 */
+.sk-creating,
+.sk-think {
+    --sk-accent: var(--ms-accent, #7cc322);
+    --sk-accent-2: #22d3a6;
+    --sk-accent-3: #d9f99d;
+    --sk-surface: var(--ms-surface-2, #f7f7f8);
+    --sk-text: var(--ms-text, #171717);
+    --sk-muted: var(--ms-muted, #71717a);
+    --sk-border: var(--ms-border, #e8e8ea);
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+}
+html.dark .sk-creating,
+html.dark .sk-think {
+    --sk-accent: var(--ms-accent, #a3e635);
+    --sk-surface: var(--ms-surface-2, #1b1c21);
+    --sk-text: var(--ms-text, #f3f4f6);
+    --sk-muted: var(--ms-muted, #9a9ca5);
+    --sk-border: var(--ms-border, #2a2c33);
+}
+
+/* ---------- 极光底 ---------- */
+.sk-aurora {
+    position: absolute;
+    inset: -40%;
+    z-index: -2;
+    background:
+        radial-gradient(40% 35% at 30% 30%, color-mix(in srgb, var(--sk-accent) 38%, transparent), transparent 70%), radial-gradient(35% 30% at 72% 65%, color-mix(in srgb, var(--sk-accent-2) 26%, transparent), transparent 70%),
+        radial-gradient(30% 28% at 60% 20%, color-mix(in srgb, var(--sk-accent-3) 30%, transparent), transparent 70%);
+    filter: blur(18px);
+    animation: sk-aurora 9s ease-in-out infinite alternate;
+}
+@keyframes sk-aurora {
+    0% {
+        transform: translate3d(-4%, -2%, 0) rotate(0deg) scale(1);
+    }
+    50% {
+        transform: translate3d(5%, 4%, 0) rotate(18deg) scale(1.08);
+    }
+    100% {
+        transform: translate3d(-2%, 6%, 0) rotate(-12deg) scale(1.02);
+    }
+}
+
+/* ---------- 创作中卡片 ---------- */
+.sk-creating {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    min-height: 120px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--sk-surface);
+    color: var(--sk-muted);
+}
+.sk-grid {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(color-mix(in srgb, var(--sk-accent) 10%, transparent) 1px, transparent 1px), linear-gradient(90deg, color-mix(in srgb, var(--sk-accent) 10%, transparent) 1px, transparent 1px);
+    background-size: 22px 22px;
+    mask-image: radial-gradient(circle at 50% 50%, #000 0%, transparent 72%);
+    animation: sk-grid 6s linear infinite;
+}
+@keyframes sk-grid {
+    to {
+        background-position: 22px 22px;
+    }
+}
+.sk-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: -1;
+    height: 38%;
+    background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--sk-accent) 22%, transparent) 85%, color-mix(in srgb, var(--sk-accent) 70%, transparent) 99%, transparent);
+    animation: sk-scan 2.8s cubic-bezier(0.55, 0, 0.45, 1) infinite;
+}
+@keyframes sk-scan {
+    0% {
+        transform: translateY(-110%);
+    }
+    100% {
+        transform: translateY(290%);
+    }
+}
+.sk-dust {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+}
+.sk-dust i {
+    position: absolute;
+    bottom: -6px;
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: var(--sk-accent);
+    box-shadow: 0 0 6px var(--sk-accent);
+    opacity: 0;
+    animation: sk-dust linear infinite;
+}
+@keyframes sk-dust {
+    0% {
+        transform: translateY(0) scale(0.6);
+        opacity: 0;
+    }
+    15% {
+        opacity: 0.9;
+    }
+    100% {
+        transform: translateY(-260px) scale(1.1);
+        opacity: 0;
+    }
+}
+.sk-creating-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    padding: 10px;
+    text-align: center;
+}
+.sk-creating-label {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 2px;
+    color: var(--sk-text);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+}
+.sk-creating[data-compact] .sk-creating-label {
+    font-size: 12px;
+}
+.sk-dots {
+    display: inline-flex;
+    gap: 2px;
+}
+.sk-dots i {
+    width: 3px;
+    height: 3px;
+    border-radius: 50%;
+    background: currentColor;
+    animation: sk-dot 1.2s ease-in-out infinite;
+}
+.sk-dots i:nth-child(2) {
+    animation-delay: 0.15s;
+}
+.sk-dots i:nth-child(3) {
+    animation-delay: 0.3s;
+}
+@keyframes sk-dot {
+    0%,
+    80%,
+    100% {
+        opacity: 0.25;
+        transform: translateY(0);
+    }
+    40% {
+        opacity: 1;
+        transform: translateY(-3px);
+    }
+}
+.sk-phrase-wrap {
+    display: block;
+    min-height: 16px;
+}
+.sk-phrase {
+    display: inline-block;
+    padding: 2px 9px;
+    border: 1px solid color-mix(in srgb, var(--sk-accent) 35%, transparent);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sk-accent) 12%, transparent);
+    color: var(--sk-text);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+    backdrop-filter: blur(6px);
+}
+.sk-creating[data-tone="wait"] .sk-scan,
+.sk-creating[data-tone="wait"] .sk-dust {
+    display: none;
+}
+.sk-creating[data-tone="wait"] .sk-aurora {
+    opacity: 0.45;
+}
+.sk-bar {
+    position: absolute;
+    left: 12%;
+    right: 12%;
+    bottom: 14px;
+    height: 3px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--sk-accent) 16%, transparent);
+}
+.sk-bar b {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--sk-accent-2), var(--sk-accent));
+    box-shadow: 0 0 10px var(--sk-accent);
+}
+.sk-bar[data-indeterminate] b {
+    width: 35%;
+    animation: sk-bar 1.6s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+@keyframes sk-bar {
+    0% {
+        transform: translateX(-110%);
+    }
+    100% {
+        transform: translateX(310%);
+    }
+}
+
+/* ---------- 光球 ---------- */
+.sk-orb {
+    position: relative;
+    display: inline-block;
+    flex: none;
+}
+.sk-orb i {
+    position: absolute;
+    border-radius: 50%;
+}
+.sk-orb-ring {
+    inset: 0;
+    background: conic-gradient(from 0deg, transparent 0 55%, var(--sk-accent) 80%, var(--sk-accent-3) 92%, transparent 100%);
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+    animation: sk-spin 1.6s linear infinite;
+}
+.sk-orb-ring.is-back {
+    inset: 5px;
+    background: conic-gradient(from 180deg, transparent 0 60%, var(--sk-accent-2) 85%, transparent 100%);
+    animation-duration: 2.4s;
+    animation-direction: reverse;
+}
+.sk-orb-core {
+    inset: 28%;
+    background: radial-gradient(circle at 35% 30%, #fff, var(--sk-accent-3) 30%, var(--sk-accent) 70%, var(--sk-accent-2));
+    box-shadow:
+        0 0 12px color-mix(in srgb, var(--sk-accent) 70%, transparent),
+        0 0 28px color-mix(in srgb, var(--sk-accent) 40%, transparent);
+    animation: sk-breathe 2s ease-in-out infinite;
+}
+.sk-orb-spark {
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 4px;
+    margin: -2px 0 0 -2px;
+    background: #fff;
+    box-shadow: 0 0 6px var(--sk-accent);
+    animation: sk-orbit 2.2s linear infinite;
+}
+.sk-orb-spark.is-2 {
+    width: 3px;
+    height: 3px;
+    animation-duration: 3.1s;
+    animation-direction: reverse;
+}
+.sk-orb[data-static] i {
+    animation: none;
+}
+@keyframes sk-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@keyframes sk-breathe {
+    0%,
+    100% {
+        transform: scale(0.88);
+        filter: brightness(1);
+    }
+    50% {
+        transform: scale(1.08);
+        filter: brightness(1.15);
+    }
+}
+@keyframes sk-orbit {
+    from {
+        transform: rotate(0deg) translateX(calc(var(--sk-orbit, 26px))) rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg) translateX(calc(var(--sk-orbit, 26px))) rotate(-360deg);
+    }
+}
+
+/* ---------- 高级思考面板 ---------- */
+.sk-think {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid color-mix(in srgb, var(--sk-accent) 30%, var(--sk-border));
+    border-radius: 16px;
+    background: color-mix(in srgb, var(--sk-surface) 88%, transparent);
+    color: var(--sk-text);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--sk-accent) 12%, transparent);
+}
+.sk-think::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    border-radius: inherit;
+    background: conic-gradient(from var(--sk-angle, 0deg), transparent 0 70%, var(--sk-accent) 85%, var(--sk-accent-2) 95%, transparent);
+    mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    animation: sk-border 3.2s linear infinite;
+}
+@property --sk-angle {
+    syntax: "<angle>";
+    initial-value: 0deg;
+    inherits: false;
+}
+@keyframes sk-border {
+    to {
+        --sk-angle: 360deg;
+    }
+}
+.sk-think .sk-aurora {
+    opacity: 0.55;
+}
+.sk-think-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+.sk-think-head > span {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 2px;
+}
+.sk-think-title {
+    background: linear-gradient(90deg, var(--sk-text) 0%, var(--sk-text) 35%, var(--sk-accent) 50%, var(--sk-text) 65%, var(--sk-text) 100%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 14px;
+    font-weight: 700;
+    animation: sk-shine 2.6s linear infinite;
+}
+@keyframes sk-shine {
+    from {
+        background-position: 125% 0;
+    }
+    to {
+        background-position: -125% 0;
+    }
+}
+.sk-think-head small {
+    color: var(--sk-muted);
+    font-size: 11.5px;
+    font-variant-numeric: tabular-nums;
+}
+.sk-steps {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin: 0;
+    padding: 0 0 0 2px;
+    list-style: none;
+}
+.sk-steps::before {
+    content: "";
+    position: absolute;
+    left: 10px;
+    top: 8px;
+    bottom: 8px;
+    width: 1px;
+    background: linear-gradient(180deg, var(--sk-accent), color-mix(in srgb, var(--sk-accent) 10%, transparent));
+}
+.sk-step {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+.sk-step-dot {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    width: 18px;
+    height: 18px;
+    flex: none;
+    place-items: center;
+    border: 1.5px solid var(--sk-border);
+    border-radius: 50%;
+    background: var(--sk-surface);
+    color: #111;
+}
+.sk-step[data-state="done"] .sk-step-dot {
+    border-color: var(--sk-accent);
+    background: var(--sk-accent);
+}
+.sk-step[data-state="active"] .sk-step-dot {
+    border-color: var(--sk-accent);
+}
+.sk-step[data-state="active"] .sk-step-dot::after {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--sk-accent);
+    box-shadow: 0 0 0 0 color-mix(in srgb, var(--sk-accent) 60%, transparent);
+    animation: sk-pulse 1.4s ease-out infinite;
+}
+@keyframes sk-pulse {
+    0% {
+        box-shadow: 0 0 0 0 color-mix(in srgb, var(--sk-accent) 60%, transparent);
+    }
+    100% {
+        box-shadow: 0 0 0 8px transparent;
+    }
+}
+.sk-step-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 1px;
+}
+.sk-step-copy b {
+    font-size: 12.5px;
+    font-weight: 600;
+}
+.sk-step[data-state="active"] .sk-step-copy b {
+    background: linear-gradient(90deg, var(--sk-text) 30%, var(--sk-accent) 50%, var(--sk-text) 70%);
+    background-size: 250% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: sk-shine 1.8s linear infinite;
+}
+.sk-step-copy small {
+    color: var(--sk-muted);
+    font-size: 11px;
+    line-height: 1.45;
+}
+.sk-think[data-compact] {
+    gap: 8px;
+    padding: 10px 12px;
+}
+.sk-think[data-compact] .sk-steps {
+    gap: 6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sk-aurora,
+    .sk-grid,
+    .sk-scan,
+    .sk-dust i,
+    .sk-bar b,
+    .sk-think::before,
+    .sk-think-title,
+    .sk-step-copy b,
+    .sk-dots i {
+        animation: none !important;
+    }
+}
+
+.sk-creating[data-compact] {
+    min-height: 0;
+}
+.sk-creating[data-compact] .sk-bar {
+    bottom: 10px;
+}
+/* 详情图右栏：分析中的项目在图片网格上方显示思考面板。 */
+.sdw-thinking {
+    margin: 0 0 10px;
+}
+/* 电商 Agent 作品区：分析中的思考面板。 */
+.ecs-thinking {
+    width: min(100%, 560px);
+}
+.sk-orb {
+    --sk-accent: var(--ms-accent, #7cc322);
+    --sk-accent-2: #22d3a6;
+    --sk-accent-3: #d9f99d;
+}
+.sk-creating .sk-orb,
+.sk-think .sk-orb {
+    --sk-accent: inherit;
+}

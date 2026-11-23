@@ -1,0 +1,29 @@
+.video-preview-stage {
+    display: flex;
+    min-height: 0;
+    align-items: center;
+    justify-content: center;
+    outline: none;
+}
+.video-preview-stage .canvas-video-player {
+    width: 100%;
+    max-height: 74dvh;
+}
+.video-preview-stage video {
+    max-height: 74dvh;
+    object-fit: contain;
+}
+.video-preview-shortcuts {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    padding-top: 12px;
+    color: var(--text-secondary);
+    font-size: var(--fs-caption, 12px);
+}
+@media (max-width: 560px) {
+    .video-preview-stage .canvas-video-player,
+    .video-preview-stage video {
+        max-height: 65dvh;
+    }
+}

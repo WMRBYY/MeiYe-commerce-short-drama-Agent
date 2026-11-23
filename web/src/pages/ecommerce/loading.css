@@ -1,0 +1,17 @@
+/* 商品出图共用的等待图标；由页面入口加载，避免依赖未使用组件的样式。 */
+.commerce-planning-spin {
+    flex-shrink: 0;
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: commerce-loading-turn 0.9s linear infinite;
+}
+@keyframes commerce-loading-turn {
+    to {
+        transform: rotate(360deg);
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .commerce-planning-spin {
+        animation: none;
+    }
+}

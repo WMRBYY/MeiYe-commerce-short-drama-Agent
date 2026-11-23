@@ -1,0 +1,99 @@
+/* Review preview stays within the existing admin overlay and supports media-only submissions. */
+.trv-header .ant-tag {
+    color: inherit;
+}
+.trv-ecommerce {
+    height: 100%;
+    overflow: auto;
+    padding: 24px;
+    scrollbar-width: thin;
+}
+.trv-videos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+    gap: 16px;
+}
+.trv-ecommerce h3 {
+    font-size: 13px;
+    font-weight: 500;
+    margin: 0 0 12px;
+    color: inherit;
+}
+.trv-ecommerce > h3 {
+    margin-top: 24px;
+}
+.trv-videos video {
+    width: 100%;
+    aspect-ratio: 9/16;
+    max-height: 48vh;
+    object-fit: contain;
+    background: inherit;
+    border-radius: 8px;
+}
+.trv-images {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.trv-images img {
+    width: 100px;
+    aspect-ratio: 3/4;
+    object-fit: contain;
+    background: inherit;
+    border-radius: 8px;
+}
+.trv-ecommerce p {
+    font-size: 13px;
+    line-height: 1.65;
+    margin: 0;
+    color: inherit;
+    opacity: 0.7;
+}
+.trv-prompt {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    user-select: text;
+}
+@media (max-width: 760px) {
+    .trv-header {
+        height: auto;
+        min-height: 56px;
+        flex-wrap: wrap;
+        padding: 12px;
+        gap: 8px;
+    }
+    .trv-header > div {
+        width: 100%;
+        justify-content: flex-end;
+    }
+    .trv-body {
+        flex-direction: column;
+        overflow: auto;
+    }
+    .trv-body .trv-info {
+        width: 100%;
+        max-height: 28vh;
+        flex-shrink: 0;
+    }
+    .trv-body > div {
+        flex: none;
+        min-height: 50vh;
+    }
+    .trv-ecommerce {
+        height: auto;
+        overflow: visible;
+        padding: 16px;
+    }
+    .trv-videos {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .trv-videos video {
+        max-height: none;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .trv-ecommerce * {
+        animation: none;
+        transition: none;
+    }
+}

@@ -1,0 +1,48 @@
+export type ShopCanvasCategory = "all" | "common" | "person" | "image" | "video" | "canvas";
+export type ShopCanvasTool = { id: string; label: string; description: string; category: ShopCanvasCategory; action: "text" | "upload" | "product-image" | "try-on" | "product-video" | "workflow" | "group"; comingSoon?: boolean };
+export const SHOP_CANVAS_CATEGORIES: { key: ShopCanvasCategory; label: string }[] = [
+    { key: "all", label: "全部" },
+    { key: "common", label: "常用" },
+    { key: "person", label: "人物" },
+    { key: "image", label: "图片" },
+    { key: "video", label: "视频" },
+    { key: "canvas", label: "画布" },
+];
+export const SHOP_CANVAS_TOOLS: ShopCanvasTool[] = [
+    { id: "chat", label: "对话生图", description: "多图参考，自由描述商品视觉", category: "common", action: "product-image" },
+    { id: "text", label: "文本节点", description: "编写文案，连接到生成节点", category: "common", action: "text" },
+    { id: "upload-card", label: "上传卡片", description: "上传图片或视频，连接为参考素材", category: "common", action: "upload" },
+    { id: "outfit", label: "AI 换装", description: "模特与服装合成真实试穿效果", category: "person", action: "try-on" },
+    { id: "model-views", label: "模特三视图", description: "正面、侧面与背面保持同一模特", category: "person", action: "try-on" },
+    { id: "pose", label: "姿势参考", description: "按参考姿势调整主体动作", category: "person", action: "try-on" },
+    { id: "face-swap", label: "模特换脸", description: "使用指定的脸部参考", category: "person", action: "try-on" },
+    { id: "smart-head", label: "智能换头", description: "调整模特头型与发型", category: "person", action: "try-on" },
+    { id: "smart-face", label: "智能换脸", description: "生成新的模特面孔", category: "person", action: "try-on" },
+    { id: "multi-model", label: "多模特同款", description: "让不同模特展示同一款商品", category: "person", action: "try-on" },
+    { id: "multi-outfit", label: "一模多衣", description: "一位模特展示多套服装", category: "person", action: "try-on" },
+    { id: "upscale", label: "高清放大", description: "提升清晰度，保留商品细节", category: "image", action: "product-image" },
+    { id: "cutout", label: "图片抠图", description: "提取商品主体并去除背景", category: "image", action: "product-image" },
+    { id: "background", label: "换背景", description: "保留主体，重新设计展示场景", category: "image", action: "product-image" },
+    { id: "scene", label: "场景提取", description: "提取干净的背景场景", category: "image", action: "product-image" },
+    { id: "repaint", label: "智能重绘", description: "结合原图与提示词重新创作", category: "image", action: "product-image" },
+    { id: "inpaint", label: "局部重绘", description: "画布局部涂抹重绘 · 敬请期待", category: "image", action: "product-image", comingSoon: true },
+    { id: "print", label: "印花提取", description: "提取服装印花图案", category: "image", action: "try-on" },
+    { id: "noise", label: "加噪点", description: "增加自然细腻的颗粒质感", category: "image", action: "product-image" },
+    { id: "color", label: "图片追色", description: "按参考图调整色彩氛围", category: "image", action: "product-image" },
+    { id: "product-video", label: "视频生成", description: "描述镜头，结合图片、视频或音频生成视频", category: "video", action: "product-video" },
+    { id: "video-replace", label: "模特 / 商品替换", description: "用商品素材复刻参考视频", category: "video", action: "product-video" },
+    { id: "video-upscale", label: "视频高清放大", description: "视频清晰度增强 · 敬请期待", category: "video", action: "product-video", comingSoon: true },
+    { id: "video-subtitle", label: "字幕擦除", description: "移除视频中的字幕 · 敬请期待", category: "video", action: "product-video", comingSoon: true },
+    { id: "group", label: "分组", description: "将选中的多个节点组织成组", category: "canvas", action: "group" },
+    { id: "annotation", label: "注释", description: "记录创作思路与修改意见", category: "canvas", action: "text" },
+    { id: "canvas-copy", label: "文案", description: "编辑标题、卖点和画面文字", category: "canvas", action: "text" },
+];
+export const SHOP_CANVAS_IMAGE_PROMPTS: Record<string, string> = {
+    upscale: "提升参考商品图的清晰度与细节，保持商品结构、印花、颜色和文字完全一致。",
+    cutout: "提取参考图片中的商品主体，移除背景，保留边缘细节、产品结构和真实颜色。",
+    background: "保留参考图中的商品主体、材质与印花，替换为简洁的电商展示背景。",
+    scene: "提取参考图片中的背景场景，去除前景人物和商品，补全被遮挡区域。",
+    repaint: "根据参考图重新绘制商品视觉，保留商品结构和关键特征。",
+    noise: "为参考商品照片添加轻微自然胶片颗粒，保持商品清晰且色彩真实。",
+    color: "参考第二张图片的色彩氛围调整第一张商品图，保留商品固有颜色和细节。",
+};

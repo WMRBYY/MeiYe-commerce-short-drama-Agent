@@ -1,0 +1,552 @@
+/* 图片与视频共用固定外壳；只有编辑内容切换，外框和工具条不随媒体类型移动。 */
+.sim-workspace {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 0;
+}
+.sim-mode {
+    display: flex;
+    justify-content: center;
+    margin-bottom: var(--space-3);
+}
+.sim-mode .sim-mode-capsule {
+    height: 40px;
+    padding: var(--space-1);
+    border-radius: var(--r-full);
+    background: var(--ms-surface);
+    box-shadow: inset 0 0 0 1px var(--ms-border);
+}
+.sim-mode-capsule .app-segmented-item {
+    min-width: 96px;
+    border-radius: var(--r-full);
+    color: var(--ms-muted);
+    font-size: var(--fs-ui);
+}
+.sim-mode-capsule .app-segmented-thumb {
+    inset-block: var(--space-1);
+    border-radius: var(--r-full);
+    background: var(--ms-accent-soft);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ms-accent) 24%, transparent);
+}
+.sim-mode-capsule .app-segmented-item[aria-checked="true"] {
+    color: var(--ms-accent-text);
+    background: transparent;
+}
+.sim-workspace .si-body {
+    padding-bottom: calc(var(--sim-dock-height, 260px) + var(--space-8));
+}
+.sim-video {
+    --user-page-bg: var(--ms-page);
+    --user-surface: var(--ms-surface);
+    --user-surface-muted: var(--ms-soft);
+    --user-surface-hover: var(--ms-hover);
+    --user-ink: var(--ms-text);
+    --user-ink-muted: var(--ms-muted);
+    --user-ink-soft: var(--ms-faint);
+    --user-border: var(--ms-border);
+}
+.sim-video-results {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    min-height: 0;
+    padding: var(--space-3) var(--space-6) 0;
+}
+.sim-video-results .ecv-results {
+    flex: 1;
+    min-width: 0;
+    border-radius: 0;
+    background: transparent;
+}
+.sim-video-results .ecv-results-head h2 {
+    font-size: var(--fs-heading);
+    font-weight: 600;
+}
+.sim-video-results .ecv-results-scroll {
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+    padding-bottom: calc(var(--sim-dock-height, 0px) + var(--space-8));
+    scroll-padding-bottom: calc(var(--sim-dock-height, 0px) + var(--space-8));
+}
+.sim-video-results .ecv-results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(min(224px, 100%), 1fr));
+    gap: var(--space-4);
+}
+.sim-video-results .ecv-result-cell:has([data-landscape="true"]) {
+    grid-column: auto;
+}
+.sim-video-results .ecv-result {
+    padding: var(--space-2);
+    gap: var(--space-3);
+    border-radius: var(--r-2xl);
+}
+.sim-video-results .ecv-result-media {
+    order: -1;
+    min-height: 0;
+    max-height: 320px;
+    border-radius: var(--r-lg);
+}
+.sim-video-results .ecv-result-head {
+    padding-inline: var(--space-1);
+    gap: var(--space-1) var(--space-2);
+}
+.sim-video-results .ecv-result-title {
+    width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-size: var(--fs-ui);
+    font-weight: 500;
+}
+.sim-video-results .ecv-result-head time {
+    width: 100%;
+    margin-left: 0;
+}
+.sim-video-results .ecv-result-actions {
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--ms-border);
+}
+.sim-video-results .ecv-filter,
+.sim-video-results .ecv-filter button {
+    border-radius: var(--r-full);
+}
+.sim-video-results .ecv-results-scroll:has(> .ecv-empty) {
+    display: flex;
+    flex-direction: column;
+}
+.sim-video-results .ecv-empty {
+    flex-shrink: 0;
+    margin: auto;
+    padding-block: var(--space-2);
+}
+.sim-video-results .ecv-results-pending {
+    max-width: calc(var(--space-24) * 3);
+}
+.sim-creation-dock {
+    --sim-frame-height: 184px;
+    position: absolute;
+    bottom: var(--space-4);
+    left: 50%;
+    z-index: var(--z-sticky);
+    width: min(1200px, calc(100% - var(--space-12)));
+    transform: translateX(-50%);
+}
+.sim-creation-dock[data-expanded] {
+    --sim-frame-height: min(56dvh, 520px);
+}
+.sim-dock-head {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    margin-bottom: var(--space-3);
+}
+.sim-dock-head .sim-mode {
+    margin: 0;
+}
+.sim-collapse,
+.sim-expand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-1);
+    height: 32px;
+    border: 1px solid var(--ms-border);
+    border-radius: var(--r-full);
+    background: var(--ms-surface);
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+    cursor: pointer;
+    transition:
+        background-color 180ms,
+        color 180ms,
+        border-color 180ms;
+}
+.sim-collapse {
+    position: absolute;
+    right: 0;
+    padding-inline: var(--space-3);
+}
+.sim-expand {
+    position: absolute;
+    top: var(--space-3);
+    right: var(--space-3);
+    width: 32px;
+    z-index: 2;
+}
+.sim-collapse:hover,
+.sim-expand:hover,
+.sim-expand[aria-pressed="true"] {
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+    border-color: color-mix(in srgb, var(--ms-accent) 32%, transparent);
+}
+.sim-creation-dock :is(button, input):focus-visible {
+    outline: 2px solid var(--ms-accent-strong);
+    outline-offset: 2px;
+}
+.sim-composer-frame {
+    position: relative;
+    height: var(--sim-frame-height);
+    border: 1px solid var(--ms-border);
+    border-radius: var(--space-6);
+    background: var(--ms-surface);
+    box-shadow: none;
+    transition:
+        height 320ms var(--ms-ease),
+        opacity 200ms ease,
+        border-color 200ms ease,
+        visibility 320ms;
+}
+.sim-composer-frame:focus-within {
+    border-color: color-mix(in srgb, var(--ms-accent) 55%, var(--ms-border));
+}
+.sim-creation-dock[data-collapsed] .sim-composer-frame {
+    height: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+.sim-composer-host,
+.sim-composer-content {
+    height: 100%;
+    min-height: 0;
+}
+.sim-composer-content {
+    display: flex;
+    flex-direction: column;
+    animation: sim-editor-in 180ms ease both;
+}
+@keyframes sim-editor-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+.sim-prompt-popup {
+    position: fixed;
+    z-index: var(--z-popover);
+}
+.sim-prompt-popup :is(.sp-mention, .svc-product-menu) {
+    position: relative;
+    inset: auto;
+    width: 100%;
+    max-height: inherit;
+    overflow-y: auto;
+}
+.sim-creation-dock :is(.sp-composer, .svc) {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+    height: 100%;
+    padding: 0;
+    gap: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    box-shadow: none;
+}
+.sim-creation-dock :is(.sp-composer-body, .svc-content) {
+    flex: 1;
+    min-height: 0;
+    padding: var(--space-5) var(--space-6) var(--space-2);
+    padding-right: calc(var(--space-4) + 36px);
+    gap: var(--space-3) var(--space-4);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    overflow-anchor: none;
+}
+.sim-creation-dock .sp-slots {
+    min-width: 0;
+    max-width: 34%;
+    align-self: flex-start;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+}
+.sim-creation-dock .sp-slot-group {
+    flex: 0 0 auto;
+}
+.sim-creation-dock .sp-slot-wrap {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+}
+.sim-creation-dock .svc-content {
+    display: grid;
+    grid-template-columns: fit-content(34%) minmax(0, 1fr);
+    grid-template-rows: minmax(80px, 1fr) auto auto;
+    grid-template-areas: "materials notes" "product product" "options options";
+    row-gap: 0;
+}
+.sim-creation-dock .svc-tiles {
+    grid-area: materials;
+    width: max-content;
+    max-width: 100%;
+    align-content: start;
+    gap: var(--space-2);
+}
+.sim-creation-dock .svc-tile {
+    width: 64px;
+    height: 80px;
+    border-radius: var(--r-lg);
+    font-size: var(--fs-caption);
+    font-weight: 400;
+}
+.sim-creation-dock .svc-tile:not([data-filled]) {
+    border: 1px dashed var(--ms-border-strong);
+    background: var(--ms-surface-2);
+    color: var(--ms-muted);
+}
+.sim-creation-dock .svc-product {
+    padding: 0;
+    gap: var(--space-2);
+    background: transparent;
+}
+.sim-creation-dock .svc-product-row {
+    grid-area: product;
+}
+.sim-creation-dock .svc-options {
+    grid-area: options;
+}
+.sim-creation-dock :is(.svc-product-row, .svc-options:not(:empty)) {
+    padding-top: var(--space-3);
+}
+.sim-creation-dock .svc-options:empty {
+    display: none;
+}
+.sim-creation-dock .svc-notes {
+    grid-area: notes;
+    min-width: 0;
+    min-height: 0;
+}
+.sim-creation-dock .svc-notes > small {
+    display: none;
+}
+.sim-creation-dock :is(.sp-text, .svc-notes) textarea {
+    flex: 1;
+    height: 0;
+    min-height: 48px;
+    padding: 0;
+    font-size: var(--fs-body);
+    line-height: 1.65;
+    border-radius: 0;
+    scrollbar-width: thin;
+}
+.sim-creation-dock :is(.sp-toolbar, .svc-bar) {
+    flex-shrink: 0;
+    flex-wrap: nowrap;
+    height: 52px;
+    margin: 0;
+    padding: var(--space-2) var(--space-5) var(--space-3);
+    gap: var(--space-2);
+    border-top: 0;
+}
+.sim-creation-dock :is(.sp-toolbar-left, .sp-toolbar-right) {
+    flex-wrap: nowrap;
+}
+.sim-creation-dock .sp-toolbar-left {
+    flex: 1 1 0;
+}
+.sim-creation-dock .svc-bar-options {
+    display: flex;
+    align-items: center;
+    flex: 1 1 0;
+    min-width: 0;
+    gap: var(--space-2);
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.sim-creation-dock .svc-gap {
+    display: none;
+}
+.sim-creation-dock .svc-bar-options > *,
+.sim-creation-dock .svc-go,
+.sim-creation-dock .svc-audio button {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+.sim-creation-dock .sp-composer .sp-model-picker.canvas-composer-model-picker {
+    height: 34px;
+    border-radius: var(--r-md);
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+}
+.sim-creation-dock :is(.sp-chip, .sp-ghost, .sp-icon-btn, .creation-model-picker, .svc-model, .svc-audio, .svc-audio button, .svc-audio i, .svc-option, .svc-product-field) {
+    border-radius: var(--r-full);
+}
+.sim-creation-dock :is(.sp-chip, .svc-model) {
+    height: 34px;
+    border-color: transparent;
+    background: transparent;
+    box-shadow: none;
+    font-weight: 500;
+}
+.sim-creation-dock :is(.sp-chip, .svc-model):hover,
+.sim-creation-dock .sp-composer .sp-model-picker.canvas-composer-model-picker:hover {
+    background: var(--ms-hover);
+}
+.sim-creation-dock .sp-chip[data-tone="accent"] {
+    color: var(--ms-accent-text);
+}
+.sim-creation-dock :is(.sp-slot, .sp-ref, .sp-ref-add) {
+    width: 64px;
+    height: 72px;
+    border-radius: var(--r-md);
+}
+.sim-creation-dock .sp-ref-add[data-empty] {
+    border-style: dashed;
+    background: var(--ms-soft);
+}
+.sim-creation-dock .sp-price {
+    background: transparent;
+    padding-inline: var(--space-1);
+}
+.sim-creation-dock .sp-clear-text {
+    opacity: 0;
+    transition: opacity 150ms;
+}
+.sim-creation-dock .sp-text:is(:hover, :focus-within) .sp-clear-text {
+    opacity: 1;
+}
+.sim-creation-dock .sp-shortcut-trigger .sp-chip {
+    width: 34px;
+    justify-content: center;
+    padding: 0;
+}
+.sim-creation-dock .sp-shortcut-trigger :is(.sp-chip-label, .sp-chip-caret),
+.sim-creation-dock .sp-reverse-trigger > span {
+    display: none;
+}
+.sim-creation-dock .sp-examples {
+    gap: var(--space-2);
+    flex-wrap: nowrap;
+    overflow: hidden;
+}
+.sim-creation-dock .sp-chip[data-tone="danger"] {
+    border-color: var(--ms-border);
+    background: var(--ms-surface);
+    color: var(--ms-muted);
+}
+.sim-creation-dock .sp-dot {
+    background: var(--ms-accent);
+}
+.sim-creation-dock .svc-audio button[data-active] i {
+    background: var(--ms-accent-soft);
+}
+.sim-creation-dock .svc-audio button[data-active] {
+    color: var(--ms-accent-text);
+}
+.sim-creation-dock :is(.sp-send, .svc-go)[data-ready] {
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ms-accent) 32%, transparent);
+}
+.sim-import-state {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-bottom: var(--space-2);
+    padding: var(--space-3);
+    border-radius: var(--r-md);
+    background: var(--ms-surface);
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+}
+.sim-import-state[data-error] {
+    color: var(--status-error);
+}
+.sim-import-state > span {
+    flex: 1;
+    min-width: 0;
+}
+.sim-import-state > a {
+    color: var(--ms-text);
+    text-decoration: underline;
+    text-underline-offset: var(--space-1);
+}
+.sim-video-kind {
+    flex-shrink: 0;
+}
+.sim-video-pending {
+    display: block;
+    color: var(--ms-muted);
+    font-size: var(--fs-label);
+    font-weight: 400;
+}
+@media (max-width: 760px) {
+    .sim-video-results {
+        padding-inline: var(--space-3);
+    }
+    .sim-creation-dock {
+        --sim-frame-height: 324px;
+        width: calc(100% - var(--space-6));
+        bottom: var(--space-3);
+    }
+    .sim-creation-dock[data-expanded] {
+        --sim-frame-height: min(65dvh, 560px);
+    }
+    .sim-mode-capsule .app-segmented-item {
+        min-width: 70px;
+    }
+    .sim-collapse {
+        font-size: 0;
+        width: 32px;
+        padding: 0;
+        gap: 0;
+    }
+    .sim-creation-dock :is(.sp-composer-body, .svc-content) {
+        display: flex;
+        flex-direction: column;
+        padding: var(--space-3);
+    }
+    .sim-creation-dock :is(.sp-slots, .svc-tiles) {
+        max-width: calc(100% - 36px);
+        flex-wrap: nowrap;
+        flex-shrink: 0;
+        overflow-x: auto;
+    }
+    .sim-creation-dock :is(.svc-material-slot, .sp-slot-wrap) {
+        flex-shrink: 0;
+    }
+    .sim-creation-dock :is(.svc-notes, .sp-text) {
+        flex: 1;
+        min-height: 64px;
+        order: 1;
+    }
+    .sim-creation-dock :is(.svc-product-row, .svc-options) {
+        order: 2;
+    }
+    .sim-creation-dock :is(.sp-toolbar, .svc-bar) {
+        height: 104px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+        padding-inline: var(--space-3);
+    }
+    .sim-creation-dock :is(.sp-toolbar-left, .svc-bar-options) {
+        flex: 0 0 100%;
+    }
+    .sim-creation-dock .sp-toolbar-right {
+        width: 100%;
+        justify-content: flex-end;
+        padding-left: 0;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sim-workspace *,
+    .sim-workspace *::before,
+    .sim-workspace *::after {
+        transition-duration: 0s;
+        animation-duration: 0s;
+    }
+}

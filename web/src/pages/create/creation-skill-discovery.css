@@ -1,0 +1,42 @@
+.creation-skill-discovery { width: 100%; min-width: 0; margin: 6px auto 22px; color: var(--user-ink); }
+.creation-tool-rail { display: grid; grid-template-columns: repeat(9, minmax(0, 118px)); justify-content: center; gap: 8px; overflow: visible; margin-bottom: 16px; }
+.creation-tool-item { min-width: 0; }
+.creation-tool-item { display: flex; min-width: 0; min-height: 80px; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 5px 2px; border: 0; border-radius: 14px; background: transparent; color: var(--user-ink); font-size: 12px; font-weight: 500; white-space: nowrap; cursor: pointer; transition: transform 180ms ease, background 180ms ease; }
+.creation-tool-item:hover:not(:disabled), .creation-tool-item:focus-visible:not(:disabled) { transform: translateY(-2px); background: var(--user-surface); }
+.creation-tool-item:focus-visible, .creation-discovery-tabs button:focus-visible, .creation-discovery-controls button:focus-visible, .creation-discovery-card:focus-visible, .creation-discovery-all:focus-visible { outline: 2px solid var(--control-focus-ring); outline-offset: 2px; }
+.creation-tool-item:disabled { color: var(--user-ink-muted); cursor: not-allowed; }
+.creation-tool-item small { font-size: 9px; line-height: 1; color: var(--user-ink-muted); }
+.creation-tool-icon { display: grid; width: 40px; height: 40px; place-items: center; border: 1px solid color-mix(in srgb, var(--user-border) 52%, transparent); border-radius: 12px; background: var(--user-surface); color: var(--user-ink); box-shadow: 0 3px 9px color-mix(in srgb, var(--user-ink) 6%, transparent); transition: box-shadow 180ms ease, border-color 180ms ease; }
+.creation-tool-item:hover:not(:disabled) .creation-tool-icon { border-color: color-mix(in srgb, var(--user-accent) 34%, var(--user-border)); box-shadow: 0 5px 14px color-mix(in srgb, var(--user-ink) 10%, transparent); }
+.creation-tool-item:disabled .creation-tool-icon { opacity: .62; }
+.creation-tool-item.is-agent .creation-tool-icon { color: var(--user-accent); }
+.creation-tool-item.is-audio .creation-tool-icon { color: #c28a25; }
+.creation-tool-item.is-seedance .creation-tool-icon { color: #6b7387; }
+.creation-tool-item.is-image25 .creation-tool-icon { color: #646b7f; }
+.creation-discovery-heading { display: flex; align-items: center; justify-content: space-between; gap: 14px; border-top: 1px solid var(--user-border); }
+.creation-discovery-tabs { display: flex; min-width: 0; gap: 0; overflow-x: auto; scrollbar-width: none; }
+.creation-discovery-tabs button { position: relative; flex: 0 0 auto; padding: 16px 14px 14px; border: 0; background: transparent; color: var(--user-ink-muted); font-size: 14px; cursor: pointer; }
+.creation-discovery-tabs button + button::before { position: absolute; top: 20px; left: 0; width: 1px; height: 12px; background: var(--user-border); content: ""; }
+.creation-discovery-tabs button[aria-selected="true"] { color: var(--user-ink); font-weight: 680; }
+.creation-discovery-controls { display: flex; gap: 5px; padding-bottom: 9px; }
+.creation-discovery-controls button { display: grid; width: 27px; height: 27px; place-items: center; border: 1px solid var(--user-border); border-radius: 50%; background: var(--user-surface); color: var(--user-ink-muted); cursor: pointer; }
+.creation-discovery-note { margin: 9px 0 0; color: var(--user-ink-muted); font-size: 11px; }
+.creation-discovery-rail { display: flex; gap: 14px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; padding: 16px 1px 8px; }
+.creation-discovery-rail::-webkit-scrollbar { display: none; }
+.creation-discovery-card { display: flex; width: 222px; min-width: 222px; flex-direction: column; gap: 5px; scroll-snap-align: start; padding: 6px 6px 10px; border: 1px solid var(--user-border); border-radius: 15px; background: var(--user-surface); color: var(--user-ink); text-align: left; cursor: pointer; box-shadow: 0 5px 16px color-mix(in srgb, var(--user-ink) 4%, transparent); transition: transform 180ms ease, box-shadow 180ms ease; }
+.creation-discovery-card:hover { transform: translateY(-2px); box-shadow: 0 9px 22px color-mix(in srgb, var(--user-ink) 9%, transparent); }
+.creation-discovery-card strong { margin: 3px 5px 0; overflow: hidden; font-size: 13px; font-weight: 680; text-overflow: ellipsis; white-space: nowrap; }
+.creation-discovery-card > span:last-child { margin: 0 5px; overflow: hidden; color: var(--user-ink-muted); font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.creation-discovery-state { display: flex; min-height: 174px; align-items: center; justify-content: center; gap: 8px; color: var(--user-ink-muted); font-size: 13px; }
+.creation-discovery-state button, .creation-discovery-all { border: 0; background: transparent; color: var(--user-accent); font-size: 12px; font-weight: 620; cursor: pointer; }
+.creation-discovery-all { display: flex; align-items: center; gap: 2px; margin: 7px 0 0 auto; padding: 5px 0; }
+.creation-discovery-skeleton { display: flex; gap: 14px; overflow: hidden; padding: 16px 0; }
+.creation-discovery-skeleton span { display: block; flex: 0 0 222px; height: 177px; border-radius: 15px; background: var(--user-surface-muted); animation: discovery-pulse 1.4s ease-in-out infinite alternate; }
+@keyframes discovery-pulse { to { opacity: .5; } }
+@media (max-width: 1100px) { .creation-tool-rail { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .creation-skill-discovery { margin-top: 3px; } .creation-tool-rail { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; margin-bottom: 18px; } .creation-tool-item { min-width: 0; font-size: 11px; } .creation-discovery-tabs button { padding-inline: 9px; font-size: 12px; } .creation-discovery-card { width: 186px; min-width: 186px; } }
+@media (prefers-reduced-motion: reduce) { .creation-tool-item, .creation-discovery-card { transition: none; } .creation-tool-item:hover:not(:disabled), .creation-discovery-card:hover { transform: none; } .creation-discovery-skeleton span { animation: none; } }
+.creation-skill-discovery.is-guest .creation-discovery-heading,
+.creation-skill-discovery.is-guest .creation-discovery-note,
+.creation-skill-discovery.is-guest .creation-discovery-all { display: none; }
+.creation-skill-discovery.is-guest .creation-discovery-state { min-height: 58px; }

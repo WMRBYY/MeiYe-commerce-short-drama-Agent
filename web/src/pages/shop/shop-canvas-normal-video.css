@@ -1,0 +1,199 @@
+.sp-canvas-page .commerce-canvas-layer[data-normal-video] .commerce-canvas-generation {
+    width: 276px;
+    min-height: 0;
+    aspect-ratio: var(--sp-video-node-ratio, 16 / 9);
+    padding: var(--space-3);
+}
+
+.sp-canvas-normal-video > .wb-shell {
+    display: block;
+    height: auto;
+    min-height: 0;
+    padding: 0;
+    background: transparent;
+}
+
+.sp-canvas-normal-video > .wb-shell,
+.sp-canvas-video-settings.wb-shell {
+    --wb-page: var(--ms-surface);
+    --wb-panel: var(--ms-surface);
+    --wb-muted: var(--ms-surface-2);
+    --wb-hover: var(--ms-hover);
+    --wb-line: var(--ms-border);
+    --wb-line-strong: var(--ms-border-strong);
+    --wb-ink: var(--ms-text);
+    --wb-ink-2: var(--ms-text-2);
+    --wb-ink-3: var(--ms-muted);
+    --wb-selected-bg: var(--ms-accent-soft);
+    --wb-selected-fg: var(--ms-accent-text);
+    --wb-selected-line: color-mix(in srgb, var(--ms-accent) 50%, transparent);
+    --wb-thumb: var(--ms-surface-2);
+}
+
+.sp-canvas-video-content {
+    min-width: 0;
+}
+
+.sp-canvas-video-inputs {
+    padding: var(--space-3);
+}
+
+.sp-canvas-video-inputs > .wb-section {
+    gap: var(--space-2);
+    padding: 0;
+    border: 0;
+}
+
+.sp-canvas-video-inputs > .wb-section + .wb-section {
+    margin-top: var(--space-3);
+}
+
+.sp-canvas-video-inputs .wb-drop {
+    min-height: 52px;
+}
+
+.sp-canvas-video-inputs .wb-drop-copy small {
+    display: none;
+}
+
+.sp-canvas-video-inputs .wb-ref-row {
+    flex-wrap: wrap;
+}
+
+.sp-canvas-video-inputs .wb-prompt-editor {
+    height: 86px;
+    min-height: 86px;
+}
+
+.sp-canvas-video-inputs .wb-prompt-meta > span:last-child {
+    display: none;
+}
+
+.sp-canvas-video-content .svg-toolbar {
+    position: sticky;
+    z-index: 1;
+    bottom: 0;
+    overflow: visible;
+    min-height: 54px;
+    height: auto;
+    padding-inline: var(--space-3);
+    background: var(--ms-surface);
+}
+
+.sp-canvas-video-content .svg-controls {
+    overflow: visible;
+}
+
+.sp-canvas-video-content .svg-controls > .sp-dd {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.sp-canvas-video-content .svg-controls .sp-chip {
+    max-width: 100%;
+}
+
+.sp-canvas-video-content :is(.sp-chip-label, .svg-model-label, .svg-spec-label) {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sp-canvas-video-content .wb-submit.ant-btn {
+    --button-primary-bg: var(--ms-accent-soft);
+    --button-primary-fg: var(--ms-accent-text);
+    --button-primary-hover-bg: color-mix(in srgb, var(--ms-accent) 24%, var(--ms-surface));
+    --button-primary-active-bg: color-mix(in srgb, var(--ms-accent) 28%, var(--ms-surface));
+    --button-primary-shadow: none;
+    --button-primary-active-shadow: none;
+}
+
+.sp-canvas-video-settings.wb-shell {
+    max-height: min(480px, 60dvh);
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.sp-canvas-video-message {
+    padding: var(--space-4);
+    color: var(--ms-muted);
+}
+
+.sp-canvas-video-parameters {
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    min-width: 0;
+    color: var(--ms-text);
+}
+
+.sp-canvas-video-run-status {
+    margin: 0;
+    color: var(--ms-muted);
+}
+
+.sp-canvas-video-run-prompt {
+    margin: 0;
+    max-height: 8rem;
+    overflow: auto;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+}
+
+.sp-canvas-video-parameters ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.sp-canvas-video-parameters li {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    max-width: 11rem;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--ms-border);
+    border-radius: var(--radius-md);
+}
+
+.sp-canvas-video-parameters li > :first-child {
+    flex: none;
+}
+
+.sp-canvas-video-parameters li img {
+    width: 1.25rem;
+    height: 1.25rem;
+    object-fit: cover;
+    border-radius: var(--radius-sm);
+}
+
+.sp-canvas-video-parameters li span {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.sp-canvas-video-parameters dl {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7.5rem, 1fr));
+    gap: var(--space-2) var(--space-4);
+    margin: 0;
+}
+
+.sp-canvas-video-parameters dt {
+    color: var(--ms-muted);
+}
+
+.sp-canvas-video-parameters dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+    font-weight: 600;
+}
+
+.sp-canvas-video-run-reuse {
+    justify-self: end;
+}

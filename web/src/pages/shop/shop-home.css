@@ -1,0 +1,570 @@
+/* 电商首页（sh-）：标题切换生图 / 视频、可放大的输入框、推荐工具、案例画廊、下滑出现的胶囊输入框。颜色走 --ms-* 令牌。 */
+.sh-home {
+    position: relative;
+    padding-bottom: 120px;
+}
+.sh-dots {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 520px;
+    pointer-events: none;
+    background-image: radial-gradient(color-mix(in srgb, var(--ms-text) 10%, transparent) 1px, transparent 1px);
+    background-size: 18px 18px;
+    mask-image: radial-gradient(ellipse 70% 60% at 50% 30%, #000 0%, transparent 75%);
+}
+.sh-hero {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 96px 24px 32px;
+}
+.sh-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 0 0 22px;
+    font-size: clamp(22px, 2.4vw, 30px);
+    font-weight: 800;
+    letter-spacing: 0.02em;
+}
+.sh-mode {
+    position: relative;
+    display: inline-flex;
+    padding: 3px;
+    border-radius: 999px;
+    background: var(--ms-soft);
+}
+.sh-mode button {
+    position: relative;
+    height: 32px;
+    padding: 0 16px;
+    border-radius: 999px;
+    color: var(--ms-muted);
+    font-size: 14px;
+    font-weight: 700;
+    transition: color 0.2s;
+}
+.sh-mode button[data-active] {
+    color: var(--ms-ink-text);
+}
+html.dark .sh-mode button[data-active] {
+    color: #111;
+}
+.sh-mode button > span {
+    position: relative;
+}
+.sh-mode-pill {
+    position: absolute;
+    inset: 0;
+    border-radius: 999px;
+    background: var(--ms-ink);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+html.dark .sh-mode-pill {
+    background: #f4f4f5;
+}
+
+.sh-composer,
+.sh-composer-slot {
+    position: relative;
+    width: min(1120px, 100%);
+}
+.sh-composer-slot {
+    height: 220px;
+}
+.sh-composer .ss-composer,
+.sh-composer .sp-composer {
+    box-shadow: var(--ms-shadow-pop);
+}
+.sh-expand {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 3;
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border-radius: 10px;
+    color: var(--ms-muted);
+    transition:
+        background 0.16s,
+        color 0.16s,
+        transform 0.2s var(--ms-ease);
+}
+.sh-expand:hover {
+    background: var(--ms-hover);
+    color: var(--ms-text);
+    transform: scale(1.06);
+}
+.sh-disabled {
+    padding: 40px;
+    border: 1px dashed var(--ms-border-strong);
+    border-radius: 22px;
+    color: var(--ms-muted);
+    text-align: center;
+}
+.sh-expanded {
+    position: fixed;
+    inset: 0;
+    z-index: 900;
+    display: grid;
+    place-items: center;
+    padding: 4vh 6vw;
+    background: rgba(10, 10, 14, 0.45);
+    backdrop-filter: blur(6px);
+}
+.sh-expanded-inner {
+    width: min(1200px, 100%);
+}
+.sh-expanded .sh-composer {
+    width: 100%;
+}
+.sh-expanded .ss-textarea,
+.sh-expanded .sp-composer textarea {
+    min-height: 34vh;
+}
+
+/* 推荐工具 */
+.sh-tools {
+    width: min(1180px, calc(100% - 48px));
+    margin: 12px auto 0;
+}
+.sh-tools > header {
+    display: flex;
+    gap: 22px;
+    margin-bottom: 14px;
+}
+.sh-tools > header button {
+    position: relative;
+    padding: 4px 0;
+    color: var(--ms-muted);
+    font-size: 15px;
+    font-weight: 700;
+    transition: color 0.16s;
+}
+.sh-tools > header button[data-active] {
+    color: var(--ms-text);
+}
+.sh-tools > header button[data-active]::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    bottom: -2px;
+    left: 0;
+    height: 3px;
+    border-radius: 3px;
+    background: var(--ms-text);
+}
+.sh-tool-grid {
+    display: grid;
+    grid-template-columns: 230px 230px minmax(0, 1fr);
+    gap: 12px;
+}
+.sh-feature {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-height: 152px;
+    overflow: hidden;
+    padding: 14px;
+    border-radius: 18px;
+    color: #fff;
+    text-align: left;
+    isolation: isolate;
+}
+.sh-feature img {
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s var(--ms-ease);
+}
+.sh-feature:hover img {
+    transform: scale(1.06);
+}
+.sh-feature-shade {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(180deg, transparent 30%, rgba(0, 0, 0, 0.7));
+}
+.sh-feature.is-brain .sh-feature-shade {
+    background: linear-gradient(160deg, rgba(167, 139, 250, 0.35), rgba(15, 15, 30, 0.75));
+}
+.sh-feature strong {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 18px;
+    font-weight: 800;
+    font-style: italic;
+}
+.sh-feature small {
+    margin-top: 4px;
+    opacity: 0.85;
+    font-size: 12px;
+}
+.sh-feature-spark {
+    width: 14px;
+    height: 14px;
+    background: linear-gradient(135deg, #fff, #f9a8d4);
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    animation: ss-spin 6s linear infinite;
+}
+.sh-tiles {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px;
+}
+.sh-tile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--ms-border);
+    border-radius: 14px;
+    background: var(--ms-surface);
+    text-align: left;
+    transition:
+        border-color 0.18s,
+        box-shadow 0.2s,
+        transform 0.2s var(--ms-ease);
+}
+.sh-tile:hover {
+    border-color: var(--ms-border-strong);
+    box-shadow: var(--ms-shadow);
+    transform: translateY(-2px);
+}
+.sh-tile-cover {
+    flex: none;
+    width: 42px;
+    height: 42px;
+    overflow: hidden;
+    border-radius: 10px;
+}
+.sh-tile-cover img,
+.sh-case-avatars img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.45s var(--ms-ease);
+}
+@media (prefers-reduced-motion: no-preference) {
+    .sh-tile:is(:hover, :focus-visible) .sh-tile-cover img,
+    .sh-case-pill:is(:hover, :focus-visible) .sh-case-avatars img {
+        transform: scale(1.17);
+    }
+    .sh-case-pill:active {
+        transform: scale(0.97);
+    }
+}
+.sh-tile-copy {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+.sh-tile-copy strong {
+    font-size: 13px;
+}
+.sh-tile-copy small {
+    overflow: hidden;
+    color: var(--ms-muted);
+    font-size: 11px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+/* 案例 */
+.sh-cases {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: min(1180px, calc(100% - 48px));
+    margin: 36px auto 0;
+    scroll-margin-top: 16px;
+}
+.sh-case-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 10px 8px 12px;
+    border: 1px solid var(--ms-border);
+    border-radius: 18px;
+    background: var(--ms-surface);
+    box-shadow: var(--ms-shadow);
+    text-align: left;
+    transition:
+        transform 0.2s var(--ms-ease),
+        box-shadow 0.2s;
+}
+.sh-case-pill:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--ms-shadow-pop);
+}
+.sh-case-pill > span:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+}
+.sh-case-pill strong {
+    font-size: 13px;
+}
+.sh-case-pill small {
+    color: var(--ms-muted);
+    font-size: 11px;
+}
+.sh-case-avatars {
+    display: flex;
+}
+.sh-case-avatars i {
+    width: 31px;
+    height: 31px;
+    margin-left: -8px;
+    overflow: hidden;
+    border: 2px solid var(--ms-surface);
+    border-radius: 8px;
+}
+.sh-case-avatars i:first-child {
+    margin-left: 0;
+}
+.sh-case-caret {
+    margin-left: 10px;
+    color: var(--ms-muted);
+    transition: transform 0.25s var(--ms-ease);
+}
+.sh-case-caret[data-open] {
+    transform: rotate(180deg);
+}
+.sh-case-body {
+    width: 100%;
+    overflow: hidden;
+}
+.sh-case-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 28px;
+}
+.sh-case-tabs {
+    display: flex;
+    gap: 18px;
+}
+.sh-case-tabs button {
+    color: var(--ms-muted);
+    font-size: 15px;
+    font-weight: 700;
+    transition: color 0.16s;
+}
+.sh-case-tabs button[data-active] {
+    color: var(--ms-text);
+}
+.sh-case-center {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    height: 30px;
+    padding: 0 12px;
+    border: 1px solid var(--ms-border);
+    border-radius: 999px;
+    color: var(--ms-text-2);
+    font-size: 12px;
+}
+.sh-case-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 12px;
+}
+.sh-case-filters button {
+    height: 28px;
+    padding: 0 12px;
+    border-radius: 999px;
+    color: var(--ms-muted);
+    font-size: 12px;
+    transition:
+        background 0.16s,
+        color 0.16s;
+}
+.sh-case-filters button[data-active] {
+    background: var(--ms-soft);
+    color: var(--ms-text);
+    font-weight: 700;
+}
+.sh-case-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 14px;
+    margin-top: 16px;
+}
+.sh-case {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-align: left;
+}
+.sh-case-media {
+    position: relative;
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--ms-soft);
+}
+.sh-case-media img,
+.sh-case-media video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s var(--ms-ease);
+}
+.sh-case-media video {
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+.sh-case:hover .sh-case-media video {
+    opacity: 1;
+}
+.sh-case:hover .sh-case-media img {
+    transform: scale(1.05);
+}
+.sh-case-play {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: grid;
+    width: 22px;
+    height: 22px;
+    place-items: center;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+}
+.sh-case-use {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #111;
+    font-size: 11px;
+    font-weight: 700;
+    opacity: 0;
+    transform: translateY(4px);
+    transition:
+        opacity 0.2s,
+        transform 0.2s var(--ms-ease);
+}
+.sh-case:hover .sh-case-use {
+    opacity: 1;
+    transform: translateY(0);
+}
+.sh-case-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    font-size: 12px;
+}
+.sh-case-meta small {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    color: var(--ms-muted);
+}
+.sh-case-empty,
+.sh-case-end {
+    display: flex;
+    justify-content: center;
+    margin: 28px 0;
+    color: var(--ms-faint);
+    font-size: 12px;
+}
+
+/* 胶囊输入框 */
+.sh-capsule {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: min(560px, calc(100vw - 48px));
+    height: 50px;
+    padding: 0 8px 0 18px;
+    border: 1px solid var(--ms-border);
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--ms-surface) 88%, transparent);
+    box-shadow:
+        0 18px 50px rgba(0, 0, 0, 0.18),
+        0 0 0 1px rgba(167, 139, 250, 0.12);
+    backdrop-filter: blur(14px);
+    text-align: left;
+}
+.sh-capsule:hover {
+    border-color: var(--ms-border-strong);
+}
+.sh-capsule-spark {
+    flex: none;
+    width: 14px;
+    height: 14px;
+    background: linear-gradient(135deg, #a78bfa, #f472b6);
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    animation: ss-spin 6s linear infinite;
+}
+.sh-capsule-text {
+    flex: 1;
+    overflow: hidden;
+    color: var(--ms-muted);
+    font-size: 13px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.sh-capsule-go {
+    display: grid;
+    flex: none;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 999px;
+    background: var(--ms-ink);
+    color: var(--ms-ink-text);
+}
+html.dark .sh-capsule-go {
+    background: #f4f4f5;
+    color: #111;
+}
+
+@media (max-width: 1024px) {
+    .sh-tool-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+    .sh-tiles {
+        grid-column: 1 / -1;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+@media (max-width: 640px) {
+    .sh-hero {
+        padding-top: 48px;
+    }
+    .sh-tool-grid {
+        grid-template-columns: 1fr;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sh-feature-spark,
+    .sh-capsule-spark {
+        animation: none;
+    }
+}

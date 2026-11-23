@@ -1,0 +1,135 @@
+.meiye-login-dialog {
+    --login-bg: #fff;
+    --login-fg: #18191b;
+    --login-muted: #65666c;
+    --login-input: #f2f3f5;
+    --login-line: #e4e5e8;
+    --login-button: #202225;
+    --login-button-text: #fff;
+    --login-error: #b02c3b;
+    --login-field-border: #e5e7eb;
+    --login-field-hover: #eff0f3;
+    --login-field-focus: #8b93a2;
+    --login-field-active: #f7f8fa;
+    --login-field-halo: rgb(62 73 94 / .07);
+    display: grid;
+    grid-template-columns: 56% 44%;
+    min-height: 560px;
+    color: var(--login-fg);
+    background: var(--login-bg);
+}
+.meiye-login-dialog[data-theme="dark"] {
+    --login-bg: #191a1c;
+    --login-fg: #f3f3f4;
+    --login-muted: #a8a9ae;
+    --login-input: #2b2c2f;
+    --login-line: #36373a;
+    --login-button: #f1f2f4;
+    --login-button-text: #17181b;
+    --login-error: #ff9aa8;
+    --login-field-border: rgb(255 255 255 / .065);
+    --login-field-hover: #303236;
+    --login-field-focus: #858b96;
+    --login-field-active: #2e3034;
+    --login-field-halo: rgb(255 255 255 / .045);
+}
+.meiye-login-overlay .ant-modal-mask { background: rgb(0 0 0 / .52); backdrop-filter: blur(7px); }
+.meiye-login-modal .ant-modal-container { border-radius: 22px; box-shadow: 0 32px 110px rgb(0 0 0 / .32); }
+.meiye-login-modal .ant-modal-header { position: absolute; width: 1px; height: 1px; margin: 0; overflow: hidden; }
+.meiye-login-panel { position: relative; display: flex; flex-direction: column; padding: 40px 32px 30px; }
+.meiye-login-brand { display: flex; align-items: center; gap: 9px; font-size: 19px; font-weight: 750; letter-spacing: -.6px; }
+.meiye-login-brand img { width: 28px; height: 28px; object-fit: contain; }
+.meiye-login-panel h2 { margin: 24px 0 54px; color: var(--login-fg); font-size: 25px; font-weight: 600; letter-spacing: -.7px; line-height: 1.3; }
+.meiye-login-close { position: absolute; top: 28px; right: 25px; display: grid; place-items: center; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 50%; color: var(--login-fg); background: transparent; cursor: pointer; transition: background .2s, transform .2s; }
+.meiye-login-close:hover { background: var(--login-input); transform: rotate(90deg); }
+.meiye-login-showcase { position: relative; min-width: 0; overflow: hidden; isolation: isolate; background: #20292d; }
+.meiye-login-media { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity .65s ease-in-out; }
+.meiye-login-media.is-active { opacity: 1; }
+.meiye-login-media img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.meiye-login-media-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 40%, rgb(7 13 17 / .16) 60%, rgb(7 13 17 / .86) 100%); pointer-events: none; }
+.meiye-login-showcase-arrows { position: absolute; inset: 47% 20px auto; display: flex; justify-content: space-between; pointer-events: none; }
+.meiye-login-showcase-arrows button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; border: 1px solid rgb(255 255 255 / .13); border-radius: 50%; color: #fff; background: rgb(22 27 31 / .28); backdrop-filter: blur(12px); cursor: pointer; pointer-events: auto; transition: background .2s, transform .2s; }
+.meiye-login-showcase-arrows button:hover { background: rgb(22 27 31 / .6); transform: scale(1.06); }
+.meiye-login-caption { position: absolute; inset: auto 26px 19px; color: #fff; }
+.meiye-login-caption-stack { display: grid; }
+.meiye-login-caption-item { grid-area: 1 / 1; visibility: hidden; opacity: 0; pointer-events: none; transition: opacity .3s ease-in-out; }
+.meiye-login-caption-item.is-active { visibility: visible; opacity: 1; }
+.meiye-login-caption h3 { margin: 0 0 7px; color: #fff; font-size: 21px; line-height: 1.4; font-weight: 600; letter-spacing: -.35px; }
+.meiye-login-caption p { max-width: 460px; margin: 0; color: rgb(255 255 255 / .8); font-size: 12px; line-height: 1.7; }
+.meiye-login-playback { display: flex; align-items: center; justify-content: space-between; margin-top: 6px; }
+.meiye-login-dots { display: flex; align-items: center; gap: 1px; margin-left: -6px; }
+.meiye-login-dots button { display: grid; place-items: center; width: 14px; height: 28px; padding: 0; border: 0; background: transparent; cursor: pointer; }
+.meiye-login-dots button span { width: 5px; height: 5px; border-radius: 2px; background: rgb(255 255 255 / .42); transition: background .2s, width .2s; }
+.meiye-login-dots button.is-active span { width: 7px; background: #fff; }
+.meiye-login-pause { display: grid; place-items: center; width: 28px; height: 28px; padding: 0; border: 1px solid rgb(255 255 255 / .22); border-radius: 50%; background: rgb(0 0 0 / .16); color: #fff; cursor: pointer; }
+.meiye-login-dialog .phone-auth-form { flex: 1; }
+.meiye-login-dialog :is(.phone-auth-number-row, .phone-auth-code-row) { min-height: 46px; border: 1px solid var(--login-field-border); border-radius: 10px; background: var(--login-input); transition: border-color .18s ease, background-color .18s ease, box-shadow .18s ease; }
+.meiye-login-dialog :is(.phone-auth-number-row, .phone-auth-code-row):hover { background: var(--login-field-hover); }
+.meiye-login-dialog :is(.phone-auth-number-row, .phone-auth-code-row):focus-within { border-color: var(--login-field-focus); background: var(--login-field-active); box-shadow: 0 0 0 3px var(--login-field-halo); }
+.meiye-login-dialog .phone-auth-number-row[data-invalid="true"] { border-color: color-mix(in srgb, var(--login-error) 50%, transparent); }
+.meiye-login-dialog .phone-auth-number-row { grid-template-columns: 61px minmax(0, 1fr); gap: 0; }
+.meiye-login-dialog .phone-auth-country select, .meiye-login-dialog .phone-auth-input-wrap input { height: 44px; padding: 0 14px; border: 0; border-radius: 9px; color: var(--login-fg); background: transparent; font-size: 13px; box-shadow: none; }
+.meiye-login-dialog :is(.phone-auth-country select, .phone-auth-input-wrap input):is(:focus, :focus-visible) { outline: none; border: 0; background: transparent; box-shadow: none; }
+.meiye-login-dialog .phone-auth-country select { padding: 0 12px; font-size: 12px; font-weight: 500; }
+.meiye-login-dialog .phone-auth-country::after { display: none; }
+.meiye-login-dialog .phone-auth-country::before { position: absolute; top: 15px; bottom: 15px; right: 0; width: 1px; background: var(--login-line); content: ""; }
+.meiye-login-dialog .phone-auth-input-wrap input::placeholder { color: var(--login-muted); opacity: 1; }
+.meiye-login-dialog .phone-auth-code-row { margin-top: 0; overflow: visible; }
+.meiye-login-dialog .phone-auth-send { min-width: 104px; margin: 10px 0; padding: 0 16px; border-left: 1px solid var(--login-line); border-radius: 0; background: transparent; color: var(--login-fg); font-size: 12px; font-weight: 500; transition: color .18s ease, opacity .18s ease; }
+.meiye-login-dialog .phone-auth-send:disabled { color: var(--login-muted); opacity: .75; }
+.meiye-login-dialog .phone-auth-send:hover:not(:disabled) { background: transparent; opacity: .7; }
+.meiye-login-dialog .phone-auth-submit { height: 47px; margin-top: 0; border-radius: 10px; color: var(--login-button-text); background: var(--login-button); font-size: 14px; font-weight: 600; transition: opacity .2s, transform .2s, box-shadow .2s; }
+.meiye-login-dialog .phone-auth-submit:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 6px 20px rgb(0 0 0 / .12); }
+.meiye-login-dialog .phone-auth-submit:active:not(:disabled) { transform: scale(.985); }
+.meiye-login-dialog .phone-auth-submit:disabled { opacity: .55; }
+.meiye-login-dialog .phone-auth-field-note { min-height: 25px; padding: 4px 1px 0; }
+.meiye-login-dialog .phone-auth-feedback-slot { min-height: 35px; padding: 6px 1px 4px; }
+.meiye-login-dialog .phone-auth-error, .meiye-login-dialog .phone-auth-feedback { color: var(--login-error); font-size: 11px; line-height: 1.6; margin: 0; }
+.meiye-login-dialog .phone-auth-availability { color: var(--login-muted); font-size: 11px; line-height: 1.6; margin-top: 9px; }
+.meiye-login-dialog .phone-auth-divider { margin-top: 24px; gap: 14px; color: var(--login-muted); }
+.meiye-login-dialog .phone-auth-divider::before, .meiye-login-dialog .phone-auth-divider::after { background: var(--login-line); }
+.meiye-login-dialog .phone-auth-wechat { width: 48px; height: 48px; flex: 0 0 48px; align-self: center; margin-top: 20px; border: 1px solid var(--login-line); border-radius: 12px; background: transparent; cursor: pointer; transition: background .2s, transform .2s; }
+.meiye-login-dialog .phone-auth-wechat .anticon { color: #19bd69; font-size: 25px; }
+.meiye-login-dialog .phone-auth-wechat:hover { background: var(--login-input); transform: translateY(-2px); }
+.meiye-login-dialog .phone-auth-consent { position: relative; display: flex; gap: 6px; margin-top: auto; padding-top: 25px; color: var(--login-muted); font-size: 11px; line-height: 1.8; }
+.meiye-login-dialog .phone-auth-consent input { appearance: auto; accent-color: var(--login-fg); flex: 0 0 14px; width: 14px; height: 14px; margin-top: 3px; border-radius: 3px; background: transparent; box-shadow: none; cursor: pointer; }
+.meiye-login-dialog .phone-auth-consent input:checked { background: transparent; box-shadow: none; }
+.meiye-login-dialog .phone-auth-consent :is(a, button) { color: var(--login-fg); font-weight: 500; }
+.phone-auth-consent-tip { position: absolute; z-index: 2; bottom: calc(100% - 14px); left: 0; max-width: 100%; padding: 9px 13px; border-radius: 8px; background: #343537; color: #fff; box-shadow: 0 6px 22px rgb(0 0 0 / .18); font-size: 12px; line-height: 1.6; animation: meiye-consent-in .18s ease-out; }
+.phone-auth-consent-tip::after { position: absolute; left: 18px; bottom: -5px; width: 10px; height: 10px; transform: rotate(45deg); background: inherit; content: ""; }
+.phone-auth-policy-content { max-height: 60dvh; overflow-y: auto; line-height: 1.85; white-space: pre-wrap; }
+.meiye-login-dialog :is(button, a, input[type="checkbox"]):focus-visible { outline: 2px solid var(--login-field-focus); outline-offset: 3px; }
+.meiye-login-dialog input:-webkit-autofill { -webkit-text-fill-color: var(--login-fg); box-shadow: 0 0 0 1000px var(--login-input) inset; }
+@keyframes meiye-consent-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 720px) {
+    .meiye-login-modal { max-width: calc(100vw - 24px); margin-inline: auto; padding-block: 12px; }
+    .meiye-login-modal .ant-modal-container { border-radius: 18px; }
+    .meiye-login-dialog { grid-template-columns: 1fr; min-height: 0; max-height: calc(100dvh - 32px); overflow-y: auto; }
+    .meiye-login-showcase { min-height: 210px; }
+    .meiye-login-media img { object-position: center 43%; }
+    .meiye-login-media-shade { background: linear-gradient(180deg, rgb(7 13 17 / .02), rgb(7 13 17 / .3) 35%, rgb(7 13 17 / .76) 67%, rgb(7 13 17 / .9)); }
+    .meiye-login-caption { inset: auto 22px 9px; }
+    .meiye-login-caption h3 { margin-bottom: 4px; font-size: 18px; }
+    .meiye-login-caption p { max-width: 90%; font-size: 11px; }
+    .meiye-login-showcase-arrows { inset: 28% 14px auto; }
+    .meiye-login-showcase-arrows button { width: 32px; height: 32px; }
+    .meiye-login-panel { padding: 23px 25px; }
+    .meiye-login-brand { font-size: 17px; }
+    .meiye-login-brand img { width: 23px; height: 23px; }
+    .meiye-login-close { top: 20px; right: 18px; }
+    .meiye-login-panel h2 { margin: 16px 0 23px; font-size: 23px; }
+    .meiye-login-dialog :is(.phone-auth-country select, .phone-auth-input-wrap input) { font-size: 16px; }
+    .meiye-login-dialog .phone-auth-feedback-slot { min-height: 28px; }
+    .meiye-login-dialog .phone-auth-divider { margin-top: 20px; }
+    .meiye-login-dialog .phone-auth-wechat { margin-top: 14px; }
+    .meiye-login-dialog .phone-auth-consent { padding-top: 20px; }
+}
+@media (max-height: 700px) and (min-width: 721px) {
+    .meiye-login-dialog { min-height: 510px; }
+    .meiye-login-panel { padding-top: 30px; padding-bottom: 24px; }
+    .meiye-login-panel h2 { margin-bottom: 32px; }
+    .meiye-login-dialog .phone-auth-feedback-slot { min-height: 28px; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .meiye-login-dialog *, .meiye-login-overlay { animation: none !important; transition: none !important; }
+}

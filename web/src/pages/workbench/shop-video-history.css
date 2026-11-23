@@ -1,0 +1,61 @@
+/* 电商生成记录的媒体网格，仅 timeline 使用；继续复用工作台媒体状态和操作。 */
+.wb-gallery[data-presentation="timeline"] .svh-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, min(216px, 100%));
+    align-items: start;
+    gap: var(--space-5) var(--space-4);
+}
+.svh-card {
+    min-width: 0;
+}
+.svh-card > .wb-tile {
+    width: 100%;
+}
+.svh-card > .wb-tile:not(.is-output) {
+    min-height: 168px;
+}
+.svh-card .wb-tile > :is(img, video) {
+    object-fit: contain;
+}
+.svh-card-footer {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-width: 0;
+    padding-top: var(--space-1);
+}
+.svh-card-footer .svh-edit {
+    flex-shrink: 0;
+    padding-inline: 0;
+}
+.svh-type {
+    min-width: 0;
+    max-width: 108px;
+    margin-left: auto;
+    padding: 0 var(--space-2);
+    overflow: hidden;
+    border-radius: var(--r-full);
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+    font-size: var(--fs-label);
+    line-height: 1.65;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.svh-card-footer .wb-icon-button {
+    flex-shrink: 0;
+}
+.svh-resume {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--space-2);
+    padding-top: var(--space-2);
+    color: var(--wb-ink-2);
+    font-size: var(--fs-caption);
+    line-height: 1.65;
+    overflow-wrap: anywhere;
+}
+.svh-card .wb-tile-cancel {
+    opacity: 1;
+}

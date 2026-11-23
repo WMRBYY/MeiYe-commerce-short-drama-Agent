@@ -1,0 +1,111 @@
+/* Commerce rail only. User-requested gradient selection and hover motion use the paired mode-shell tokens. */
+.ms-rail[data-mode="ecommerce"] .ms-rail-nav {
+    justify-content: safe center;
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-item {
+    gap: var(--space-1);
+    min-height: 64px;
+    flex-shrink: 0;
+    border-radius: var(--r-lg);
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-item .ms-rail-icon {
+    width: 32px;
+    height: 32px;
+    transform: none;
+    transition: none;
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-active {
+    border-radius: var(--r-lg);
+    background: linear-gradient(145deg, color-mix(in srgb, var(--ms-rail-gradient-start) 18%, var(--ms-surface)), color-mix(in srgb, var(--ms-rail-gradient-end) 6%, var(--ms-surface)));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--ms-accent-strong) 24%, transparent);
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-item .ms-rail-label {
+    font-weight: 500;
+    line-height: 1.3;
+    transition: color 200ms var(--ms-ease);
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-item[data-active] .ms-rail-label {
+    color: var(--ms-accent-text);
+}
+.ms-rail[data-mode="ecommerce"] .ms-rail-item:focus-visible {
+    outline: 2px solid var(--ms-accent-strong);
+    outline-offset: -2px;
+}
+.ms-commerce-icon {
+    width: 28px;
+    height: 28px;
+    overflow: visible;
+    color: var(--ms-text-2);
+    transition:
+        transform 250ms var(--ms-ease),
+        color 200ms var(--ms-ease);
+}
+.ms-commerce-icon-stop-start {
+    stop-color: var(--ms-rail-gradient-start);
+}
+.ms-commerce-icon-stop-end {
+    stop-color: var(--ms-rail-gradient-end);
+}
+.ms-commerce-icon-body,
+.ms-commerce-icon-back {
+    fill-opacity: 0.12;
+    transition:
+        fill-opacity 200ms var(--ms-ease),
+        stroke 200ms var(--ms-ease);
+}
+.ms-commerce-icon-detail,
+.ms-commerce-icon-satellite {
+    fill: none;
+    transition:
+        stroke 200ms var(--ms-ease),
+        transform 250ms var(--ms-ease);
+}
+.ms-commerce-icon-clapper {
+    transform-origin: 3px 9px;
+    transition: transform 250ms var(--ms-ease);
+}
+.ms-rail-item[data-active] .ms-commerce-icon {
+    color: var(--ms-rail-on-gradient);
+}
+.ms-rail-item[data-active] .ms-commerce-icon-body {
+    fill-opacity: 1;
+    stroke: var(--ms-rail-gradient-end);
+}
+.ms-rail-item[data-active] .ms-commerce-icon-back {
+    fill-opacity: 0.4;
+    stroke: var(--ms-rail-gradient-end);
+}
+.ms-rail-item[data-active] .ms-commerce-icon-satellite {
+    stroke: var(--ms-accent-strong);
+}
+@media (hover: hover) and (pointer: fine) {
+    .ms-rail-item:hover .ms-commerce-icon {
+        transform: translateY(-2px) rotate(-5deg);
+    }
+    .ms-rail-item:hover:not([data-active]) .ms-commerce-icon-body {
+        fill-opacity: 0.42;
+        stroke: var(--ms-accent-strong);
+    }
+    .ms-rail-item:hover .ms-commerce-icon[data-icon="spark"] {
+        transform: rotate(15deg) scale(1.08);
+    }
+    .ms-rail-item:hover .ms-commerce-icon[data-icon="canvas"] .ms-commerce-icon-satellite {
+        transform: scale(1.08);
+        transform-origin: center;
+    }
+    .ms-rail-item:hover .ms-commerce-icon-clapper {
+        transform: rotate(-12deg);
+    }
+}
+.ms-rail-item:active .ms-commerce-icon {
+    transform: scale(0.92);
+}
+@media (prefers-reduced-motion: reduce) {
+    .ms-rail[data-mode="ecommerce"] .ms-rail-item,
+    .ms-rail[data-mode="ecommerce"] .ms-rail-label,
+    .ms-rail[data-mode="ecommerce"] .ms-rail-item .ms-commerce-icon,
+    .ms-rail[data-mode="ecommerce"] .ms-rail-item .ms-commerce-icon * {
+        transition: none;
+        transform: none;
+    }
+}

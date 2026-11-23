@@ -1,0 +1,22 @@
+/* 选中节点相关连线的蓝黄流光：只动 stroke-dashoffset，CSS 驱动。 */
+.canvas-connection-stream {
+    stroke-dashoffset: var(--canvas-stream-offset, 0px);
+    animation: canvas-connection-stream 2.1s linear infinite;
+}
+
+/* 位移等于 pathLength(100)，循环无跳帧。 */
+@keyframes canvas-connection-stream {
+    from { stroke-dashoffset: var(--canvas-stream-offset, 0px); }
+    to { stroke-dashoffset: calc(var(--canvas-stream-offset, 0px) - 100px); }
+}
+
+/* 平移/缩放画布时暂停，交互结束继续，和其他连线动画一致。 */
+[data-canvas-viewport-interacting="true"] .canvas-connection-stream,
+html[data-theme-switching="true"] .canvas-connection-stream,
+.no-motion .canvas-connection-stream {
+    animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .canvas-connection-stream { animation: none; }
+}

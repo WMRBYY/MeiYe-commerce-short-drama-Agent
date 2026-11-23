@@ -1,0 +1,38 @@
+[
+    {
+        "id": "skincare-texture-story",
+        "durationSeconds": 20.16,
+        "clips": ["product-petal-fall", "skincare-texture-macro", "product-bullet-time", "product-water-splash"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    },
+    {
+        "id": "skincare-ugc-story",
+        "durationSeconds": 30.16,
+        "clips": ["product-unboxing", "product-in-hand-ugc", "skincare-texture-macro", "product-petal-fall"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    },
+    {
+        "id": "perfume-light-story",
+        "durationSeconds": 20.16,
+        "clips": ["product-hero-reveal", "product-lifestyle-home", "perfume-reveal", "product-black-friday"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    },
+    {
+        "id": "perfume-gift-story",
+        "durationSeconds": 20.16,
+        "clips": ["product-christmas-gift", "perfume-reveal", "product-hero-reveal", "product-black-friday"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    },
+    {
+        "id": "fashion-city-story",
+        "durationSeconds": 25.16,
+        "clips": ["fashion-lookbook-walk", "handbag-street-style", "jewelry-on-hand", "sneaker-street-walk"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    },
+    {
+        "id": "coffee-morning-story",
+        "durationSeconds": 20.16,
+        "clips": ["morning-routine", "food-pour-steam", "product-flat-lay", "product-3d-billboard"],
+        "modifications": "Sequenced distinct source clips, normalized to 720x1280 with letterboxing, audio removed. No loops, time stretching, or generated extra footage."
+    }
+]

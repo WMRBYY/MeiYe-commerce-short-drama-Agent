@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "items": {
+    "doubao-audio-prompt": {
+      "video": "/skill-previews/doubao-audio-prompt.mp4",
+      "poster": "/skill-covers/doubao-audio-prompt.webp"
+    },
+    "yingshi-drama-workshop": {
+      "video": "/skill-previews/yingshi-drama-workshop.mp4",
+      "poster": "/skill-covers/yingshi-drama-workshop.webp"
+    },
+    "yingce-short-drama-workflow": {
+      "video": "/skill-previews/yingce-short-drama-workflow.mp4",
+      "poster": "/skill-covers/yingce-short-drama-workflow.webp"
+    },
+    "14811816970508": {
+      "video": "/skill-previews/14811816970508.mp4",
+      "poster": "/skill-covers/14811816970508.webp"
+    },
+    "14811816981772": {
+      "video": "/skill-previews/14811816981772.mp4",
+      "poster": "/skill-covers/14811816981772.webp"
+    },
+    "14811816970252": {
+      "video": "/skill-previews/14811816970252.mp4",
+      "poster": "/skill-covers/14811816970252.webp"
+    },
+    "14889899552012": {
+      "video": "/skill-previews/14889899552012.mp4",
+      "poster": "/skill-covers/14889899552012.webp"
+    }
+  }
+}

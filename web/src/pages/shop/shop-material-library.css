@@ -1,0 +1,42 @@
+/* 电商上传位的素材库入口：复用图标按钮尺度，以中性浅底和细线媒体图标区分来源。 */
+.shop-material-library-action {
+    display: flex;
+    justify-content: center;
+}
+.shop-material-library-action [data-slot="icon-button"] {
+    color: var(--ms-text-2);
+    background: var(--ms-soft);
+    transition:
+        color var(--motion-dur-fast) ease,
+        background-color var(--motion-dur-fast) ease;
+}
+.shop-material-library-action [data-slot="icon-button"] svg {
+    stroke-width: 1.75;
+}
+.shop-material-library-action [data-slot="icon-button"]:hover {
+    color: var(--ms-text);
+    background: var(--ms-hover);
+}
+.shop-material-library-action [data-slot="icon-button"]:focus-visible {
+    outline: var(--focus-ring-width, 2px) solid var(--ring);
+    outline-offset: 2px;
+}
+.sp-slot-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+}
+.sp-slot-group > .shop-material-library-action {
+    align-self: flex-start;
+    width: 70px;
+}
+.sp-canvas-floating-composer .sp-slot-group > .shop-material-library-action {
+    width: 52px;
+}
+@media (prefers-reduced-motion: reduce) {
+    .shop-material-library-action * {
+        transition: none;
+        animation: none;
+    }
+}

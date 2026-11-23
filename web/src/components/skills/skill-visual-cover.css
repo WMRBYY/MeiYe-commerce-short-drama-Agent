@@ -1,0 +1,5 @@
+.skill-visual-cover { display: block; position: relative; overflow: hidden; width: 100%; aspect-ratio: 16 / 9; border-radius: 12px; background: var(--skeleton-surface, #e9eaf1); }
+.skill-visual-cover img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform 260ms ease; }
+.skill-visual-cover-label { position: absolute; top: 8px; left: 8px; padding: 3px 6px; border: 1px solid rgba(255,255,255,.22); border-radius: 5px; background: rgba(20,25,39,.56); color: #fff; font-size: 10px; line-height: 1; letter-spacing: .03em; pointer-events: none; }
+.skill-visual-cover:hover img, :focus-within > .skill-visual-cover img { transform: scale(1.035); }
+@media (prefers-reduced-motion: reduce) { .skill-visual-cover img { transition: none; } .skill-visual-cover:hover img, :focus-within > .skill-visual-cover img { transform: none; } }

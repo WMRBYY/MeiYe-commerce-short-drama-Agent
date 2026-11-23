@@ -1,0 +1,309 @@
+/* ==========================================================================
+   MeiyeAI 全站统一风格层（与首页即梦式设计同源）
+   - 最后加载；白天 / 夜间各有一套取值。全站不使用渐变色，强调色统一用 logo 蓝 --meiye-logo
+     （meiyeai-logo.png 的平均色，白天、夜间同一个值）。
+   - 按钮不用 logo 色填充：主按钮、选中胶囊、分段控件沿用主题墨色 / 中性底（白天黑底、夜间白底）；
+     线上原先做成渐变的按钮，文字与图标改为 logo 色。
+   - 页面私有样式由懒加载 chunk 注入，可能晚于本文件，因此选择器统一以
+     `html body` 起头提高一级优先级，必要处才使用 !important。
+   ========================================================================== */
+:root {
+    --meiye-logo: #157cf5;
+    --meiye-accent: var(--meiye-logo);
+    --meiye-pill-bg: #17181c;
+    --meiye-pill-fg: #ffffff;
+    /* 分段页签的选中胶囊：白天白底带投影，夜间浅灰底。 */
+    --meiye-thumb-bg: #ffffff;
+    --meiye-thumb-shadow: 0 1px 2px rgba(15, 23, 42, .1), 0 4px 12px -6px rgba(15, 23, 42, .28);
+    --meiye-ease: cubic-bezier(.22, 1, .36, 1);
+    --meiye-shadow-pop: 0 18px 44px -22px rgba(15, 23, 42, .28);
+    --meiye-shadow-card: 0 16px 36px -24px rgba(15, 23, 42, .3);
+    --meiye-shadow-modal: 0 30px 80px -30px rgba(15, 23, 42, .32);
+}
+/* 全站主按钮（线上原先是品牌渐变）：不用渐变、不填 logo 色，文字与图标为 logo 色。
+   夜间沿用主题的浅色实底；白天改为白底 + 发丝描边（墨色实底配蓝字对比太冲）。
+   描边只声明在主按钮自身上，不影响其他复用 --button-primary-shadow 的按钮。
+   自定义皮肤把 --button-primary-* 写在 <html> 行内，优先级更高，不受影响。 */
+:root, :root.dark, .dark {
+    --button-primary-fg: var(--meiye-logo);
+}
+:root:not(.dark) {
+    --button-primary-bg: #ffffff;
+    --button-primary-hover-bg: #f5f6f8;
+    --button-primary-active-bg: #eceef1;
+}
+:root:not(.dark) :is(.ant-btn.ant-btn-color-primary.ant-btn-variant-solid, .creation-media-notice-actions button.is-primary, .creation-submit-action) {
+    --button-primary-shadow: inset 0 0 0 1px rgb(24 24 27 / 0.12), 0 1px 2px rgb(24 24 27 / 0.06);
+    --button-primary-active-shadow: inset 0 0 0 1px rgb(24 24 27 / 0.18);
+}
+/* 禁用态原本去掉投影；白底放在白色面板上会看不见，保留发丝描边。 */
+:root:not(.dark) .ant-btn.ant-btn-color-primary.ant-btn-variant-solid:is(:disabled, .ant-btn-disabled):not([aria-pressed="true"]) { box-shadow: inset 0 0 0 1px rgb(24 24 27 / 0.12) !important; }
+:root:not(.dark) .app-product-workspace .creation-home .creation-submit.ant-btn:disabled .creation-submit-action { box-shadow: inset 0 0 0 1px rgb(24 24 27 / 0.12); }
+/* 对话页结果卡里的主操作（如“重新获取结果”）原本没有投影，补上与主按钮一致的描边。 */
+html body .creation-home .creation-media-notice-actions button.is-primary { box-shadow: var(--button-primary-shadow); }
+/* 夜间：胶囊反色、投影加深；页面与卡片底色改为与首页、画布一致的蓝黑色系。
+   构建时同名选择器会被合并到 globals 的位置，因此覆盖 globals 已有的令牌时必须带 !important。 */
+html.dark {
+    --meiye-pill-bg: #f3f4f6;
+    --meiye-pill-fg: #101114;
+    --meiye-thumb-bg: #f3f4f6;
+    --meiye-thumb-shadow: none;
+    --meiye-shadow-pop: 0 24px 60px -18px rgba(0, 0, 0, .55);
+    --meiye-shadow-card: 0 20px 44px -26px rgba(0, 0, 0, .7);
+    --meiye-shadow-modal: 0 40px 100px -30px rgba(0, 0, 0, .65);
+    --card-surface: #13161e !important;
+    --card-surface-hover: #1a1e29 !important;
+    --workspace-canvas: #0d0f14 !important;
+    --workspace-content: #0d0f14 !important;
+    --workspace-page: #0d0f14 !important;
+}
+html.dark .app-user-workspace,
+html.dark .app-user-overlays {
+    --user-page-bg: #0d0f14 !important;
+    --user-surface: #151821 !important;
+    --user-surface-raised: #1a1d27 !important;
+    --user-surface-muted: #1d2029 !important;
+    --user-surface-hover: #252935 !important;
+    --user-control-pressed: #2d3240 !important;
+    --user-border: rgba(160, 176, 255, .1) !important;
+    --user-border-strong: rgba(160, 176, 255, .18) !important;
+    --user-ink: #eef1f8 !important;
+}
+
+/* 依赖主题色的派生令牌必须在使用处计算：写在 :root 上会在根节点按浅色值定死，
+   弹窗、抽屉等挂在 body 下的深色浮层就会拿到错误的白底。:where 保持零优先级。 */
+:where(*) {
+    --meiye-line: color-mix(in srgb, var(--user-ink, #111) 10%, transparent);
+    --meiye-line-strong: color-mix(in srgb, var(--user-ink, #111) 18%, transparent);
+    --meiye-card: color-mix(in srgb, var(--user-ink, #111) 4.5%, var(--user-surface, #fff));
+    --meiye-card-hover: color-mix(in srgb, var(--user-ink, #111) 8%, var(--user-surface, #fff));
+    --meiye-glass: color-mix(in srgb, var(--user-surface, #fff) 88%, transparent);
+    --meiye-soft: color-mix(in srgb, var(--user-ink, #111) 6%, transparent);
+    --meiye-accent-soft: color-mix(in srgb, var(--meiye-accent) 13%, transparent);
+    --meiye-ring: 0 0 0 3px color-mix(in srgb, var(--meiye-accent) 16%, transparent);
+}
+
+/* ---------- 素材选择卡片：去掉封面下方的深色信息底框，标题改为封面上的渐隐浮层 ---------- */
+html body .asset-picker-card { border-radius: 14px; background: transparent !important; box-shadow: none; transition: transform .35s var(--meiye-ease); }
+html body .asset-picker-card:hover { transform: translateY(-3px); }
+html body .asset-picker-card .asset-picker-card-action { position: relative; overflow: hidden; border-radius: 14px; }
+html body .asset-picker-card .asset-picker-card-media { border-radius: 14px; overflow: hidden; }
+html body .asset-picker-card .asset-picker-card-media img { transition: transform .6s var(--meiye-ease); }
+html body .asset-picker-card:hover .asset-picker-card-media img { transform: scale(1.05); }
+html body .asset-picker-card .asset-picker-card-copy { position: absolute; inset: auto 0 0; z-index: 2; min-height: 0; padding: 26px 10px 9px; background: linear-gradient(180deg, transparent, rgba(6, 9, 18, .72)); color: #fff; opacity: 0; transform: translateY(6px); transition: opacity .3s var(--meiye-ease), transform .3s var(--meiye-ease); pointer-events: none; }
+html body .asset-picker-card:hover .asset-picker-card-copy,
+html body .asset-picker-card .asset-picker-card-action:focus-visible .asset-picker-card-copy { opacity: 1; transform: none; }
+html body .asset-picker-card .asset-picker-card-copy strong { color: #fff; font-size: 12.5px; font-weight: 600; }
+html body .asset-picker-card .asset-picker-card-copy span { color: rgba(255, 255, 255, .72); }
+
+/* ==========================================================================
+   积分中心（充值 / 兑换 / 积分消耗历史）
+   ========================================================================== */
+html body .workspace-wallet-modal .ant-modal-container { position: relative; overflow: hidden; border: 1px solid var(--meiye-line); border-radius: 24px !important; background: var(--user-surface) !important; box-shadow: var(--meiye-shadow-modal) !important; }
+/* 去掉原先的多色流光与下半部遮罩：明暗主题都只保留纯色面板。 */
+html body .workspace-wallet-modal .ant-modal-container::before,
+html body .workspace-wallet-modal .workspace-wallet-shell::before,
+html body .workspace-wallet-modal .workspace-wallet-shell::after { content: none !important; animation: none !important; }
+
+html body .workspace-wallet-modal .workspace-wallet-header { background: transparent !important; }
+html body .workspace-wallet-modal .workspace-wallet-kicker { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 10px; border: 1px solid var(--meiye-line); border-radius: 999px; background: var(--meiye-soft); color: var(--user-ink-muted); font-size: 12px; font-weight: 600; }
+html body .workspace-wallet-modal .workspace-wallet-kicker svg { width: 14px; height: 14px; color: var(--user-ink); }
+html body .workspace-wallet-modal .workspace-wallet-header h2 { font-weight: 700; letter-spacing: -.01em; }
+html body .workspace-wallet-modal .workspace-wallet-header h2::first-letter { color: inherit; }
+html body .workspace-wallet-modal .workspace-wallet-header p { color: var(--user-ink-muted); }
+
+/* 余额卡：中性卡片；积分余额（线上原先是渐变字）用 logo 色，存储容量用正文墨色。 */
+html body .workspace-wallet-modal .workspace-wallet-balance { border: 1px solid var(--meiye-line) !important; border-radius: 16px !important; background: var(--meiye-card) !important; box-shadow: none !important; transition: border-color .3s var(--meiye-ease), transform .3s var(--meiye-ease); }
+html body .workspace-wallet-modal .workspace-wallet-balance strong { color: var(--user-ink); font-variant-numeric: tabular-nums; }
+html body .workspace-wallet-modal .workspace-wallet-balance:not(.is-storage) strong { color: var(--meiye-logo); }
+html body .workspace-wallet-modal button.workspace-wallet-balance:hover { border-color: var(--meiye-line-strong) !important; transform: translateY(-2px); }
+html body .workspace-wallet-modal .wallet-topup-storage-track { height: 4px; overflow: hidden; border-radius: 999px; background: color-mix(in srgb, var(--user-ink) 10%, transparent); }
+html body .workspace-wallet-modal .wallet-topup-storage-track > span { display: block; height: 100%; border-radius: inherit; background: var(--meiye-accent) !important; }
+
+/* 页签：与首页“生成 / 画布”同款分段胶囊，选中项为浅色胶囊（白天白底带投影、夜间浅灰底），文字用 logo 色。 */
+html body .workspace-wallet-modal .workspace-wallet-tabs { display: inline-flex; flex-wrap: wrap; max-width: calc(100% - 48px); gap: 2px; padding: 3px; border: 1px solid var(--meiye-line); border-radius: 20px; background: var(--meiye-soft) !important; }
+html body .workspace-wallet-modal .workspace-wallet-tabs button { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding: 0 16px; border: 0; border-radius: 999px; background: transparent !important; color: var(--user-ink-muted); font-size: 13px; font-weight: 600; box-shadow: none !important; transition: color .25s var(--meiye-ease), background .3s var(--meiye-ease); }
+html body .workspace-wallet-modal .workspace-wallet-tabs button svg { width: 15px; height: 15px; }
+html body .workspace-wallet-modal .workspace-wallet-tabs button:hover { color: var(--user-ink); }
+html body .workspace-wallet-modal .workspace-wallet-tabs button[aria-selected="true"],
+html body .workspace-wallet-modal .workspace-wallet-tabs button[aria-selected="true"]:hover,
+html body .workspace-wallet-modal .workspace-wallet-tabs button[aria-selected="true"]:focus,
+html body .workspace-wallet-modal .workspace-wallet-tabs button[aria-selected="true"]:active { background: var(--meiye-thumb-bg) !important; color: var(--meiye-logo) !important; box-shadow: var(--meiye-thumb-shadow) !important; }
+/* 选中胶囊里的图标跟随胶囊文字色，否则白天黑底上的墨色图标会看不见。 */
+html body .workspace-wallet-modal .workspace-wallet-tabs button[aria-selected="true"] svg { color: inherit !important; }
+
+/* 套餐分组标题与图标。 */
+html body .workspace-wallet-modal .wallet-topup-group-head h3 { font-size: 14px; font-weight: 700; }
+html body .workspace-wallet-modal .wallet-topup-kind-icon { display: inline-grid; place-items: center; border-radius: 9px; background: var(--meiye-soft) !important; color: var(--user-ink); }
+html body .workspace-wallet-modal .wallet-topup-kind-icon svg { width: 15px; height: 15px; }
+html body .workspace-wallet-modal .wallet-topup-group.is-storage .wallet-topup-kind-icon { color: var(--meiye-accent); }
+
+/* 套餐卡：中性卡片，悬停抬起；选中时纯色强调描边 + 浅色外环。 */
+html body .workspace-wallet-modal .wallet-topup-card { position: relative; border: 1px solid var(--meiye-line) !important; border-radius: 16px !important; background: var(--meiye-card) !important; box-shadow: none !important; transition: transform .35s var(--meiye-ease), border-color .3s, background .3s, box-shadow .35s !important; }
+html body .workspace-wallet-modal .wallet-topup-card:hover:not(:disabled) { border-color: var(--meiye-line-strong) !important; background: var(--meiye-card-hover) !important; transform: translateY(-3px); box-shadow: var(--meiye-shadow-card) !important; }
+html body .workspace-wallet-modal .wallet-topup-card.is-selected,
+html body .workspace-wallet-modal .wallet-topup-card.is-selected:hover:not(:disabled) { border-color: var(--meiye-accent) !important; background: var(--meiye-card-hover) !important; box-shadow: var(--meiye-ring) !important; }
+html body .workspace-wallet-modal .wallet-topup-card-check { color: var(--meiye-accent) !important; }
+html body .workspace-wallet-modal .wallet-topup-card-value { font-weight: 700; letter-spacing: -.01em; font-variant-numeric: tabular-nums; }
+html body .workspace-wallet-modal .wallet-topup-card.is-selected .wallet-topup-card-value { color: var(--meiye-logo); }
+html body .workspace-wallet-modal .wallet-topup-card-price { font-variant-numeric: tabular-nums; }
+html body .workspace-wallet-modal .wallet-topup-chip { border: 0 !important; border-radius: 6px !important; background: var(--meiye-accent-soft) !important; color: var(--meiye-accent) !important; }
+html body .workspace-wallet-modal .wallet-topup-chip.is-muted { background: var(--meiye-soft) !important; color: var(--user-ink-muted) !important; }
+
+/* 结算栏：底部玻璃条；主按钮沿用主题墨色按钮，只统一圆角与字重。 */
+html body .workspace-wallet-modal .wallet-topup-checkout { border: 1px solid var(--meiye-line) !important; border-radius: 18px !important; background: var(--meiye-glass) !important; backdrop-filter: blur(18px); box-shadow: none !important; }
+html body .workspace-wallet-modal .wallet-topup-checkout .ant-btn.ant-btn-primary,
+html body .workspace-wallet-modal .workspace-wallet-section .ant-btn.ant-btn-primary { border-radius: 12px !important; font-weight: 700; transition: transform .3s var(--meiye-ease), background-color .2s, color .2s !important; }
+html body .workspace-wallet-modal .wallet-topup-checkout .ant-btn-primary:hover:not(:disabled),
+html body .workspace-wallet-modal .workspace-wallet-section .ant-btn-primary:hover:not(:disabled) { transform: translateY(-1px); }
+html body .workspace-wallet-modal .wallet-topup-checkout .ant-btn-primary:disabled { background: color-mix(in srgb, var(--user-ink) 12%, transparent) !important; color: var(--user-ink-muted) !important; box-shadow: none !important; }
+html body .workspace-wallet-modal .wallet-pay-method { border-radius: 12px !important; border: 1px solid var(--meiye-line) !important; background: var(--meiye-card) !important; transition: border-color .25s, box-shadow .25s, transform .25s var(--meiye-ease) !important; }
+html body .workspace-wallet-modal .wallet-pay-method:hover { transform: translateY(-1px); }
+html body .workspace-wallet-modal .wallet-pay-method.is-selected { border-color: var(--meiye-accent) !important; background: var(--meiye-card-hover) !important; box-shadow: var(--meiye-ring) !important; }
+html body .workspace-wallet-modal .wallet-pay-method-check { background: var(--meiye-accent) !important; }
+
+/* 兑换：居中卡片，输入框聚焦时纯色强调描边 + 浅色外环。 */
+html body .workspace-wallet-modal .workspace-wallet-section { border: 1px solid var(--meiye-line) !important; border-radius: 20px !important; background: var(--meiye-card) !important; }
+html body .workspace-wallet-modal .workspace-wallet-redeem-row .ant-input,
+html body .workspace-wallet-modal .workspace-wallet-redeem-row input { border-radius: 12px !important; border-color: var(--meiye-line-strong) !important; background: var(--user-surface) !important; transition: border-color .25s, box-shadow .25s !important; }
+html body .workspace-wallet-modal .workspace-wallet-redeem-row .ant-input:focus,
+html body .workspace-wallet-modal .workspace-wallet-redeem-row .ant-input-affix-wrapper-focused,
+html body .workspace-wallet-modal .workspace-wallet-redeem-row input:focus { border-color: var(--meiye-accent) !important; box-shadow: var(--meiye-ring) !important; }
+html body .workspace-wallet-modal .workspace-wallet-redeem-link { color: var(--meiye-accent) !important; }
+
+/* 积分消耗历史：按天分组；图标按收支类型区分（消耗中性、收入绿色、退款强调蓝），数值对齐。 */
+html body .workspace-wallet-modal .workspace-wallet-history-toolbar,
+html body .workspace-wallet-modal .workspace-wallet-history-summary { border-radius: 14px !important; }
+html body .workspace-wallet-modal .workspace-wallet-history-summary { border: 1px solid var(--meiye-line) !important; background: var(--meiye-card) !important; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-day h4 { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; gap: 8px; margin: 0; padding: 10px 2px 8px; background: var(--user-surface); color: var(--user-ink-muted); font-size: 12px; font-weight: 600; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-day h4 small { padding: 0 6px; border-radius: 5px; background: var(--meiye-soft); font-size: 11px; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-day-list { overflow: hidden; border: 1px solid var(--meiye-line); border-radius: 16px; background: var(--meiye-card); }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row { border-radius: 0 !important; border: 0 !important; border-bottom: 1px solid var(--meiye-line) !important; background: transparent !important; transition: background .2s; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row:last-child { border-bottom: 0 !important; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row:hover { background: color-mix(in srgb, var(--user-ink) 4%, transparent) !important; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-icon { display: grid; place-items: center; border-radius: 10px !important; background: var(--meiye-soft) !important; color: var(--user-ink-muted); }
+html body .workspace-wallet-modal .workspace-wallet-ledger-icon svg { width: 16px; height: 16px; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row:is(.is-income, .is-bonus) .workspace-wallet-ledger-icon { background: color-mix(in srgb, #12b76a 14%, transparent) !important; color: #12b76a; }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row.is-refund .workspace-wallet-ledger-icon { background: var(--meiye-accent-soft) !important; color: var(--meiye-accent); }
+html body .workspace-wallet-modal .workspace-wallet-ledger-row b { font-variant-numeric: tabular-nums; font-weight: 700; }
+html body .workspace-wallet-modal .workspace-wallet-pagination button { border-radius: 10px !important; border: 1px solid var(--meiye-line) !important; background: var(--meiye-card) !important; }
+html body .workspace-wallet-modal .workspace-wallet-empty svg { color: var(--user-ink-muted); }
+
+/* ==========================================================================
+   画布：右键菜单、添加节点面板、节点外壳
+   画布明暗来自画布自己的主题（可能与站点主题不同），这里只用 currentColor 和
+   组件行内下发的 --menu-accent / --create-accent，不依赖 html.dark。
+   ========================================================================== */
+html body .meiye-canvas-menu { border-radius: 16px !important; box-shadow: 0 22px 54px -24px rgba(0, 0, 0, .42) !important; }
+html body .meiye-canvas-menu .canvas-menu-item { border-radius: 10px !important; transition: background .2s var(--meiye-ease), color .2s, transform .25s var(--meiye-ease); }
+html body .meiye-canvas-menu .canvas-menu-item:not(:disabled):hover { background: color-mix(in srgb, currentColor 9%, transparent) !important; transform: translateX(2px); }
+html body .meiye-canvas-menu .canvas-menu-item:not(:disabled):hover .canvas-menu-item-icon { color: var(--menu-accent, currentColor); opacity: 1; }
+html body .meiye-canvas-menu .canvas-menu-item-icon svg { transition: transform .3s var(--meiye-ease); }
+html body .meiye-canvas-menu .canvas-menu-item:not(:disabled):hover .canvas-menu-item-icon svg { transform: scale(1.1); }
+
+/* 添加节点：图标底座沿用画布主题的中性色块（--create-chip），悬停时图标切到强调色并轻微放大。 */
+html body .canvas-create-menu .canvas-create-tile { border-radius: 12px !important; transition: background .25s var(--meiye-ease), transform .3s var(--meiye-ease) !important; }
+html body .canvas-create-menu .canvas-create-tile:hover { transform: translateY(-2px); }
+html body .canvas-create-menu .canvas-create-tile-icon { width: 40px !important; height: 40px !important; border-radius: 12px !important; transition: transform .35s var(--meiye-ease), color .25s, background-color .25s !important; }
+html body .canvas-create-menu .canvas-create-tile:hover .canvas-create-tile-icon { color: var(--create-accent, currentColor); transform: scale(1.06); }
+
+/* 节点外壳：统一更大的圆角。 */
+html body .canvas-node-shell { --node-radius: 16px; }
+html body [data-node-id]:hover > .canvas-node-shell { transition: box-shadow .3s var(--meiye-ease); }
+html body .canvas-node-status-chip { border-radius: 999px !important; backdrop-filter: blur(10px); }
+html body .canvas-node-tool-button,
+html body .canvas-node-inline-action { border-radius: 10px !important; transition: background .2s, transform .25s var(--meiye-ease) !important; }
+html body .canvas-node-tool-button:hover,
+html body .canvas-node-inline-action:hover { transform: translateY(-1px); }
+
+/* 画布顶栏与工具条：玻璃面板。 */
+html body .canvas-topbar-cluster { border-radius: 14px !important; backdrop-filter: blur(18px) saturate(1.2); }
+html body .canvas-topbar-action { border-radius: 10px !important; transition: background .2s, color .2s, transform .25s var(--meiye-ease) !important; }
+html body .canvas-topbar-action:hover { transform: translateY(-1px); }
+html body .canvas-topbar-view-switch { border-radius: 999px !important; }
+
+/* ==========================================================================
+   全站页面：页面底色、通用卡片 / 输入 / 弹窗
+   ========================================================================== */
+/* 页面底色：纯色，不再叠加彩色光晕。
+   :not(#_) 只用来抬高一级优先级（压过 .is-creation-workspace 的 !important 规则）；压缩器会合并重复类名，不能用双类名。 */
+html body .app-user-workspace .app-workspace-stage:not(#_) { background: var(--user-page-bg) !important; }
+
+/* 页面标题：与首页同一套字体与字重。 */
+html body .app-user-workspace .app-page-header-title,
+html body .app-user-workspace .app-page-header h1 { font-family: "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei UI", system-ui, sans-serif; font-weight: 700; letter-spacing: .01em; }
+
+/* 通用内容卡（资产、技能、短剧、任务、画布库都基于 product-collection-card）：悬停抬起 + 中性投影。 */
+html body .app-user-workspace .product-collection-card,
+html body .app-user-overlays .product-collection-card,
+html body .app-user-workspace .drama-library-card,
+html body .app-user-workspace .app-canvas-create-card {
+    border: 1px solid var(--meiye-line) !important;
+    border-radius: 16px !important;
+    transition: transform .35s var(--meiye-ease), border-color .3s var(--meiye-ease), box-shadow .35s var(--meiye-ease), background .3s !important;
+}
+html body .app-user-workspace .product-collection-card:hover,
+html body .app-user-workspace .drama-library-card:hover,
+html body .app-user-workspace .app-canvas-create-card:hover:not(:disabled) {
+    border-color: var(--meiye-line-strong) !important;
+    transform: translateY(-3px);
+    box-shadow: var(--meiye-shadow-card) !important;
+}
+html body .app-user-workspace .task-record-row:hover { transform: translateY(-1px); }
+html body .app-user-workspace .product-collection-card.is-selected,
+html body .app-user-overlays .product-collection-card.is-selected { border-color: var(--meiye-accent) !important; box-shadow: var(--meiye-ring) !important; }
+html body .app-user-workspace .library-card-media img,
+html body .app-user-workspace .drama-library-cover img { transition: transform .7s var(--meiye-ease); }
+html body .app-user-workspace .product-collection-card:hover .library-card-media img,
+html body .app-user-workspace .drama-library-card:hover .drama-library-cover img { transform: scale(1.04); }
+
+/* 输入框与下拉：聚焦时纯色强调描边 + 浅色外环。 */
+html body :is(.app-user-workspace, .app-user-overlays) :is(.ant-input-affix-wrapper, .ant-input, .ant-input-number, .ant-select .ant-select-selector) { border-radius: 12px !important; transition: border-color .25s, box-shadow .25s !important; }
+html body :is(.app-user-workspace, .app-user-overlays) :is(.ant-input-affix-wrapper-focused, .ant-input:focus, .ant-input-number-focused, .ant-select-focused .ant-select-selector) {
+    border-color: color-mix(in srgb, var(--meiye-accent) 70%, transparent) !important;
+    box-shadow: var(--meiye-ring) !important;
+}
+/* 电商 Agent 输入框是无边框的书写区：点击后直接输入，不叠加上面的强调色描边和外环。 */
+html body :is(.app-user-workspace, .app-user-overlays) .flylep-prompt-box textarea.ant-input:is(:hover, :focus) { border-color: transparent !important; box-shadow: none !important; }
+
+/* 弹窗与抽屉：统一圆角与按主题取值的投影。 */
+html body .app-user-overlays .ant-modal-container,
+html body .workspace-modal .ant-modal-container { border: 1px solid var(--meiye-line); border-radius: 22px !important; box-shadow: var(--meiye-shadow-modal) !important; }
+html body .app-user-overlays .ant-drawer-content { border-left: 1px solid var(--meiye-line); }
+html body .ant-popover .ant-popover-inner,
+html body .ant-dropdown .ant-dropdown-menu { border-radius: 14px !important; }
+html body .ant-dropdown .ant-dropdown-menu-item { border-radius: 9px !important; }
+
+/* 图标按钮：悬停轻微抬起。 */
+html body .app-user-workspace .product-icon-button { border-radius: 10px !important; transition: background .2s, color .2s, transform .25s var(--meiye-ease) !important; }
+html body .app-user-workspace .product-icon-button:hover:not(:disabled) { transform: translateY(-1px); }
+
+/* 工作台（图片 / 视频生成）：设置面板、提示词区与结果卡统一圆角；步骤序号用主题胶囊色。 */
+html body .app-user-workspace :is(.workbench-settings-content, .workbench-prompt, .workbench-composer, .workbench-task-column > section) { border-radius: 18px !important; }
+html body .app-user-workspace .workbench-section-index { background: var(--meiye-pill-bg) !important; color: var(--meiye-pill-fg) !important; }
+
+/* ==========================================================================
+   上传 / 选择素材弹窗
+   ========================================================================== */
+html body .asset-library-picker-modal .ant-modal-container { overflow: hidden; border: 1px solid var(--meiye-line) !important; border-radius: 22px !important; background: var(--user-surface) !important; }
+html body .asset-library-picker-modal .asset-picker-search,
+html body .asset-library-picker-modal .asset-picker-search.ant-input-affix-wrapper { border: 1px solid var(--meiye-line) !important; border-radius: 12px !important; background: var(--meiye-soft) !important; }
+html body .asset-library-picker-modal .asset-picker-search:focus-within { border-color: color-mix(in srgb, var(--meiye-accent) 70%, transparent) !important; box-shadow: var(--meiye-ring) !important; }
+html body .asset-library-picker-modal .asset-picker-categories button,
+html body .asset-library-picker-modal .assets-filter-item { border-radius: 10px !important; transition: background .2s, color .2s; }
+/* 上传区：中性虚线框，悬停时描边与图标切到强调色。 */
+html body .asset-library-picker-modal .asset-picker-upload { position: relative; border: 1px dashed var(--meiye-line-strong) !important; border-radius: 16px !important; background: color-mix(in srgb, var(--user-ink) 3%, transparent) !important; transition: border-color .3s, background .3s, transform .3s var(--meiye-ease); }
+html body .asset-library-picker-modal .asset-picker-upload:hover { border-color: var(--meiye-accent) !important; background: color-mix(in srgb, var(--meiye-accent) 6%, transparent) !important; transform: translateY(-1px); }
+html body .asset-library-picker-modal .asset-picker-upload svg { color: var(--user-ink-muted); transition: color .3s; }
+html body .asset-library-picker-modal .asset-picker-upload:hover svg { color: var(--meiye-accent); }
+html body .asset-library-picker-modal .asset-picker-card-check { background: var(--meiye-accent) !important; color: #fff !important; }
+html body .asset-library-picker-modal .assets-cover-badge { border-radius: 6px !important; background: rgba(8, 11, 20, .55) !important; backdrop-filter: blur(8px); color: #fff !important; }
+
+/* ==========================================================================
+   线上原先做成渐变的选中态按钮：分段控件、筛选项、技能分类。
+   底色保持各自的中性选中底（不填 logo 色），选中项的文字与图标改为 logo 色。
+   ========================================================================== */
+html body :is(.app-user-workspace, .app-user-overlays) .ant-segmented .ant-segmented-item-selected { color: var(--meiye-logo); }
+html body .app-user-workspace :is(.skills-rail-item, .assets-filter-item, .collection-filter-item):is([aria-current="true"], [aria-pressed="true"], .is-active),
+html body .asset-library-picker-modal :is(.asset-picker-categories button, .assets-filter-item):is([aria-current="true"], [aria-pressed="true"], .is-active) { color: var(--meiye-logo) !important; }
+html body .app-user-workspace .skills-rail-item[aria-pressed="true"] svg { color: currentColor; }

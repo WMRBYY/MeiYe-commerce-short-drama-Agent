@@ -1,0 +1,1166 @@
+import { ImageSizePicker } from "@/components/image-size-picker";
+import { workspaceTeamId } from "@/lib/workspace-routes";
+import { ImageParameterFields } from "@/components/image-parameter-fields";
+import { imageResolutionUsesQuality, imageSizePresets } from "@/lib/image-size-presets";
+import { createPortal } from "react-dom";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type PointerEvent, type ReactNode, type RefObject } from "react";
+import { useTranslation } from "react-i18next";
+import { Button, Popover } from "antd";
+import { useWorkspaceTopBarMount } from "@/components/layout/workspace-top-bar-extension";
+import { Tooltip } from "@/components/ui/base/tooltip";
+import { Reorder, LayoutGroup, motion, useReducedMotion } from "motion/react";
+import type { Transition } from "motion/react";
+import { type ThinkingLevel, type ThinkingRequest } from "@/lib/text-thinking";
+import { ThinkingLevelSlider } from "@/components/thinking-level-slider";
+import { ArrowUp, ChevronDown, ChevronLeft, ChevronRight, Clapperboard, Clock3, Film, History, Image as ImageIcon, LoaderCircle, Maximize2, MessageSquareText, Minimize2, Plus, SlidersHorizontal, Trash2, Waves, X, Orbit, PenLine } from "lucide-react";
+
+import { WorkingGlow } from "@/components/ai/working-indicator";
+import { formatVideoResolutionLabel as videoResolutionLabel } from "@/lib/video-generation-options";
+import { CanvasResourceMentionTextarea } from "@/components/canvas/canvas-resource-mention-textarea";
+import { VoiceRecordingButton } from "@/components/conversation/voice-recording-button";
+import { HoverBorderGradient } from "@/components/ui/aceternity/hover-border-gradient";
+import { SpotlightSurface } from "@/components/ui/aceternity/spotlight-surface";
+import { ModelPicker } from "@/components/model-picker";
+import { aceternityMotion } from "@/lib/aceternity-motion";
+import { CreditSymbol, requestCreditCost } from "@/constant/credits";
+import { RollingCreditAmount } from "@/components/rolling-credit-text";
+import { ASSET_CATEGORY_LABELS } from "@/lib/asset-category";
+import { formatShotOrdinal } from "@/lib/shot-label";
+import { buildImageResolutionOptions, formatImageResolutionSize, supportsImageResolutionPresets } from "@/lib/image-resolution-tiers";
+import { videoDurationOptions, type ImageCapabilityConfig, type VideoCapabilityConfig } from "@/lib/model-capabilities";
+import { preserveVideoSettings as normalizeVideoValue } from "@/lib/media-settings";
+import { mediaSettingIssues } from "@/lib/media-settings";
+import { MediaSettingsNotice } from "@/components/media-settings-notice";
+import { mergedImageCapabilityConfig, type ModelRequirements } from "@/lib/model-selection";
+import { imageQualityLabel } from "@/lib/image-quality";
+import { modelQuoteDescription, modelQuoteRequest } from "@/lib/model-pricing";
+import { useModelQuote } from "@/hooks/use-model-quote";
+import { modelOptionName, resolveModelChannel, type AiConfig } from "@/stores/use-config-store";
+import { useUserStore } from "@/stores/use-user-store";
+import { currentLocale, translate } from "@/i18n";
+import { useGenerationBatchLimit, batchQuoteTotal } from "@/lib/generation-batch-limit";
+import type { PromptOptimizerProvider } from "@/lib/plugins/plugin-types";
+import { type CreationReference } from "./creation-references";
+import { hasCreationReferenceDrop, readCreationReferenceDrop, type CreationReferenceDrop } from "./creation-reference-drop";
+import { creationAttachmentKind, type CreationAttachment, type CreationMode } from "./creation-assets";
+import { countOptions, qualityOptions, resolutionOptions, type CreationShotRailEntry } from "./creation-types";
+import { creationMessageNeedsResultSync } from "./creation-conversations";
+import "./creation-product.css";
+import "./creation-scrollbars.css";
+import { CreationAttachmentThumbnail, CreationMediaPreviewModal } from "./creation-workspace-messages";
+import { HomeSendOrb, HomeUploadTile } from "./home/home-composer-tools";
+
+export { CreationHistoryDrawer } from "./creation-workspace-history";
+export { CreationMessageView } from "./creation-workspace-messages";
+export { CreationEmptyBanner, CreationEmptySuggest, CreationFeaturedWorks } from "./creation-workspace-empty";
+
+const CanvasPromptOptimizerDrawer = lazy(() => import("@/components/canvas/canvas-prompt-optimizer-drawer").then((module) => ({ default: module.CanvasPromptOptimizerDrawer })));
+
+export const creationAssetCategoryLabels: Record<string, string> = {
+    get all() {
+        return translate("createWorkspace.library.allAssets");
+    },
+    ...ASSET_CATEGORY_LABELS,
+};
+
+export function CreationWorkspaceToolbar({
+    shots,
+    onJumpToShot,
+    onNewConversation,
+    onOpenHistory,
+    onContinueCanvas,
+    openingCanvas,
+}: {
+    shots: CreationShotRailEntry[];
+    onJumpToShot: (shot: CreationShotRailEntry) => void;
+    onNewConversation: () => void;
+    onOpenHistory: () => void;
+    onContinueCanvas: () => void;
+    openingCanvas: boolean;
+}) {
+    const { t } = useTranslation();
+    const [railOpen, setRailOpen] = useState(false);
+    const railRef = useRef<HTMLDivElement>(null);
+    useEffect(() => {
+        if (!railOpen) return;
+        const onPointerDown = (event: MouseEvent) => {
+            if (railRef.current && !railRef.current.contains(event.target as Node)) setRailOpen(false);
+        };
+        window.addEventListener("mousedown", onPointerDown);
+        return () => window.removeEventListener("mousedown", onPointerDown);
+    }, [railOpen]);
+    const mount = useWorkspaceTopBarMount();
+    const toolbar = (
+        <header className="creation-thread-toolbar">
+            <div className="creation-toolbar-shots" ref={railRef}>
+                <button type="button" className="creation-rail-trigger" aria-expanded={railOpen} aria-haspopup="listbox" onClick={() => setRailOpen((open) => !open)}>
+                    <Clapperboard />
+                    {t("createWorkspace.toolbar.timeline")}
+                    {shots.length > 0 ? <em className="creation-rail-count">{shots.length}</em> : null}
+                </button>
+                {railOpen ? (
+                    <div className="creation-rail-pop" role="listbox" aria-label={t("createWorkspace.toolbar.timeline")}>
+                        <div className="creation-rail-pop-head">
+                            <span className="creation-rail-pop-title">
+                                {t("createWorkspace.toolbar.timeline")}
+                                <small>{shots.length ? t("createWorkspace.toolbar.shotCount", { count: shots.length }) : t("createWorkspace.toolbar.emptyTrack")}</small>
+                            </span>
+                            <button type="button" className="creation-rail-pop-close" aria-label={t("createWorkspace.toolbar.closeShotList")} onClick={() => setRailOpen(false)}>
+                                <X />
+                            </button>
+                        </div>
+                        {shots.length ? (
+                            <ol className="creation-rail-list">
+                                {shots.map((shot) => {
+                                    const resultStatus = shot.result?.status;
+                                    const resultNeedsSync = Boolean(shot.result && creationMessageNeedsResultSync(shot.result));
+                                    const statusLabel =
+                                        resultStatus === "done"
+                                            ? t("createWorkspace.toolbar.shotDone")
+                                            : resultNeedsSync
+                                              ? t("createWorkspace.toolbar.shotPendingSync")
+                                              : resultStatus === "error"
+                                                ? t("create.status.failed")
+                                                : resultStatus === "pending"
+                                                  ? t("createWorkspace.status.generating")
+                                                  : resultStatus === "cancelled"
+                                                    ? t("create.status.stopped")
+                                                    : t("createWorkspace.toolbar.shotIdle");
+                                    return (
+                                        <li key={shot.key}>
+                                            <button
+                                                type="button"
+                                                role="option"
+                                                aria-selected="false"
+                                                className="creation-rail-row"
+                                                onClick={() => {
+                                                    setRailOpen(false);
+                                                    onJumpToShot(shot);
+                                                }}
+                                            >
+                                                <span className="creation-rail-row-shot">{formatShotOrdinal(shot.ordinal - 1)}</span>
+                                                <span className="creation-rail-row-prompt">{shot.user.content || t("createWorkspace.toolbar.videoShot")}</span>
+                                                <span className={`creation-rail-row-state is-${resultNeedsSync ? "sync" : resultStatus || "idle"}`}>{statusLabel}</span>
+                                            </button>
+                                        </li>
+                                    );
+                                })}
+                            </ol>
+                        ) : (
+                            <p className="creation-rail-empty">{t("createWorkspace.toolbar.emptyHint")}</p>
+                        )}
+                    </div>
+                ) : null}
+            </div>
+            <div className="creation-toolbar-actions">
+                <Button size="small" loading={openingCanvas} onClick={onContinueCanvas}>
+                    {t("createWorkspace.toolbar.continueCanvas")}
+                </Button>
+                <Tooltip title={t("create.history.new")}>
+                    <button type="button" aria-label={t("create.history.new")} className="creation-toolbar-action" onClick={onNewConversation}>
+                        <Plus />
+                    </button>
+                </Tooltip>
+                <Tooltip title={t("create.history.title")}>
+                    <button type="button" aria-label={t("create.page.viewHistory")} className="creation-toolbar-action" onClick={onOpenHistory}>
+                        <History />
+                    </button>
+                </Tooltip>
+            </div>
+        </header>
+    );
+    if (mount) return createPortal(toolbar, mount);
+    if (mount === null) return null;
+    return toolbar;
+}
+
+type ComposerProps = {
+    variant: "empty" | "thread";
+    mode: CreationMode;
+    prompt: string;
+    setPrompt: (value: string) => void;
+    busy: boolean;
+    generationActive: boolean;
+    referenceReplacementBusy: boolean;
+    referenceDropBusy: boolean;
+    onReferenceDrop: (drop: CreationReferenceDrop) => void;
+    attachments: CreationAttachment[];
+    referenceImageSize?: { width: number; height: number };
+    maxReferences: number;
+    references: CreationReference[];
+    onRemoveAttachment: (id: string) => void;
+    onClearAttachments: () => void;
+    onClearComposer: () => void;
+    onReorderAttachments: (attachments: CreationAttachment[]) => void;
+    onReplaceAttachment: (targetAttachmentId: string, replacement: CreationAttachment) => void;
+    onReplaceReferenceFiles: (targetAttachmentId: string, files: File[]) => void;
+    onOpenLibrary: () => void;
+    onModeChange: (mode: CreationMode) => void;
+    model: string;
+    modelRequirements: ModelRequirements;
+    videoProfile: VideoCapabilityConfig;
+    imageProfile: ImageCapabilityConfig;
+    config: AiConfig;
+    onModelChange: (value: string) => void;
+    ratio: string;
+    setRatio: (value: string) => void;
+    seconds: string;
+    setSeconds: (value: string) => void;
+    quality: string;
+    setQuality: (value: string) => void;
+    imageResolution: string;
+    setImageResolution: (value: string) => void;
+    imageParameters?: string;
+    setImageParameters: (value: string) => void;
+    setTransparentBackground: (value: string) => void;
+    videoQuality: string;
+    setVideoQuality: (value: string) => void;
+    count: string;
+    setCount: (value: string) => void;
+    textStreaming: boolean;
+    setTextStreaming: (value: boolean) => void;
+    /** 当前模型可选的思考档位；为空时不显示思考控件。 */
+    textThinkingLevels: ThinkingLevel[];
+    /** 当前生效档位；空字符串表示跟随模型默认且模型没有声明默认值。 */
+    textThinkingLevel: ThinkingLevel | "";
+    textThinkingRequest: ThinkingRequest;
+    setTextThinkingLevel: (value: ThinkingRequest) => void;
+    promptOptimizerProvider: PromptOptimizerProvider | null;
+    composerFocusRef: RefObject<HTMLTextAreaElement | null>;
+    onPromptFocus: () => void;
+    placeholderOverride?: string;
+    onSubmit: () => void;
+    /** 首页即梦式布局：左侧上传格、类型菜单、技能/@ 入口与星芒发送按钮；首页与对话页共用。 */
+    home?: { modeMenu: ReactNode; trailingControls?: ReactNode };
+};
+
+type CreationReferenceFilter = "all" | "image" | "video" | "audio" | "file";
+
+const CREATION_PROMPT_MIN_HEIGHT = 48;
+const CREATION_PROMPT_MAX_HEIGHT = 300;
+
+function clampCreationPromptHeight(height: number) {
+    return Math.min(CREATION_PROMPT_MAX_HEIGHT, Math.max(CREATION_PROMPT_MIN_HEIGHT, Math.ceil(height)));
+}
+
+export function CreationComposer(props: ComposerProps) {
+    const { t } = useTranslation();
+    const composerRef = useRef<HTMLDivElement>(null);
+    const resizeStartRef = useRef<{ y: number; height: number } | null>(null);
+    const [composerHeight, setComposerHeight] = useState<number | null>(null);
+    const [referenceDragOver, setReferenceDragOver] = useState(false);
+    const [previewUrl, setPreviewUrl] = useState("");
+    const [previewType, setPreviewType] = useState<"image" | "video">("image");
+    const [promptOptimizerOpen, setPromptOptimizerOpen] = useState(false);
+    const [promptHeight, setPromptHeight] = useState(CREATION_PROMPT_MIN_HEIGHT);
+    const [referenceFilter, setReferenceFilter] = useState<CreationReferenceFilter>("all");
+    const [canDragReferences, setCanDragReferences] = useState(false);
+    const [dropTargetReferenceId, setDropTargetReferenceId] = useState<string | null>(null);
+    const attachmentTrackRef = useRef<HTMLUListElement>(null);
+    const cardDragRef = useRef<{ startX: number; startY: number; moved: boolean } | null>(null);
+    const suppressAttachmentClickRef = useRef(false);
+    const [trackState, setTrackState] = useState({ canScrollLeft: false, canScrollRight: false, isExpanded: true, isDragging: false });
+    const previousAttachmentCountRef = useRef(0);
+    const interactionBusy = props.busy || props.referenceReplacementBusy || props.referenceDropBusy;
+    const homeLayout = Boolean(props.home);
+    // 创作页张数等于拆单数，上限按账号同时任务数，硬上限仍为 15。
+    const imageBatchLimit = Math.min(15, useGenerationBatchLimit());
+    const settingsError = mediaSettingIssues(props.config, props.mode, props.model)
+        .map((item) => item.message)
+        .join("；");
+    const canSubmit = Boolean(props.prompt.trim()) && !interactionBusy && !settingsError;
+    const creditsEnabled = useUserStore((state) => state.features.creditsEnabled);
+    const userId = useUserStore((state) => state.user?.id);
+    const priceChannel = resolveModelChannel(props.config, props.model);
+    // 实际提交单数与 index.tsx 的 taskCount 同样 clamp。
+    const imageTaskCount = Math.max(1, Math.min(imageBatchLimit, Math.floor(Number(props.count)) || 1));
+    // 服务端按单任务报价，图片按每单 1 张询价，显示时再乘实际单数。
+    const quoteRequirements = useMemo(() => (props.mode === "image" ? { ...props.modelRequirements, options: { ...props.modelRequirements.options, count: 1 } } : props.modelRequirements), [props.mode, props.modelRequirements]);
+    const quoteRequest = useMemo(() => modelQuoteRequest(props.config, props.model, props.mode, quoteRequirements), [props.config, props.mode, props.model, quoteRequirements]);
+    const selectedCost = priceChannel.modelCosts?.find((item) => item.model === modelOptionName(props.model));
+    const routeQuote = useModelQuote(quoteRequest, creditsEnabled, selectedCost);
+    const canOptimizePrompt = Boolean(props.promptOptimizerProvider) && (props.mode === "image" || props.mode === "video");
+    const optimizerReferences = props.references.filter((reference) => reference.active && reference.kind !== "skill");
+    const credits = requestCreditCost({
+        channelMode: priceChannel.scope === "system" ? "remote" : "local",
+        modelCosts: priceChannel.modelCosts,
+        model: modelOptionName(props.model),
+        modelValue: props.model,
+        count: props.mode === "image" ? imageTaskCount : 1,
+        seconds: props.mode === "video" ? props.seconds : 1,
+        capability: props.mode,
+        config: props.config,
+        requirements: props.modelRequirements,
+    });
+    const generationCredits = routeQuote ? batchQuoteTotal(routeQuote.amountMicrocredits, props.mode === "image" ? imageTaskCount : 1) : credits;
+    const showCost = creditsEnabled && generationCredits !== null && generationCredits !== undefined;
+    const formattedCredits = generationCredits?.toLocaleString(currentLocale(), { maximumFractionDigits: 6 });
+    const actionLabel = props.referenceReplacementBusy
+        ? t("createWorkspace.composer.replacingReference")
+        : interactionBusy || (props.generationActive && !canSubmit)
+          ? t("createWorkspace.status.generating")
+          : showCost
+            ? t(!userId || routeQuote?.estimated ? "createWorkspace.composer.sendWithEstimate" : "createWorkspace.composer.sendWithCost", { credits: formattedCredits })
+            : t("createWorkspace.composer.send");
+    // Send-button working state must span the WHOLE generation (not just the
+    // submit-lock window): spinner + glow stay while a message is pending and
+    // the composer is empty; typing a next prompt returns the arrow so the
+    // user knows a new send is possible.
+    const showWorkingSpinner = interactionBusy || (props.generationActive && !canSubmit);
+    const showWorkingGlow = props.generationActive && !canSubmit;
+    const placeholder = props.mode === "text" ? t("createWorkspace.composer.placeholder.text") : props.mode === "image" ? t("createWorkspace.composer.placeholder.image") : t("createWorkspace.composer.placeholder.video");
+    const emptyPlaceholder = t("createWorkspace.composer.emptyPlaceholder");
+    const imageReferencesSupported = props.imageProfile.references.maxImages > 0;
+    const referencesSupported = props.mode === "image" ? imageReferencesSupported : props.mode !== "video" || props.maxReferences > 0;
+    const canAddMoreReferences = referencesSupported && props.attachments.length < props.maxReferences;
+    const addReferenceLabel = interactionBusy
+        ? props.referenceReplacementBusy
+            ? t("createWorkspace.composer.replacingReference")
+            : t("createWorkspace.composer.addReferenceBusy")
+        : canAddMoreReferences
+          ? t("createWorkspace.composer.addMoreReferences")
+          : t("createWorkspace.composer.referenceLimitReached", { count: props.maxReferences });
+    const handlePromptContentSizeChange = useCallback((naturalHeight: number) => {
+        const nextHeight = clampCreationPromptHeight(naturalHeight);
+        setPromptHeight((currentHeight) => (currentHeight === nextHeight ? currentHeight : nextHeight));
+    }, []);
+    const referenceCounts = useMemo(
+        () =>
+            props.attachments.reduce(
+                (counts, attachment) => {
+                    const kind = creationAttachmentKind(attachment);
+                    counts[kind] += 1;
+                    return counts;
+                },
+                { image: 0, video: 0, audio: 0, file: 0 },
+            ),
+        [props.attachments],
+    );
+    const visibleAttachments = useMemo(() => (referenceFilter === "all" ? props.attachments : props.attachments.filter((attachment) => creationAttachmentKind(attachment) === referenceFilter)), [props.attachments, referenceFilter]);
+    const imageSettingsSupported = props.imageProfile.size.parameter !== "none" || props.imageProfile.quality.supported || imageBatchLimit > 1;
+    const updateTrackScrollState = useCallback(() => {
+        const track = attachmentTrackRef.current;
+        if (!track) return;
+        setTrackState((current) => ({
+            ...current,
+            canScrollLeft: track.scrollLeft > 1,
+            canScrollRight: track.scrollLeft + track.clientWidth < track.scrollWidth - 1,
+        }));
+    }, []);
+    const setReferencePanelExpanded = useCallback((isExpanded: boolean) => {
+        setTrackState((current) => ({ ...current, isExpanded }));
+        if (!isExpanded) setReferenceFilter("all");
+    }, []);
+    useEffect(() => {
+        const hadAttachments = previousAttachmentCountRef.current > 0;
+        if (!props.attachments.length) setReferencePanelExpanded(false);
+        else if (!hadAttachments) setReferencePanelExpanded(true);
+        previousAttachmentCountRef.current = props.attachments.length;
+        updateTrackScrollState();
+    }, [props.attachments.length, setReferencePanelExpanded, updateTrackScrollState]);
+    useEffect(() => {
+        const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+        const update = () => setCanDragReferences(query.matches);
+        update();
+        query.addEventListener("change", update);
+        return () => query.removeEventListener("change", update);
+    }, []);
+    useEffect(() => {
+        const frame = window.requestAnimationFrame(updateTrackScrollState);
+        return () => window.cancelAnimationFrame(frame);
+    }, [referenceFilter, trackState.isExpanded, updateTrackScrollState, visibleAttachments.length]);
+    const beginCardDrag = (event: PointerEvent<HTMLElement>) => {
+        if (event.button !== 0 || interactionBusy || !trackState.isExpanded) return;
+        if ((event.target as HTMLElement).closest(".creation-reference-card-remove")) return;
+        cardDragRef.current = { startX: event.clientX, startY: event.clientY, moved: false };
+    };
+    const endCardDrag = (event: PointerEvent<HTMLElement>) => {
+        const drag = cardDragRef.current;
+        if (!drag) return;
+        cardDragRef.current = null;
+        if (drag.moved) {
+            suppressAttachmentClickRef.current = true;
+            window.setTimeout(() => {
+                suppressAttachmentClickRef.current = false;
+            }, 0);
+        }
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+        setTrackState((current) => ({ ...current, isDragging: false }));
+    };
+    const moveCardDrag = (event: PointerEvent<HTMLElement>) => {
+        const drag = cardDragRef.current;
+        if (!drag || drag.moved) return;
+        if (Math.hypot(event.clientX - drag.startX, event.clientY - drag.startY) <= 4) return;
+        drag.moved = true;
+        setTrackState((current) => ({ ...current, isDragging: true, isExpanded: true }));
+    };
+    const previewAttachment = (type: "image" | "video", url: string) => {
+        if (suppressAttachmentClickRef.current || cardDragRef.current?.moved) return;
+        setPreviewType(type);
+        setPreviewUrl(url);
+    };
+    const reorderVisibleAttachments = useCallback(
+        (next: CreationAttachment[]) => {
+            if (referenceFilter === "all") {
+                props.onReorderAttachments(next);
+                return;
+            }
+            const visibleIds = new Set(visibleAttachments.map((attachment) => attachment.id));
+            const reordered = [...next];
+            props.onReorderAttachments(props.attachments.map((attachment) => (visibleIds.has(attachment.id) ? reordered.shift() || attachment : attachment)));
+        },
+        [props.attachments, props.onReorderAttachments, referenceFilter, visibleAttachments],
+    );
+    useEffect(() => {
+        if (!canOptimizePrompt) setPromptOptimizerOpen(false);
+    }, [canOptimizePrompt]);
+
+    const scrollAttachmentTrack = (direction: -1 | 1) => {
+        const track = attachmentTrackRef.current;
+        if (!track) return;
+        track.scrollBy({ left: direction * Math.max(track.clientWidth * 0.72, 120), behavior: "smooth" });
+        window.setTimeout(updateTrackScrollState, 180);
+    };
+    const imageReferenceAtPoint = (x: number, y: number) => {
+        for (const element of document.elementsFromPoint(x, y)) {
+            const chip = element.closest<HTMLElement>("[data-mention-reference-id]");
+            const referenceId = chip?.dataset.mentionReferenceId;
+            const reference = referenceId ? props.references.find((item) => item.id === referenceId) : undefined;
+            if (reference?.kind === "image" && reference.attachmentId) return reference;
+        }
+        return undefined;
+    };
+    const clampComposerHeight = (height: number) => Math.round(Math.max(108, Math.min(height, Math.max(108, Math.min(window.innerHeight * 0.68, 640)))));
+    const startComposerResize = (event: PointerEvent<HTMLButtonElement>) => {
+        if (event.button !== 0) return;
+        event.preventDefault();
+        resizeStartRef.current = { y: event.clientY, height: composerRef.current?.getBoundingClientRect().height || 108 };
+        event.currentTarget.setPointerCapture(event.pointerId);
+    };
+    const moveComposerResize = (event: PointerEvent<HTMLButtonElement>) => {
+        if (!resizeStartRef.current) return;
+        setComposerHeight(clampComposerHeight(resizeStartRef.current.height + resizeStartRef.current.y - event.clientY));
+    };
+    const stopComposerResize = (event: PointerEvent<HTMLButtonElement>) => {
+        resizeStartRef.current = null;
+        if (event.currentTarget.hasPointerCapture(event.pointerId)) event.currentTarget.releasePointerCapture(event.pointerId);
+    };
+    const composer = (
+        <HoverBorderGradient as="div" duration={2.2} containerClassName={`creation-composer-shell${homeLayout ? " is-home" : ""}`} className="creation-composer-shell-inner">
+            <SpotlightSurface
+                ref={composerRef}
+                className={`creation-chat-composer is-${props.variant}${referenceDragOver ? " is-reference-drag-over" : ""}${composerHeight !== null && props.variant === "thread" ? " is-resized" : ""}`}
+                style={props.variant === "thread" && composerHeight !== null ? { height: composerHeight, maxHeight: "68dvh" } : undefined}
+                contentClassName="contents"
+                spotlightColor="color-mix(in srgb, var(--user-ink) 12%, transparent)"
+                spotlightRadius={280}
+                onDragOver={(event) => {
+                    if (!hasCreationReferenceDrop(event.dataTransfer)) return;
+                    if (event.defaultPrevented) {
+                        setReferenceDragOver(false);
+                        return;
+                    }
+                    event.preventDefault();
+                    event.dataTransfer.dropEffect = interactionBusy ? "none" : "copy";
+                    setReferenceDragOver(!interactionBusy);
+                }}
+                onDragLeave={(event) => {
+                    if (!(event.relatedTarget instanceof Node) || !event.currentTarget.contains(event.relatedTarget)) setReferenceDragOver(false);
+                }}
+                onDrop={(event) => {
+                    setReferenceDragOver(false);
+                    // 引用标签已处理的文件替换不能再追加一遍。
+                    if (event.defaultPrevented || !hasCreationReferenceDrop(event.dataTransfer)) return;
+                    event.preventDefault();
+                    event.stopPropagation();
+                    if (interactionBusy) return;
+                    const drop = readCreationReferenceDrop(event.dataTransfer);
+                    if (drop) props.onReferenceDrop(drop);
+                }}
+            >
+                {referenceDragOver || props.referenceDropBusy ? (
+                    <div className="creation-reference-drop-hint" role="status">
+                        {props.referenceDropBusy ? "正在添加参考图…" : "松开添加参考图"}
+                    </div>
+                ) : null}
+                {props.variant === "thread" ? (
+                    <button
+                        type="button"
+                        className="creation-composer-resize-handle"
+                        aria-label={t("createWorkspace.composer.resizeLabel")}
+                        title={t("createWorkspace.composer.resizeTitle")}
+                        onPointerDown={startComposerResize}
+                        onPointerMove={moveComposerResize}
+                        onPointerUp={stopComposerResize}
+                        onPointerCancel={stopComposerResize}
+                        onLostPointerCapture={() => {
+                            resizeStartRef.current = null;
+                        }}
+                        onKeyDown={(event) => {
+                            if (event.key !== "ArrowUp" && event.key !== "ArrowDown") return;
+                            event.preventDefault();
+                            setComposerHeight(clampComposerHeight((composerRef.current?.getBoundingClientRect().height || 108) + (event.key === "ArrowUp" ? 24 : -24)));
+                        }}
+                    >
+                        <span aria-hidden="true" />
+                    </button>
+                ) : null}
+                <div
+                    className={`creation-chat-writing-surface${homeLayout ? " is-home" : ""}`}
+                    onMouseDown={(event) => {
+                        // 输入框四周留白、编辑器下方空白处点击也能聚焦；富文本（带 @ 引用）模式下聚焦可编辑区。
+                        if (interactionBusy || event.button !== 0) return;
+                        const target = event.target as HTMLElement;
+                        if (target.closest("button, a, input, textarea, select, [contenteditable='true'], [role='textbox'], [role='button'], .creation-reference-panel, .ant-dropdown, .ant-popover")) return;
+                        const editor = event.currentTarget.querySelector<HTMLElement>("[role='textbox'][contenteditable='true'], textarea:not([disabled])");
+                        if (!editor) return;
+                        event.preventDefault();
+                        editor.focus();
+                        if (editor instanceof HTMLTextAreaElement) {
+                            const end = editor.value.length;
+                            editor.setSelectionRange(end, end);
+                        } else {
+                            const range = document.createRange();
+                            range.selectNodeContents(editor);
+                            range.collapse(false);
+                            const selection = window.getSelection();
+                            selection?.removeAllRanges();
+                            selection?.addRange(range);
+                        }
+                    }}
+                >
+                    {homeLayout && referencesSupported && !props.attachments.length ? <HomeUploadTile onClick={props.onOpenLibrary} disabled={interactionBusy || !canAddMoreReferences} label={addReferenceLabel} /> : null}
+                    <div className="creation-chat-editor">
+                        <div className="creation-chat-editor-input" style={props.variant === "empty" ? { height: promptHeight } : undefined}>
+                            <CanvasResourceMentionTextarea
+                                ref={props.composerFocusRef}
+                                value={props.prompt}
+                                references={props.references}
+                                mentionMenuWidth={400}
+                                sendOnEnter
+                                onFocus={props.onPromptFocus}
+                                onChange={props.setPrompt}
+                                onSubmit={props.onSubmit}
+                                onContentSizeChange={props.variant === "empty" ? handlePromptContentSizeChange : undefined}
+                                containerClassName={`creation-chat-mention-container${props.variant === "empty" ? " h-full" : ""}`}
+                                className="creation-chat-mention-editor creation-scrollbar"
+                                style={{ color: "var(--creation-text)" }}
+                                placeholder={props.placeholderOverride || (props.variant === "empty" ? emptyPlaceholder : placeholder)}
+                                aria-label={t("createWorkspace.composer.promptLabel")}
+                                spellCheck
+                                disabled={interactionBusy}
+                                activeDropReferenceId={dropTargetReferenceId}
+                                onReferenceFilesDrop={(reference, files) => {
+                                    const target = props.references.find((item) => item.id === reference.id);
+                                    if (target?.attachmentId) props.onReplaceReferenceFiles(target.attachmentId, files);
+                                }}
+                            />
+                        </div>
+                        {props.attachments.length ? (
+                            <div className={`creation-reference-panel${trackState.isExpanded ? " is-expanded" : ""}`} aria-busy={interactionBusy}>
+                                {trackState.isExpanded ? (
+                                    <div className="creation-reference-panel-header">
+                                        <div className="creation-reference-filter-tabs" role="group" aria-label={t("createWorkspace.references.filterLabel")}>
+                                            {(
+                                                [
+                                                    { id: "all", label: t("createWorkspace.references.filterAll"), count: props.attachments.length },
+                                                    { id: "image", label: t("create.kind.image"), count: referenceCounts.image },
+                                                    { id: "video", label: t("create.kind.video"), count: referenceCounts.video },
+                                                    { id: "audio", label: t("create.kind.audio"), count: referenceCounts.audio },
+                                                    { id: "file", label: t("createWorkspace.references.filterFile"), count: referenceCounts.file },
+                                                ] as const
+                                            ).map((filter) => (
+                                                <button key={filter.id} type="button" aria-pressed={referenceFilter === filter.id} className={referenceFilter === filter.id ? "is-active" : undefined} onClick={() => setReferenceFilter(filter.id)}>
+                                                    {filter.label}
+                                                    {filter.count ? ` (${filter.count})` : ""}
+                                                </button>
+                                            ))}
+                                        </div>
+                                        <div className="creation-reference-panel-actions">
+                                            {props.attachments.length ? (
+                                                <button type="button" onClick={props.onClearAttachments} disabled={interactionBusy}>
+                                                    {t("createWorkspace.references.clearAll")}
+                                                </button>
+                                            ) : null}
+                                            <Tooltip title={t("createWorkspace.references.collapsePanel")}>
+                                                <button type="button" className="creation-reference-panel-collapse" onClick={() => setReferencePanelExpanded(false)} aria-label={t("createWorkspace.references.collapsePanel")}>
+                                                    <Minimize2 aria-hidden="true" />
+                                                </button>
+                                            </Tooltip>
+                                        </div>
+                                    </div>
+                                ) : null}
+                                <div className="creation-reference-track-wrapper">
+                                    <div className="creation-reference-stack-shell">
+                                        {trackState.canScrollLeft ? (
+                                            <button
+                                                type="button"
+                                                className="creation-reference-track-button is-left"
+                                                onClick={() => scrollAttachmentTrack(-1)}
+                                                aria-label={t("createWorkspace.references.scrollLeft")}
+                                                title={t("createWorkspace.references.scrollLeft")}
+                                            >
+                                                <ChevronLeft aria-hidden="true" />
+                                            </button>
+                                        ) : null}
+                                        <Reorder.Group<CreationAttachment[]>
+                                            as="ul"
+                                            ref={attachmentTrackRef}
+                                            className={`creation-reference-track${trackState.isExpanded ? " is-expanded" : ""}${trackState.isDragging ? " is-dragging" : ""}${visibleAttachments.length ? "" : " is-empty"}`}
+                                            axis="x"
+                                            values={visibleAttachments}
+                                            onReorder={reorderVisibleAttachments}
+                                            layoutScroll
+                                            role="list"
+                                            aria-label={t("createWorkspace.references.trackLabel")}
+                                            onScroll={updateTrackScrollState}
+                                        >
+                                            {visibleAttachments.map((item) => (
+                                                <Reorder.Item<CreationAttachment>
+                                                    key={item.id}
+                                                    value={item}
+                                                    layout="position"
+                                                    drag={trackState.isExpanded && canDragReferences && !interactionBusy}
+                                                    className="creation-reference-stack-card"
+                                                    onPointerDown={beginCardDrag}
+                                                    onPointerMove={moveCardDrag}
+                                                    onPointerUp={endCardDrag}
+                                                    onPointerCancel={endCardDrag}
+                                                    onDragStart={() => {
+                                                        setDropTargetReferenceId(null);
+                                                        setTrackState((current) => ({ ...current, isDragging: true, isExpanded: true }));
+                                                    }}
+                                                    onDrag={(_, info) => {
+                                                        if (creationAttachmentKind(item) !== "image") return;
+                                                        const target = imageReferenceAtPoint(info.point.x, info.point.y);
+                                                        setDropTargetReferenceId(target?.attachmentId !== item.id ? target?.id || null : null);
+                                                    }}
+                                                    onDragEnd={(_, info) => {
+                                                        const target = creationAttachmentKind(item) === "image" ? imageReferenceAtPoint(info.point.x, info.point.y) : undefined;
+                                                        setDropTargetReferenceId(null);
+                                                        setTrackState((current) => ({ ...current, isDragging: false, isExpanded: true }));
+                                                        if (target?.attachmentId && target.attachmentId !== item.id) props.onReplaceAttachment(target.attachmentId, item);
+                                                    }}
+                                                >
+                                                    <CreationAttachmentThumbnail item={item} onPreview={previewAttachment} onRemove={props.onRemoveAttachment} />
+                                                </Reorder.Item>
+                                            ))}
+                                            {!visibleAttachments.length && props.attachments.length ? <li className="creation-reference-filter-empty">{t("createWorkspace.references.filterEmpty")}</li> : null}
+                                            {referencesSupported ? (
+                                                <li className="creation-reference-add-slot">
+                                                    <Tooltip title={addReferenceLabel}>
+                                                        <button type="button" className="creation-reference-add-button" onClick={props.onOpenLibrary} disabled={interactionBusy || !canAddMoreReferences} aria-label={addReferenceLabel}>
+                                                            <Plus aria-hidden="true" />
+                                                            <span>{t("createWorkspace.references.add")}</span>
+                                                        </button>
+                                                    </Tooltip>
+                                                </li>
+                                            ) : null}
+                                        </Reorder.Group>
+                                        {trackState.canScrollRight ? (
+                                            <button
+                                                type="button"
+                                                className="creation-reference-track-button is-right"
+                                                onClick={() => scrollAttachmentTrack(1)}
+                                                aria-label={t("createWorkspace.references.scrollRight")}
+                                                title={t("createWorkspace.references.scrollRight")}
+                                            >
+                                                <ChevronRight aria-hidden="true" />
+                                            </button>
+                                        ) : null}
+                                        {!trackState.isExpanded && props.attachments.length ? (
+                                            <Tooltip title={t("createWorkspace.references.viewAll")}>
+                                                <button
+                                                    type="button"
+                                                    className="creation-reference-panel-expand"
+                                                    onClick={() => setReferencePanelExpanded(true)}
+                                                    aria-label={t("createWorkspace.references.viewAllCount", { count: props.attachments.length })}
+                                                    aria-expanded="false"
+                                                >
+                                                    <Maximize2 aria-hidden="true" />
+                                                </button>
+                                            </Tooltip>
+                                        ) : null}
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                    </div>
+                </div>
+                <footer className="creation-chat-dock">
+                    <div className="creation-chat-controls">
+                        {props.variant === "thread" && !homeLayout && !workspaceTeamId ? <ModePicker mode={props.mode} onModeChange={props.onModeChange} /> : null}
+                        {homeLayout && !workspaceTeamId ? props.home?.modeMenu : null}
+                        {!homeLayout && referencesSupported && !props.attachments.length ? (
+                            <Tooltip title={addReferenceLabel}>
+                                <button type="button" className="creation-chat-control" onClick={props.onOpenLibrary} disabled={interactionBusy || !canAddMoreReferences} aria-label={addReferenceLabel}>
+                                    <Plus aria-hidden="true" />
+                                    <span>{t("createWorkspace.references.add")}</span>
+                                </button>
+                            </Tooltip>
+                        ) : null}
+                        <VoiceRecordingButton className="creation-voice-trigger" disabled={interactionBusy} onTranscribed={(text) => props.setPrompt(props.prompt.trim() ? `${props.prompt} ${text}` : text)} />
+                        {canOptimizePrompt ? (
+                            <Tooltip title={t("createWorkspace.composer.optimizeTooltip")}>
+                                <button type="button" className="creation-chat-control" onClick={() => setPromptOptimizerOpen(true)} aria-label={t("createWorkspace.composer.optimizeLabel")} aria-expanded={promptOptimizerOpen} aria-haspopup="dialog">
+                                    <PenLine />
+                                    <span>{t("createWorkspace.composer.optimize")}</span>
+                                </button>
+                            </Tooltip>
+                        ) : null}
+                        <ModelPicker
+                            config={props.config}
+                            value={props.model}
+                            onChange={props.onModelChange}
+                            capability={props.mode}
+                            requirements={props.modelRequirements}
+                            className="creation-model-picker"
+                            placeholder={t(`createWorkspace.composer.modelPlaceholder.${props.mode}`)}
+                            showSelectedPrice={false}
+                            showOptionPrices
+                            variant="creation"
+                        />
+                        {props.mode === "video" || (props.mode === "image" && imageSettingsSupported) ? <GenerationSettingsMenu {...props} /> : null}
+                        {props.mode === "video" ? <DurationMenu profile={props.videoProfile} seconds={props.seconds} onChange={props.setSeconds} /> : null}
+                        {props.mode === "text" ? (
+                            <>
+                                <Tooltip title={interactionBusy ? t("createWorkspace.composer.toggleNextSend") : props.textStreaming ? t("createWorkspace.composer.streamingOn") : t("createWorkspace.composer.streamingOff")}>
+                                    <button type="button" className="creation-chat-control" aria-pressed={props.textStreaming} disabled={interactionBusy} onClick={() => props.setTextStreaming(!props.textStreaming)}>
+                                        <Waves />
+                                        <span>{t("createWorkspace.composer.streaming")}</span>
+                                        {props.textStreaming ? <span className="size-1.5 rounded-full bg-blue-400 shrink-0 shadow-sm" /> : null}
+                                    </button>
+                                </Tooltip>
+                                <ThinkingControl levels={props.textThinkingLevels} value={props.textThinkingRequest} resolvedLevel={props.textThinkingLevel} onChange={props.setTextThinkingLevel} disabled={interactionBusy} />
+                            </>
+                        ) : null}
+                        {homeLayout ? props.home?.trailingControls : null}
+                        {props.prompt.trim() || props.attachments.length || props.references.some((reference) => reference.active) ? (
+                            <Tooltip title={t("createWorkspace.composer.clearAllLabel")}>
+                                <button type="button" className="creation-chat-control is-clear" onClick={props.onClearComposer} disabled={interactionBusy} aria-label={t("createWorkspace.composer.clearAllLabel")}>
+                                    <Trash2 />
+                                    <span>{t("createWorkspace.composer.clear")}</span>
+                                </button>
+                            </Tooltip>
+                        ) : null}
+                    </div>
+                    {homeLayout ? (
+                        <HomeSendOrb
+                            disabled={interactionBusy || !canSubmit}
+                            busy={showWorkingSpinner}
+                            onClick={interactionBusy ? undefined : props.onSubmit}
+                            label={!canSubmit && !interactionBusy ? t("createWorkspace.composer.needPrompt") : actionLabel}
+                            cost={
+                                showCost ? (
+                                    <span title={routeQuote ? modelQuoteDescription(routeQuote) : undefined}>
+                                        <CreditSymbol />
+                                        {routeQuote?.estimated ? t("createWorkspace.composer.estimatePrefix") : null}
+                                        <RollingCreditAmount value={generationCredits} />
+                                    </span>
+                                ) : undefined
+                            }
+                        />
+                    ) : (
+                        <Button
+                            type="text"
+                            className={`creation-submit ${showCost ? "has-cost" : ""}`}
+                            disabled={interactionBusy || !canSubmit}
+                            style={
+                                {
+                                    position: "relative",
+                                    color: "var(--user-ink)",
+                                } as CSSProperties
+                            }
+                            onClick={interactionBusy ? undefined : props.onSubmit}
+                            aria-label={actionLabel}
+                            title={!canSubmit && !interactionBusy ? t("createWorkspace.composer.needPrompt") : actionLabel}
+                        >
+                            {showWorkingGlow ? <WorkingGlow active color="var(--creation-text)" radius="var(--button-radius)" /> : null}
+                            <span className="creation-submit-cost" style={{ display: showCost ? undefined : "none" }} title={routeQuote ? modelQuoteDescription(routeQuote) : undefined}>
+                                <CreditSymbol />
+                                <span>
+                                    {routeQuote?.estimated ? t("createWorkspace.composer.estimateLabel") : null}
+                                    <RollingCreditAmount value={showCost ? generationCredits : null} />
+                                </span>
+                            </span>
+                            <span className="creation-submit-action" aria-hidden>
+                                {showWorkingSpinner ? <LoaderCircle className="size-4 animate-spin" /> : <ArrowUp className="size-4" />}
+                                <span>{showWorkingSpinner ? t("createWorkspace.status.generating") : t("createWorkspace.composer.submit")}</span>
+                            </span>
+                        </Button>
+                    )}
+                </footer>
+                {props.mode === "image" || props.mode === "video" ? (
+                    <MediaSettingsNotice
+                        config={{ ...props.config, model: props.model }}
+                        capability={props.mode}
+                        onChange={(field, value) => {
+                            if (field === "size") props.setRatio(value);
+                            else if (field === "quality") props.setQuality(value);
+                            else if (field === "imageResolution") props.setImageResolution(value);
+                            else if (field === "imageParameters") props.setImageParameters(value);
+                            else if (field === "count") props.setCount(value);
+                            else if (field === "videoSeconds") props.setSeconds(value);
+                            else if (field === "vquality") props.setVideoQuality(value);
+                        }}
+                    />
+                ) : null}
+                <CreationMediaPreviewModal url={previewUrl} type={previewType} onClose={() => setPreviewUrl("")} />
+            </SpotlightSurface>
+        </HoverBorderGradient>
+    );
+
+    if (!promptOptimizerOpen) return composer;
+
+    return (
+        <Suspense fallback={composer}>
+            <CanvasPromptOptimizerDrawer
+                open={promptOptimizerOpen}
+                prompt={props.prompt}
+                generationMode={props.mode === "video" ? "video" : "image"}
+                targetModel={modelOptionName(props.model) || props.model}
+                targetProtocol={priceChannel.modelCosts?.find((item) => item.model === modelOptionName(props.model))?.protocol || priceChannel.interfaceType}
+                config={props.config}
+                optimizerModel={props.config.textModel}
+                references={optimizerReferences}
+                provider={props.promptOptimizerProvider}
+                onClose={() => setPromptOptimizerOpen(false)}
+                onApply={props.setPrompt}
+            >
+                {composer}
+            </CanvasPromptOptimizerDrawer>
+        </Suspense>
+    );
+}
+
+export function CreationModeTabs({
+    mode,
+    onModeChange,
+    agentActive = false,
+    onAgentSelect,
+    orientation = "horizontal",
+}: {
+    mode: CreationMode;
+    onModeChange: (mode: CreationMode) => void;
+    agentActive?: boolean;
+    onAgentSelect?: () => void;
+    orientation?: "horizontal" | "vertical";
+}) {
+    const { t } = useTranslation();
+    const reducedMotion = useReducedMotion();
+    const items: { mode: CreationMode; icon: ReactNode; label: string }[] = [
+        { mode: "video", icon: <Film />, label: t("create.mode.video") },
+        { mode: "image", icon: <ImageIcon />, label: t("create.mode.image") },
+        { mode: "text", icon: <MessageSquareText />, label: t("create.mode.text") },
+    ];
+    const indicator = (pressed: boolean) => (pressed ? <motion.span layoutId={`creation-mode-indicator-${orientation}`} className="creation-mode-indicator" aria-hidden transition={reducedMotion ? { duration: 0 } : aceternityMotion.spring.dock} /> : null);
+    return (
+        <LayoutGroup id={`creation-mode-tabs-${orientation}`}>
+            <div
+                className="creation-mode-tabs"
+                role="group"
+                aria-label={t("createWorkspace.modeTabs.label")}
+                data-active-mode={agentActive ? "agent" : mode}
+                data-orientation={orientation}
+                style={{ gridTemplateColumns: orientation === "vertical" ? "minmax(0, 1fr)" : `repeat(${onAgentSelect ? 4 : 3}, minmax(0, 1fr))` }}
+            >
+                {items.map((item) => (
+                    <button
+                        key={item.mode}
+                        type="button"
+                        className="creation-mode-button"
+                        data-mode={item.mode}
+                        aria-pressed={!agentActive && item.mode === mode}
+                        aria-label={t(`createWorkspace.modeTabs.generate.${item.mode}`)}
+                        onClick={() => onModeChange(item.mode)}
+                    >
+                        {indicator(!agentActive && item.mode === mode)}
+                        {item.icon}
+                        <span>{item.label}</span>
+                    </button>
+                ))}
+                {onAgentSelect ? (
+                    <button type="button" className="creation-mode-button" data-mode="agent" aria-pressed={agentActive} onClick={onAgentSelect}>
+                        {indicator(agentActive)}
+                        <Orbit />
+                        <span>Agent</span>
+                        <i className="creation-mode-spark" aria-hidden />
+                    </button>
+                ) : null}
+            </div>
+        </LayoutGroup>
+    );
+}
+
+function ModePicker({ mode, onModeChange }: { mode: CreationMode; onModeChange: (mode: CreationMode) => void }) {
+    return <CreationModeTabs mode={mode} onModeChange={onModeChange} />;
+}
+
+function GenerationSettingsMenu(props: ComposerProps) {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+    // 张数上限与发送时的实际单数保持一致。
+    const imageBatchLimit = Math.min(15, useGenerationBatchLimit());
+    const activeQualityOptions = props.imageProfile.quality.values.map((value) => qualityOptions.find((item) => item.value === value) || { value, label: imageQualityLabel(value), description: t("createWorkspace.settings.qualityFallback") });
+    const qualityLabel = activeQualityOptions.find((item) => item.value === props.quality)?.label || qualityOptions.find((item) => item.value === props.quality)?.label || props.quality || t("createWorkspace.settings.auto");
+    // 尺寸/比例/分辨率选项取同显示名分组内全部模型的并集，路由模型只决定发送参数。
+    const mergedProfile = mergedImageCapabilityConfig(props.config, props.model || props.config.imageModel);
+    const usesImageResolutionPicker = props.mode === "image" && supportsImageResolutionPresets(mergedProfile.size);
+    const imageResolutionOptions = usesImageResolutionPicker ? buildImageResolutionOptions(mergedProfile.size.values) : [];
+    const ratios = props.videoProfile.ratios;
+    const referenceImageSize = props.mode === "image" && mergedProfile.size.allowCustom ? props.referenceImageSize : undefined;
+    const referenceImageSizeValue = referenceImageSize ? String(referenceImageSize.width) + "x" + String(referenceImageSize.height) : "";
+    const referenceImageSizeLabel = referenceImageSize ? String(referenceImageSize.width) + " × " + String(referenceImageSize.height) : "";
+    const referenceImageSizeSelected = Boolean(referenceImageSizeValue && props.ratio === referenceImageSizeValue);
+    const resolutions = props.mode === "video" ? props.videoProfile.resolutions.map((value) => ({ value: value.replace(/p$/i, ""), label: videoResolutionLabel(value) })) : resolutionOptions;
+    const selectReferenceImageSize = () => {
+        if (!referenceImageSizeValue) return;
+        props.setRatio(referenceImageSizeValue);
+    };
+    const videoResolutionSupported = props.mode === "video" && resolutions.length > 0;
+    const imageSummary = [
+        ...(mergedProfile.size.parameter !== "none" ? [referenceImageSizeSelected ? referenceImageSizeLabel : usesImageResolutionPicker ? formatImageResolutionSize(props.ratio, imageResolutionOptions) : props.ratio] : []),
+        ...(props.imageProfile.quality.supported ? [qualityLabel] : []),
+        ...(imageBatchLimit > 1 ? [props.count] : []),
+    ].join(" · ");
+    const videoRatioSupported = props.mode === "video" && ratios.length > 0;
+    const summary = props.mode === "video" ? [...(videoRatioSupported ? [props.ratio] : []), ...(videoResolutionSupported ? [videoResolutionLabel(props.videoQuality)] : [])].join(" · ") : imageSummary;
+    const panel =
+        props.mode === "image" && props.imageProfile.parameters ? (
+            <div className="creation-parameter-menu max-h-[65vh] overflow-y-auto">
+                <ImageParameterFields
+                    profile={props.imageProfile}
+                    countLimit={imageBatchLimit}
+                    config={{ size: props.ratio, quality: props.quality, imageResolution: props.imageResolution, imageParameters: props.imageParameters, count: props.count, transparentBackground: props.config.transparentBackground }}
+                    onChange={(key, value) => {
+                        const setters = {
+                            size: props.setRatio,
+                            quality: props.setQuality,
+                            imageResolution: props.setImageResolution,
+                            imageParameters: props.setImageParameters,
+                            count: props.setCount,
+                            transparentBackground: props.setTransparentBackground,
+                        };
+                        setters[key](value);
+                    }}
+                />
+            </div>
+        ) : (
+            <div className="creation-parameter-menu">
+                {props.mode === "image" ? (
+                    <ImageSizePicker
+                        profile={mergedProfile}
+                        size={props.ratio}
+                        quality={props.quality}
+                        imageResolution={props.imageResolution}
+                        onChange={(size, quality, resolution) => {
+                            props.setRatio(size);
+                            if (quality) props.setQuality(quality);
+                            if (resolution) props.setImageResolution(resolution);
+                        }}
+                    />
+                ) : videoRatioSupported ? (
+                    <SettingSection title={t("createWorkspace.settings.aspectRatio")} value={props.ratio}>
+                        <div className="creation-choice-grid is-ratio">
+                            {ratios.map((value) => (
+                                <button key={value} type="button" aria-pressed={value === props.ratio} className={value === props.ratio ? "is-selected" : ""} onClick={() => props.setRatio(value)}>
+                                    <span className="creation-ratio-preview">
+                                        <span style={ratioPreviewStyle(value)} />
+                                    </span>
+                                    <span>{value}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </SettingSection>
+                ) : null}
+                {props.mode === "image" && referenceImageSizeValue ? (
+                    <button type="button" className="creation-custom-trigger" onClick={selectReferenceImageSize}>
+                        {t("createWorkspace.settings.useReferenceSize", { size: referenceImageSizeLabel })}
+                    </button>
+                ) : null}
+                {props.mode === "video" ? (
+                    videoResolutionSupported ? (
+                        <SettingSection title={t("createWorkspace.settings.clarity")} value={videoResolutionLabel(props.videoQuality)}>
+                            <div className="creation-choice-grid is-resolution">
+                                {resolutions.map((option) => (
+                                    <button key={option.value} type="button" aria-pressed={option.value === props.videoQuality} className={option.value === props.videoQuality ? "is-selected" : ""} onClick={() => props.setVideoQuality(option.value)}>
+                                        {option.label}
+                                    </button>
+                                ))}
+                            </div>
+                        </SettingSection>
+                    ) : null
+                ) : (
+                    <>
+                        {props.imageProfile.quality.supported && !imageResolutionUsesQuality(mergedProfile) ? (
+                            <SettingSection title={activeQualityOptions.some((item) => item.value === "1k" || item.value === "2k") ? t("createWorkspace.settings.resolution") : t("createWorkspace.settings.imageQuality")} value={qualityLabel}>
+                                <div className="creation-choice-grid is-quality">
+                                    {activeQualityOptions.map((option) => (
+                                        <button key={option.value} type="button" aria-pressed={option.value === props.quality} className={option.value === props.quality ? "is-selected" : ""} onClick={() => props.setQuality(option.value)}>
+                                            <span>{option.label}</span>
+                                            <small>{option.description}</small>
+                                        </button>
+                                    ))}
+                                </div>
+                            </SettingSection>
+                        ) : null}
+                        {imageBatchLimit > 1 ? (
+                            <SettingSection title={t("createWorkspace.settings.count")} value={t("createWorkspace.settings.countValue", { count: props.count })}>
+                                <div className="creation-parameter-content">
+                                    <div className="creation-choice-grid is-count">
+                                        {countOptions
+                                            .filter((option) => Number(option) <= imageBatchLimit)
+                                            .map((option) => (
+                                                <button key={option} type="button" aria-pressed={option === props.count} className={option === props.count ? "is-selected" : ""} onClick={() => props.setCount(option)}>
+                                                    {option}
+                                                </button>
+                                            ))}
+                                    </div>
+                                    <label className="creation-custom-value">
+                                        <span>{t("createWorkspace.settings.custom")}</span>
+                                        <input
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            value={props.count}
+                                            onChange={(event) => props.setCount(String(Math.max(1, Math.min(imageBatchLimit, Number(event.target.value) || 1))))}
+                                            aria-label={t("createWorkspace.settings.countLabel")}
+                                        />
+                                        <em>{t("createWorkspace.settings.countUnit")}</em>
+                                    </label>
+                                </div>
+                            </SettingSection>
+                        ) : null}
+                    </>
+                )}
+            </div>
+        );
+    return (
+        <Popover
+            open={open}
+            onOpenChange={setOpen}
+            trigger="click"
+            placement="bottom"
+            arrow={false}
+            classNames={{ root: "creation-control-popover", container: "creation-control-popover-surface", content: "creation-control-popover-content" }}
+            content={panel}
+        >
+            <button type="button" className="creation-chat-control" aria-label={t("createWorkspace.settings.menuLabel", { summary })}>
+                <SlidersHorizontal />
+                <span>{summary}</span>
+                <ChevronDown className={open ? "is-open" : ""} />
+            </button>
+        </Popover>
+    );
+}
+
+function SettingSection({ title, value, children }: { title: string; value?: string; children: ReactNode }) {
+    return (
+        <section className="creation-parameter-section">
+            <header>
+                <h3>{title}</h3>
+                {value ? <span>{value}</span> : null}
+            </header>
+            {children}
+        </section>
+    );
+}
+
+// 首页与 Agent 共用离散档位滑条，保留模型默认意图，不把它提前固化为某个档位。
+function ThinkingControl({ levels, value, resolvedLevel, onChange, disabled }: { levels: ThinkingLevel[]; value: ThinkingRequest; resolvedLevel: ThinkingLevel | ""; onChange: (value: ThinkingRequest) => void; disabled: boolean }) {
+    if (!levels.length) return null;
+    return (
+        <div className="creation-thinking-inline">
+            <ThinkingLevelSlider levels={levels} value={value} resolvedLevel={resolvedLevel} onChange={onChange} disabled={disabled} />
+        </div>
+    );
+}
+
+function DurationMenu({ profile, seconds, onChange, protocol }: { profile: VideoCapabilityConfig; seconds: string; onChange: (value: string) => void; protocol?: string }) {
+    const { t } = useTranslation();
+    const [open, setOpen] = useState(false);
+    const value = Number(normalizeVideoValue(profile, { seconds }, protocol).seconds);
+    const presets = profile.duration.selection === "enum" ? videoDurationOptions(profile) : [];
+    const fallbackPreset = presets.length ? presets : [profile.duration.default];
+    const min = profile.duration.selection === "range" ? profile.duration.min || 1 : Math.min(...fallbackPreset);
+    const max = profile.duration.selection === "range" ? Math.max(min, profile.duration.max || min) : Math.max(...fallbackPreset);
+    const step = Math.max(1, profile.duration.step || 1);
+    const durationControl =
+        profile.duration.selection === "range" ? (
+            <>
+                <input
+                    className="h-8 w-full"
+                    style={{ accentColor: "var(--creation-text)" }}
+                    type="range"
+                    min={min}
+                    max={max}
+                    step={step}
+                    value={value}
+                    aria-label={t("createWorkspace.duration.rangeLabel")}
+                    onChange={(event) => onChange(event.target.value)}
+                />
+                <div className="flex justify-between px-0.5 text-[var(--fs-tiny)] text-[var(--creation-muted)]">
+                    <span>{min}s</span>
+                    <span>{max}s</span>
+                </div>
+                <label className="creation-custom-value is-duration">
+                    <span>{t("createWorkspace.duration.custom")}</span>
+                    <span className="creation-duration-custom-field">
+                        <input
+                            type="number"
+                            min={min}
+                            max={max}
+                            step={step}
+                            inputMode="numeric"
+                            value={seconds}
+                            onFocus={(event) => event.currentTarget.select()}
+                            onBlur={() => onChange(String(value))}
+                            onChange={(event) => onChange(event.target.value)}
+                            aria-label={t("createWorkspace.duration.customLabel")}
+                        />
+                        <em>{t("createWorkspace.duration.unit")}</em>
+                    </span>
+                </label>
+            </>
+        ) : (
+            <div className="creation-duration-choices">
+                {presets.map((item) => (
+                    <button key={item} type="button" className={item === value ? "is-selected" : ""} onClick={() => onChange(String(item))}>
+                        {item}s
+                    </button>
+                ))}
+            </div>
+        );
+    return (
+        <Popover
+            open={open}
+            onOpenChange={setOpen}
+            trigger="click"
+            placement="bottom"
+            arrow={false}
+            classNames={{ root: "creation-control-popover", container: "creation-control-popover-surface", content: "creation-control-popover-content" }}
+            content={
+                <div className="creation-duration-menu">
+                    <div className="creation-duration-heading">
+                        <span>{t("createWorkspace.duration.title")}</span>
+                        <strong>{t("createWorkspace.duration.value", { value })}</strong>
+                    </div>
+                    {durationControl}
+                </div>
+            }
+        >
+            <button type="button" className="creation-chat-control is-duration" aria-label={t("createWorkspace.duration.menuLabel", { value })}>
+                <Clock3 />
+                <span>{value}s</span>
+                <ChevronDown className={open ? "is-open" : ""} />
+            </button>
+        </Popover>
+    );
+}
+
+function ratioPreviewStyle(value: string) {
+    const [width, height] = value.replace("x", ":").split(":").map(Number);
+    if (!Number.isFinite(width) || !Number.isFinite(height) || width <= 0 || height <= 0) return { width: 10, height: 10 };
+    // 画幅容器的可用空间是 14×10；同时计算宽高，避免 CSS 的 max-width/max-height 把宽银幕比例压扁。
+    const scale = Math.min(14 / width, 10 / height);
+    return { width: Math.max(4, Math.round(width * scale)), height: Math.max(4, Math.round(height * scale)) };
+}

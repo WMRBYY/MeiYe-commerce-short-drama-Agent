@@ -1,0 +1,57 @@
+/* 对话区占满侧栏剩余高度，超出后在列表内部滚动；矮屏下保底高度，再由外层侧栏滚动 */
+.workspace-conversations { display: flex; flex: 1 1 auto; min-height: 180px; flex-direction: column; gap: 4px; }
+.workspace-conversations-header { flex: none; }
+.workspace-conversations-header { display: flex; align-items: center; justify-content: space-between; padding: 0 4px 0 10px; }
+.workspace-conversations-toggle { display: inline-flex; align-items: center; gap: 4px; padding: 4px 0; border: 0; background: none; color: var(--user-ink-muted, rgb(255 255 255 / 55%)); font-size: 12px; cursor: pointer; transition: color .16s ease; }
+.workspace-conversations-toggle:hover { color: var(--user-ink, #fff); }
+.workspace-conversations-chevron { width: 13px; height: 13px; transition: transform .26s cubic-bezier(.22,1,.36,1); }
+.workspace-conversations-chevron.is-collapsed { transform: rotate(-90deg); }
+.workspace-conversations-new { display: grid; width: 26px; height: 26px; place-items: center; border: 0; border-radius: 8px; background: none; color: var(--user-ink-muted, rgb(255 255 255 / 55%)); cursor: pointer; transition: background-color .16s ease, color .16s ease; }
+.workspace-conversations-new:hover { background: var(--user-surface-muted, rgb(255 255 255 / 6%)); color: var(--user-ink, #fff); }
+.workspace-conversations-new svg { width: 15px; height: 15px; }
+.workspace-conversations-body { display: flex; flex: 0 1 auto; min-height: 0; flex-direction: column; overflow: hidden; }
+.workspace-conversations-list { display: flex; flex: 0 1 auto; min-height: 0; flex-direction: column; gap: 2px; margin: 0 -6px 0 0; padding: 0 6px 0 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; list-style: none; scrollbar-width: thin; scrollbar-color: color-mix(in srgb, var(--user-ink, #fff) 16%, transparent) transparent; }
+.workspace-conversations-list::-webkit-scrollbar { width: 4px; }
+.workspace-conversations-list::-webkit-scrollbar-thumb { border-radius: 4px; background: color-mix(in srgb, var(--user-ink, #fff) 16%, transparent); }
+.workspace-conversation { position: relative; display: flex; flex: none; align-items: center; overflow: hidden; border-radius: var(--r-md, 10px); transition: background-color .16s ease; }
+.workspace-conversation:hover, .workspace-conversation.is-menu-open { background: var(--user-surface-muted, rgb(255 255 255 / 5%)); }
+.workspace-conversation.is-active { background: color-mix(in srgb, var(--user-ink, #fff) 9%, transparent); }
+.workspace-conversation-row { display: flex; flex: 1; min-width: 0; min-height: 40px; align-items: center; gap: 9px; padding: 5px 8px; border: 0; background: none; color: var(--user-ink, #fff); font-size: 13px; text-align: left; cursor: pointer; }
+.workspace-conversation-row.is-editing { cursor: default; }
+.workspace-conversation-row input { flex: 1; min-width: 0; height: 28px; padding: 0 8px; border: 1px solid color-mix(in srgb, var(--user-accent, #5b7cff) 60%, transparent); border-radius: 7px; background: var(--user-surface, #15171e); color: inherit; font-size: 13px; outline: none; box-shadow: 0 0 0 3px color-mix(in srgb, var(--user-accent, #5b7cff) 18%, transparent); }
+.workspace-conversation-thumb { display: grid; width: 28px; height: 28px; flex: none; overflow: hidden; place-items: center; border-radius: 7px; background: var(--user-surface-muted, rgb(255 255 255 / 6%)); color: var(--user-ink-muted, rgb(255 255 255 / 50%)); }
+.workspace-conversation-thumb img { width: 100%; height: 100%; object-fit: cover; }
+.workspace-conversation-thumb svg { width: 14px; height: 14px; }
+.workspace-conversation-title { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.workspace-conversation-pin { width: 12px; height: 12px; flex: none; color: var(--user-ink-muted, rgb(255 255 255 / 45%)); transform: rotate(35deg); }
+.workspace-conversation-more { position: absolute; top: 50%; right: 6px; display: grid; width: 26px; height: 26px; place-items: center; border: 0; border-radius: 7px; background: color-mix(in srgb, var(--user-surface, #15171e) 70%, transparent); color: var(--user-ink, #fff); opacity: 0; transform: translateY(-50%) scale(.85); cursor: pointer; transition: opacity .18s ease, transform .22s cubic-bezier(.22,1,.36,1), background-color .16s ease; }
+.workspace-conversation:hover .workspace-conversation-more, .workspace-conversation.is-menu-open .workspace-conversation-more, .workspace-conversation-more:focus-visible { opacity: 1; transform: translateY(-50%) scale(1); }
+.workspace-conversation-more:hover { background: color-mix(in srgb, var(--user-ink, #fff) 12%, transparent); }
+.workspace-conversation-more svg { width: 15px; height: 15px; }
+.workspace-conversation:hover .workspace-conversation-pin, .workspace-conversation.is-menu-open .workspace-conversation-pin { opacity: 0; }
+.workspace-conversations-empty { margin: 2px 10px 6px; color: var(--user-ink-muted, rgb(255 255 255 / 40%)); font-size: 12px; line-height: 1.6; }
+
+/* 三个点菜单：在对话行右侧展开（不遮挡下方列表），从左侧缩放滑入，条目依次出现 */
+.workspace-conversation-menu .ant-dropdown-menu { min-width: 148px; padding: 6px !important; border: 1px solid color-mix(in srgb, var(--user-ink, #fff) 9%, transparent) !important; border-radius: 14px !important; background: color-mix(in srgb, var(--user-surface, #17181d) 94%, transparent) !important; backdrop-filter: blur(16px); box-shadow: 0 18px 48px rgb(0 0 0 / 38%) !important; transform-origin: top left; animation: workspace-conversation-menu-in .26s cubic-bezier(.22,1,.36,1) both; }
+.workspace-conversation-menu .ant-dropdown-menu-item { min-height: 36px; gap: 2px; border-radius: 9px !important; color: var(--user-ink, #f4f5f8); font-size: 13px; animation: workspace-conversation-item-in .28s cubic-bezier(.22,1,.36,1) both; }
+.workspace-conversation-menu .ant-dropdown-menu-item:hover { background: color-mix(in srgb, var(--user-ink, #fff) 7%, transparent) !important; }
+.workspace-conversation-menu .ant-dropdown-menu-item-danger { color: #f26b6b !important; }
+.workspace-conversation-menu .ant-dropdown-menu-item-danger:hover { background: rgb(242 107 107 / 10%) !important; color: #f26b6b !important; }
+.workspace-conversation-menu .ant-dropdown-menu-item:nth-child(2) { animation-delay: .03s; }
+.workspace-conversation-menu .ant-dropdown-menu-item:nth-child(3) { animation-delay: .06s; }
+.workspace-conversation-menu .ant-dropdown-menu-item .ant-dropdown-menu-item-icon { width: 15px; height: 15px; margin-inline-end: 10px; }
+@keyframes workspace-conversation-menu-in { from { opacity: 0; transform: translateX(-6px) scale(.95); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes workspace-conversation-item-in { from { opacity: 0; transform: translateX(-4px); } to { opacity: 1; transform: none; } }
+
+/* 侧栏导航到创作页：主内容区淡入上浮，侧栏保持不动 */
+.app-workspace-stage { view-transition-name: workspace-stage; }
+::view-transition-old(workspace-stage) { animation: workspace-stage-out .2s cubic-bezier(.4,0,1,1) both; }
+::view-transition-new(workspace-stage) { animation: workspace-stage-in .38s cubic-bezier(.22,1,.36,1) both; }
+@keyframes workspace-stage-out { to { opacity: 0; transform: scale(.985); filter: blur(4px); } }
+@keyframes workspace-stage-in { from { opacity: 0; transform: translateY(10px) scale(.99); filter: blur(6px); } }
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-conversation-menu .ant-dropdown-menu, .workspace-conversation-menu .ant-dropdown-menu-item { animation: none; }
+    ::view-transition-old(workspace-stage), ::view-transition-new(workspace-stage) { animation: none; }
+    .workspace-conversation-more { transition: none; }
+}

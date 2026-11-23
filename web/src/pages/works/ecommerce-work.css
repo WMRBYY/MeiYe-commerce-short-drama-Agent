@@ -1,0 +1,249 @@
+/* Public ecommerce viewer: fixed media overlays, responsive reference flow and project rail. */
+.ecw {
+    --ecw-glass: rgba(20, 20, 24, 0.72);
+    --ecw-line: rgba(255, 255, 255, 0.18);
+    --ecw-ink: #fff;
+    --ecw-like: #ff4d6d;
+}
+.ecw-references {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 4px;
+    opacity: 0.22;
+    transition: opacity 200ms ease-out;
+    animation: ecw-in 250ms ease-out;
+}
+.ecw-references:hover,
+.ecw-references:focus-within {
+    opacity: 1;
+}
+.ecw .ecw-comparison-result {
+    left: 50%;
+    width: 50%;
+}
+.ecw-comparison-reference {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 50%;
+    height: 100%;
+    object-fit: contain;
+}
+.ecw-comparison-labels {
+    position: absolute;
+    inset: 120px 0 auto;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    pointer-events: none;
+    text-align: center;
+    font-size: 12px;
+    opacity: 0.5;
+}
+.ecw-reference-flow {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.ecw-reference-flow > div {
+    width: 56px;
+    flex-shrink: 0;
+    text-align: center;
+}
+.ecw-reference-flow img {
+    width: 56px;
+    height: 68px;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.ecw-reference-flow span {
+    display: block;
+    font-size: 11px;
+    margin-bottom: 8px;
+    opacity: 0.7;
+}
+.ecw-projects {
+    position: absolute;
+    top: 24px;
+    right: 16px;
+    bottom: 160px;
+    width: 136px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    overflow: auto;
+    scrollbar-width: thin;
+}
+.ecw-projects button {
+    flex-shrink: 0;
+    padding: 4px;
+    border: 0;
+    border-radius: 12px;
+    background: var(--ecw-glass);
+    color: inherit;
+    opacity: 0.55;
+    transition: opacity 200ms;
+    cursor: pointer;
+    text-align: left;
+}
+.ecw-projects button:hover,
+.ecw-projects button[aria-current] {
+    opacity: 1;
+}
+.ecw-projects button[aria-current] {
+    box-shadow: inset 0 0 0 1px var(--ecw-ink);
+}
+.ecw-projects img {
+    width: 100%;
+    aspect-ratio: 16/10;
+    object-fit: cover;
+    border-radius: 8px;
+}
+.ecw-projects span {
+    display: block;
+    font-size: 11px;
+    padding: 8px 4px 4px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+.ecw-model {
+    font-size: 12px;
+    opacity: 0.65;
+    padding: 0 8px;
+}
+.ecw-model-label {
+    color: var(--user-ink-muted);
+    font-size: 12px;
+}
+.ecw-prompt {
+    white-space: pre-wrap;
+    user-select: text;
+    max-height: 55vh;
+    overflow: auto;
+    line-height: 1.65;
+}
+.ecw-like {
+    position: relative;
+}
+.ecw-heart-burst {
+    pointer-events: none;
+    position: absolute;
+    inset: 0;
+}
+.ecw-heart-burst svg {
+    position: absolute;
+    left: 50%;
+    top: 25%;
+    width: 12px;
+    height: 12px;
+    fill: var(--ecw-like, #ff4d6d);
+    color: var(--ecw-like, #ff4d6d);
+    animation: ecw-heart 700ms ease-out both;
+}
+@keyframes ecw-heart {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, 0) scale(0.3);
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translate(calc((var(--heart-index) - 3) * 18px), calc(-48px - var(--heart-index) * 6px)) scale(1.2) rotate(calc(var(--heart-index) * 20deg));
+    }
+}
+@keyframes ecw-in {
+    from {
+        opacity: 0;
+        translate: 0 -8px;
+    }
+    to {
+        opacity: 1;
+        translate: 0 0;
+    }
+}
+.template-work button:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+}
+@media (max-width: 1100px) {
+    .ecw-projects {
+        width: 100px;
+    }
+    .ecw-references {
+        left: 44%;
+    }
+}
+@media (max-width: 760px) {
+    .ecw-comparison-labels {
+        display: none;
+    }
+    .ecw-info {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .ecw-info > div:first-child {
+        min-width: 0;
+    }
+    .ecw-info > div:last-child {
+        align-self: flex-end;
+    }
+    .ecw-info button {
+        white-space: nowrap;
+    }
+    .ecw-references {
+        top: 64px;
+        left: 16px;
+        right: 16px;
+        transform: none;
+        padding: 12px;
+    }
+    .ecw-reference-flow {
+        justify-content: center;
+        gap: 8px;
+    }
+    .ecw-reference-flow > div,
+    .ecw-reference-flow img {
+        width: 56px;
+    }
+    .ecw-reference-flow img {
+        height: 68px;
+    }
+    .ecw-projects {
+        top: auto;
+        bottom: 224px;
+        left: 16px;
+        right: 16px;
+        width: auto;
+        flex-direction: row;
+        height: 80px;
+    }
+    .ecw-projects button {
+        width: 96px;
+    }
+    .ecw-projects span {
+        display: none;
+    }
+    .ecw-model {
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .ecw h1 {
+        max-width: 75vw;
+    }
+}
+@media (prefers-reduced-motion: reduce) {
+    .ecw *,
+    .ecw-heart-burst svg {
+        animation: none;
+        transition: none;
+    }
+    .ecw-heart-burst {
+        display: none;
+    }
+}

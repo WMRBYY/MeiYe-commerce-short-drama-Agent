@@ -1,0 +1,75 @@
+/* 可拖拽三栏：左右栏宽度来自 --rp-left / --rp-right，分隔条悬停与拖动时高亮。 */
+.rp-panes {
+    display: grid;
+    grid-template-columns: var(--rp-left) 0 minmax(0, 1fr) 0 var(--rp-right);
+    height: 100%;
+    min-height: 0;
+}
+.rp-panes > * {
+    min-width: 0;
+    min-height: 0;
+}
+.rp-handle {
+    position: relative;
+    z-index: 5;
+    cursor: col-resize;
+    outline: none;
+}
+.rp-handle::before {
+    content: "";
+    position: absolute;
+    inset: 0 -5px;
+}
+.rp-handle i {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: -1px;
+    width: 2px;
+    background: transparent;
+    transition: background 0.18s;
+}
+.rp-handle:hover i,
+.rp-handle:focus-visible i,
+.rp-handle[data-active] i {
+    background: var(--ms-accent, #84cc16);
+}
+.rp-handle i::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 6px;
+    height: 36px;
+    border-radius: 999px;
+    background: var(--ms-border-strong, #999);
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    transition:
+        opacity 0.18s,
+        background 0.18s;
+}
+.rp-handle:hover i::after,
+.rp-handle[data-active] i::after {
+    opacity: 1;
+    background: var(--ms-accent, #84cc16);
+}
+.rp-panes[data-dragging] {
+    cursor: col-resize;
+}
+.rp-panes[data-dragging] iframe,
+.rp-panes[data-dragging] video {
+    pointer-events: none;
+}
+@media (max-width: 1024px) {
+    .rp-panes {
+        grid-template-columns: minmax(0, 1fr);
+        grid-auto-rows: max-content;
+        align-content: start;
+        height: auto;
+        min-height: 100%;
+    }
+    .rp-handle {
+        display: none;
+    }
+}

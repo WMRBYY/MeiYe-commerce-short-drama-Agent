@@ -1,0 +1,411 @@
+/* ==========================================================================
+   首页（即梦式）：背景 / 标题 / 生成·画布切换 / 输入框 / 技能条 / 功能区 / 作品分类 / 画布面板
+   默认是白天主题的取值，html.dark 下切换为夜间取值；不使用渐变色，强调色统一用 logo 蓝（--meiye-logo）。
+   按钮不用 logo 色填充；原先做成渐变的按钮（生成/画布选中项、发送）保留中性底，文字和图标用 logo 色。
+   弹层（Popover、技能预览卡）挂在 body 上，所以令牌同时声明在这些弹层根节点上。
+   ========================================================================== */
+:is(.creation-home, .home-popover, .home-skill-preview) {
+    --home-accent: var(--meiye-logo, #157cf5);
+    --home-accent-soft: color-mix(in srgb, var(--home-accent) 10%, transparent);
+    --home-muted: var(--user-ink-muted);
+    --home-line: color-mix(in srgb, var(--user-ink) 9%, transparent);
+    --home-line-strong: color-mix(in srgb, var(--user-ink) 16%, transparent);
+    --home-card: color-mix(in srgb, var(--user-ink) 3.5%, var(--user-surface));
+    --home-card-hover: color-mix(in srgb, var(--user-ink) 6.5%, var(--user-surface));
+    --home-chip: var(--user-surface);
+    --home-track: color-mix(in srgb, var(--user-ink) 6%, transparent);
+    --home-pill-bg: #17181c;
+    --home-pill-fg: #ffffff;
+    --home-composer: var(--user-surface);
+    --home-composer-shadow: 0 1px 2px rgba(15, 23, 42, .04), 0 22px 50px -30px rgba(15, 23, 42, .28);
+    --home-sheen-a: rgba(64, 112, 255, .06);
+    --home-sheen-b: rgba(0, 160, 210, .045);
+    --home-dot: rgba(15, 23, 42, .1);
+    --home-glow: rgba(116, 136, 196, .12);
+    --home-send-bg: #ffffff;
+    --home-send-shadow: 0 0 0 1px rgba(24, 24, 27, .12), 0 6px 16px -8px rgba(15, 23, 42, .3);
+    --home-switch-bg: #ffffff;
+    --home-new: #2a6df4;
+    --home-new-bg: rgba(42, 109, 244, .1);
+    --home-hot: #e8590c;
+    --home-hot-bg: rgba(232, 89, 12, .1);
+    --home-pop-shadow: 0 18px 48px -18px rgba(15, 23, 42, .25);
+    --home-hover-shadow: 0 16px 36px -22px rgba(15, 23, 42, .32);
+    --home-ease: cubic-bezier(.22, 1, .36, 1);
+}
+html.dark :is(.creation-home, .home-popover, .home-skill-preview) {
+    --home-accent-soft: color-mix(in srgb, var(--home-accent) 16%, transparent);
+    --home-card: color-mix(in srgb, #fff 4%, var(--user-surface));
+    --home-card-hover: color-mix(in srgb, #fff 7.5%, var(--user-surface));
+    --home-chip: rgba(255, 255, 255, .035);
+    --home-track: rgba(255, 255, 255, .06);
+    --home-pill-bg: #f3f4f6;
+    --home-pill-fg: #101114;
+    --home-composer: color-mix(in srgb, var(--user-surface) 92%, transparent);
+    --home-composer-shadow: 0 26px 60px -34px rgba(0, 0, 0, .8);
+    --home-sheen-a: rgba(255, 255, 255, .045);
+    --home-sheen-b: rgba(110, 150, 255, .05);
+    --home-dot: rgba(255, 255, 255, .09);
+    --home-glow: rgba(108, 128, 176, .18);
+    --home-send-bg: #f3f4f6;
+    --home-send-shadow: 0 6px 16px -8px rgba(0, 0, 0, .45);
+    --home-switch-bg: #f3f4f6;
+    --home-new: #6fb1ff;
+    --home-new-bg: rgba(90, 165, 255, .16);
+    --home-hot: #ff9b5c;
+    --home-hot-bg: rgba(255, 140, 74, .16);
+    --home-pop-shadow: 0 24px 60px -18px rgba(0, 0, 0, .6);
+    --home-hover-shadow: 0 18px 40px -24px rgba(0, 0, 0, .7);
+}
+
+/* 宽度随屏幕放大：输入区约占半屏，功能区与作品区铺满内容区（与即梦在大屏上的比例一致）。 */
+.creation-home-scroll { position: relative; isolation: isolate; }
+.creation-home-scroll > .creation-launchpad.home-launchpad { position: relative; z-index: 1; width: min(100%, clamp(760px, 54vw, 1180px)); }
+/* 旧版启动区标题后的紫青光晕（creation-product.css）与新背景冲突，首页统一只用 .home-ambient。 */
+.creation-home-scroll > .creation-launchpad.home-launchpad::before { content: none; }
+.creation-home-scroll > :is(.home-feature-showcase, .home-gallery) { position: relative; z-index: 1; width: 100%; max-width: 1760px; }
+
+/* ---------- 背景：顶部中性光 + 点阵，向下渐隐 ---------- */
+.home-ambient { position: absolute; inset: 0 0 auto; z-index: 0; height: 560px; overflow: hidden; pointer-events: none; }
+.home-ambient-glow { position: absolute; inset: -45% -10% 0; background: radial-gradient(60% 55% at 50% 0%, var(--home-glow), transparent 72%); }
+.home-ambient-grid { position: absolute; inset: 0; background-image: radial-gradient(var(--home-dot) 1px, transparent 1.3px); background-size: 20px 20px; background-position: center top; -webkit-mask-image: radial-gradient(70% 90% at 50% 0%, #000 25%, transparent 78%); mask-image: radial-gradient(70% 90% at 50% 0%, #000 25%, transparent 78%); }
+
+/* ---------- 标题 ---------- */
+.home-hero { position: relative; display: flex; justify-content: center; margin: clamp(24px, 6vh, 64px) 0 22px; text-align: center; }
+.home-hero h1 { margin: 0; color: var(--user-ink); font-family: "HarmonyOS Sans SC", "MiSans", "PingFang SC", "Source Han Sans SC", "Noto Sans SC", "Microsoft YaHei UI", system-ui, sans-serif; font-size: clamp(26px, 1.25vw + 12px, 36px); font-weight: 600; letter-spacing: .02em; line-height: 1.3; font-feature-settings: "palt" 1; text-rendering: optimizeLegibility; -webkit-font-smoothing: antialiased; animation: home-rise .7s var(--home-ease) both; }
+.home-hero h1 em { color: var(--home-accent); font-style: normal; }
+.home-hero-name { display: inline-block; max-width: 9em; overflow: hidden; vertical-align: bottom; text-overflow: ellipsis; white-space: nowrap; }
+.home-hero-comma { margin-right: .06em; }
+/* 历史对话：标题右侧的轻量图标按钮，悬停时才展开文字。 */
+.creation-history-entry.home-history-entry { top: 50%; right: 0; gap: 0; height: 32px; padding: 0 9px; border: 1px solid transparent; background: transparent; box-shadow: none; color: var(--home-muted); transform: translateY(-50%); transition: color .25s var(--home-ease), background .25s var(--home-ease), border-color .25s var(--home-ease), gap .3s var(--home-ease); }
+.creation-history-entry.home-history-entry span { max-width: 0; overflow: hidden; opacity: 0; white-space: nowrap; transition: max-width .3s var(--home-ease), opacity .25s; }
+.creation-history-entry.home-history-entry:hover, .creation-history-entry.home-history-entry:focus-visible { gap: 6px; border-color: var(--home-line); background: var(--home-track); color: var(--user-ink); box-shadow: none; transform: translateY(-50%); }
+.creation-history-entry.home-history-entry:hover span, .creation-history-entry.home-history-entry:focus-visible span { max-width: 5em; opacity: 1; }
+@keyframes home-rise { from { opacity: 0; transform: translateY(10px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* ---------- 生成 / 画布 切换：选中项为浅色胶囊（白天白底带投影、夜间浅灰底），文字用 logo 色 ---------- */
+.home-surface-switch { position: relative; display: grid; grid-template-columns: 1fr 1fr; width: 300px; height: 40px; margin: 0 auto 24px; padding: 3px; border-radius: 999px; background: var(--home-track); animation: home-rise .7s .08s var(--home-ease) both; }
+.home-surface-switch button { position: relative; isolation: isolate; border: 0; border-radius: 999px; background: transparent; color: var(--home-muted); font-size: 14px; font-weight: 600; cursor: pointer; transition: color .25s var(--home-ease); }
+.home-surface-switch button:hover { color: var(--user-ink); }
+.home-surface-switch button.is-active { color: var(--home-accent); }
+.home-surface-pill { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--home-switch-bg); box-shadow: 0 1px 2px rgba(0, 0, 0, .12), 0 6px 16px -8px rgba(0, 0, 0, .35); }
+.home-surface-label { position: relative; }
+.home-surface-switch button:focus-visible { outline: 2px solid var(--home-accent); outline-offset: 2px; }
+
+/* ---------- 输入框 ---------- */
+.home-generate-panel { display: flex; flex-direction: column; gap: 14px; }
+.creation-composer-shell.is-home { border-radius: 20px; }
+.creation-composer-shell.is-home .creation-chat-composer { position: relative; isolation: isolate; overflow: hidden; min-height: 150px; border: 1px solid var(--home-line); border-radius: 18px; background: var(--home-composer); box-shadow: var(--home-composer-shadow); transition: border-color .3s var(--home-ease), box-shadow .3s var(--home-ease); }
+/* 输入框内缓慢游走的柔光（低饱和、单色），聚焦时加快。 */
+.creation-composer-shell.is-home .creation-chat-composer::before,
+.creation-composer-shell.is-home .creation-chat-composer::after { content: ""; position: absolute; z-index: -1; width: 60%; aspect-ratio: 1.6; border-radius: 50%; filter: blur(56px); pointer-events: none; }
+.creation-composer-shell.is-home .creation-chat-composer::before { top: -60%; left: -10%; background: radial-gradient(circle, var(--home-sheen-a), transparent 70%); animation: home-composer-flow-a 14s ease-in-out infinite alternate; }
+.creation-composer-shell.is-home .creation-chat-composer::after { right: -10%; bottom: -70%; background: radial-gradient(circle, var(--home-sheen-b), transparent 70%); animation: home-composer-flow-b 17s ease-in-out infinite alternate; }
+.creation-composer-shell.is-home .creation-chat-composer:focus-within { border-color: color-mix(in srgb, var(--home-accent) 38%, var(--home-line)); box-shadow: var(--home-composer-shadow), 0 0 0 3px color-mix(in srgb, var(--home-accent) 10%, transparent); }
+.creation-composer-shell.is-home .creation-chat-composer:focus-within::before,
+.creation-composer-shell.is-home .creation-chat-composer:focus-within::after { animation-duration: 7s; }
+@keyframes home-composer-flow-a { to { transform: translate3d(70%, 50%, 0) scale(1.15); } }
+@keyframes home-composer-flow-b { to { transform: translate3d(-70%, -40%, 0) scale(1.1); } }
+/* 全局 composer 样式把书写区做成网格并用 !important 固定高度，首页布局需要同等优先级覆盖。 */
+.creation-home .creation-composer-shell.is-home .creation-chat-composer.is-empty .creation-chat-writing-surface.is-home { display: flex !important; align-items: flex-start; gap: 14px !important; min-height: 96px !important; padding: 16px 18px 4px !important; }
+.creation-chat-writing-surface.is-home .creation-chat-editor { flex: 1 1 auto; min-width: 0; }
+.creation-composer-shell.is-home .creation-chat-mention-editor { min-height: 64px; font-size: 14px; line-height: 1.7; }
+.creation-composer-shell.is-home .creation-chat-dock { align-items: center; gap: 10px; padding: 8px 12px 12px 14px; }
+.creation-composer-shell.is-home .creation-chat-controls { flex-wrap: wrap; gap: 4px; }
+
+/* 上传格：两张错位卡片，悬停时前卡抬起、后卡展开。 */
+.home-upload-tile { position: relative; flex: 0 0 auto; width: 58px; height: 72px; margin-top: 2px; border: 0; padding: 0; background: transparent; cursor: pointer; }
+.home-upload-tile-card { position: absolute; inset: 0; display: grid; place-items: center; border-radius: 10px; transition: transform .45s var(--home-ease), background .3s, border-color .3s; }
+.home-upload-tile-card.is-back { background: color-mix(in srgb, var(--user-ink) 6%, transparent); transform: rotate(-7deg) translate(-3px, 2px); }
+.home-upload-tile-card.is-front { border: 1px dashed var(--home-line-strong); background: var(--home-card); color: var(--home-muted); transform: rotate(3deg); }
+.home-upload-tile-card svg { width: 18px; height: 18px; }
+.home-upload-tile:hover .home-upload-tile-card.is-front { border-color: color-mix(in srgb, var(--home-accent) 55%, transparent); color: var(--user-ink); transform: rotate(0) translateY(-4px); }
+.home-upload-tile:hover .home-upload-tile-card.is-back { transform: rotate(-12deg) translate(-7px, 3px); }
+.home-upload-tile:disabled { cursor: not-allowed; opacity: .45; }
+
+/* 底部控件：类型菜单 / 技能 / @。类型菜单使用单一品牌蓝（白天深蓝、夜间浅蓝），不做渐变字。 */
+.home-chip-control { display: inline-flex; align-items: center; gap: 6px; height: 32px; padding: 0 10px; border: 0; border-radius: 9px; background: transparent; color: var(--home-muted); font-size: 13px; font-weight: 500; cursor: pointer; transition: background .2s, color .2s; }
+.home-chip-control:hover, .home-chip-control[aria-expanded="true"] { background: var(--home-track); color: var(--user-ink); }
+.home-chip-control:disabled { cursor: not-allowed; opacity: .45; }
+.home-chip-control > svg { width: 16px; height: 16px; flex: 0 0 auto; }
+.home-chip-control > svg.lucide-chevron-down { width: 14px; height: 14px; transition: transform .25s var(--home-ease); }
+.home-chip-control > svg.is-open { transform: rotate(180deg); }
+.home-chip-control.is-icon { width: 32px; justify-content: center; padding: 0; }
+.home-chip-control.is-mode, .home-chip-control.is-mode:hover, .home-chip-control.is-mode[aria-expanded="true"] { color: var(--home-accent); font-weight: 600; }
+
+/* ---------- 发送：实心圆 + 上箭头，可发送时为浅色实底（白天白底描边、夜间浅灰底），箭头用 logo 色 ---------- */
+.home-send-wrap { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 10px; margin-left: auto; }
+/* 积分与发送圆同高（34px）并整行居中：内部是 span（积分符号 + 预估 + 滚动数字），也改为居中的弹性行，
+   符号按块级盒对齐，滚动数字去掉基线下移，避免“✦0.02”比发送圆高一截。 */
+.home-send-cost { display: inline-flex; align-items: center; height: 34px; color: color-mix(in srgb, var(--user-ink) 76%, transparent); font-size: 12px; font-weight: 600; line-height: 1; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.home-send-cost > span { display: inline-flex; align-items: center; gap: 4px; line-height: 1; }
+.home-send-cost svg { display: block; width: 12px; height: 12px; }
+.home-send-cost .rolling-credit-text { font-weight: 700; letter-spacing: .01em; }
+.home-send-cost .rolling-credit-digit { vertical-align: baseline; }
+.home-send-orb { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; padding: 0; background: color-mix(in srgb, var(--user-ink) 10%, transparent); color: color-mix(in srgb, var(--user-ink) 38%, transparent); cursor: not-allowed; transition: background .25s, color .25s, transform .3s var(--home-ease), box-shadow .3s; }
+.home-send-orb svg { width: 17px; height: 17px; stroke-width: 2.2; transition: transform .3s var(--home-ease); }
+.home-send-orb.is-ready { background: var(--home-send-bg); color: var(--home-accent); box-shadow: var(--home-send-shadow); cursor: pointer; }
+.home-send-orb.is-ready:hover { transform: scale(1.06); }
+.home-send-orb.is-ready:hover svg { transform: translateY(-2px); }
+.home-send-orb.is-ready:active { transform: scale(.94); }
+.home-send-orb.is-busy { background: color-mix(in srgb, var(--user-ink) 14%, transparent); color: var(--user-ink); cursor: progress; }
+.home-send-orb:focus-visible { outline: 2px solid var(--home-accent); outline-offset: 3px; }
+/* styles/workspace-product.css 的图标按钮悬停规则带 !important（中性灰底、只过渡颜色），会把可发送的实心圆盖成灰色，这里同等优先级保持可发送底色与缩放过渡。 */
+.home-send-wrap > .home-send-orb:not(.ant-btn-icon-only) { transition: background .25s, color .25s, transform .3s var(--home-ease), box-shadow .3s !important; }
+.home-send-orb.is-ready:not(:disabled):hover { background: var(--home-send-bg) !important; color: var(--home-accent) !important; }
+@media (prefers-reduced-motion: reduce) { .home-send-wrap > .home-send-orb:not(.ant-btn-icon-only) { transition: none !important; } }
+
+/* ---------- 弹出层：类型菜单 / 我的技能 / @ ---------- */
+.home-popover .home-popover-surface { overflow: hidden; padding: 0 !important; border: 1px solid var(--home-line); border-radius: 16px !important; background: color-mix(in srgb, var(--user-surface) 96%, transparent) !important; backdrop-filter: blur(20px) saturate(1.3); box-shadow: var(--home-pop-shadow) !important; }
+.home-popover .home-popover-content { padding: 0; }
+/* 入场只用 antd 自带的 zoom 动效，不要在 .home-popover 根节点上再写 animation / transform：
+   自定义动画会在 antd 动效结束、移除动效类名后重播一次，antd 定位时也会量到这段位移，弹层会跳动、选项点不中。 */
+.home-mode-menu { display: flex; flex-direction: column; gap: 2px; width: 300px; padding: 6px; }
+.home-mode-option { display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px; border: 0; border-radius: 11px; background: transparent; color: var(--user-ink); text-align: left; cursor: pointer; transition: background .2s; }
+.home-mode-option:hover { background: var(--home-track); }
+.home-mode-option.is-selected { background: color-mix(in srgb, var(--user-ink) 8%, transparent); }
+.home-mode-option-icon { display: grid; flex: 0 0 auto; place-items: center; width: 36px; height: 36px; border-radius: 10px; background: var(--home-track); color: var(--user-ink); }
+.home-mode-option.is-selected .home-mode-option-icon { color: var(--home-accent); }
+.home-mode-option-copy { display: flex; min-width: 0; flex: 1; flex-direction: column; gap: 2px; }
+.home-mode-option-copy strong { font-size: 13.5px; font-weight: 600; }
+.home-mode-option-copy small { overflow: hidden; color: var(--home-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.home-mode-option-check { width: 16px; height: 16px; color: var(--home-accent); }
+.home-skill-menu, .home-mention-menu { width: 340px; padding: 12px; }
+.home-skill-menu header, .home-mention-menu header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; color: var(--home-muted); font-size: 12px; font-weight: 600; }
+.home-skill-menu header button { display: inline-flex; align-items: center; gap: 2px; border: 0; background: transparent; color: var(--home-muted); font-size: 12px; cursor: pointer; }
+.home-skill-menu header button:hover { color: var(--user-ink); }
+.home-skill-menu header svg { width: 13px; height: 13px; }
+.home-skill-search { display: flex; align-items: center; gap: 8px; height: 34px; margin-bottom: 8px; padding: 0 10px; border-radius: 10px; background: var(--home-track); }
+.home-skill-search svg { width: 14px; height: 14px; color: var(--home-muted); }
+.home-skill-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--user-ink); font-size: 13px; }
+.home-skill-list { display: flex; max-height: 300px; flex-direction: column; gap: 2px; overflow-y: auto; }
+.home-skill-option { display: flex; align-items: flex-start; gap: 10px; width: 100%; padding: 9px 10px; border: 0; border-radius: 10px; background: transparent; color: var(--user-ink); text-align: left; cursor: pointer; transition: background .2s; }
+.home-skill-option:hover { background: var(--home-track); }
+.home-skill-option-badge { display: grid; flex: 0 0 auto; place-items: center; width: 22px; height: 22px; border-radius: 7px; background: var(--home-track); color: var(--user-ink); font-size: 12px; font-weight: 700; }
+.home-skill-option-copy { display: flex; min-width: 0; flex-direction: column; gap: 2px; }
+.home-skill-option-copy strong { font-size: 13px; font-weight: 600; }
+.home-skill-option-copy small { display: -webkit-box; overflow: hidden; color: var(--home-muted); font-size: 12px; line-height: 1.5; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
+.home-menu-state { display: flex; align-items: center; justify-content: center; gap: 8px; padding: 24px 0; color: var(--home-muted); font-size: 12px; }
+.home-menu-state svg { width: 14px; height: 14px; }
+.home-menu-empty { display: flex; flex-direction: column; align-items: center; gap: 12px; padding: 22px 0 10px; color: var(--home-muted); text-align: center; }
+.home-menu-empty p { margin: 0; font-size: 13px; }
+.home-menu-empty button { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 18px; border: 0; border-radius: 10px; background: var(--home-track); color: var(--user-ink); font-size: 13px; font-weight: 600; cursor: pointer; transition: background .2s, transform .2s; }
+.home-menu-empty button:hover { background: color-mix(in srgb, var(--user-ink) 12%, transparent); transform: translateY(-1px); }
+.home-menu-empty button svg { width: 15px; height: 15px; }
+.home-subject-art { position: relative; width: 64px; height: 56px; margin-bottom: 4px; }
+.home-subject-art > span { position: absolute; width: 40px; height: 44px; border-radius: 10px; }
+.home-subject-art .is-back { top: 4px; left: 6px; background: var(--home-track); transform: rotate(-12deg); }
+.home-subject-art .is-front { top: 8px; right: 6px; display: grid; place-items: center; border: 1px solid color-mix(in srgb, var(--home-accent) 40%, transparent); background: var(--home-accent-soft); color: var(--home-accent); transform: rotate(6deg); animation: home-float-tilt 3.2s ease-in-out infinite; }
+@keyframes home-float-tilt { 50% { transform: rotate(6deg) translateY(-4px); } }
+.home-mention-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 260px; overflow-y: auto; }
+.home-mention-item { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 6px 2px; border: 0; border-radius: 10px; background: transparent; color: var(--home-muted); font-size: 11.5px; cursor: pointer; transition: background .2s, color .2s; }
+.home-mention-item:hover { background: var(--home-track); color: var(--user-ink); }
+.home-mention-thumb { display: grid; place-items: center; width: 56px; height: 56px; overflow: hidden; border-radius: 10px; background: var(--home-track); }
+.home-mention-thumb :is(img, video) { width: 100%; height: 100%; object-fit: cover; }
+.home-mention-thumb svg { width: 18px; height: 18px; }
+.home-mention-item.is-add .home-mention-thumb { border: 1px dashed var(--home-line-strong); background: transparent; }
+
+/* ---------- 技能快捷条：单行，必要时收窄技能名；可比输入框更宽（与即梦一致） ---------- */
+.home-skill-chips { display: flex; flex-wrap: nowrap; justify-content: center; gap: 8px; align-self: center; width: max-content; max-width: min(1280px, max(100%, calc(100vw - 300px))); }
+.home-skill-chip { position: relative; display: inline-flex; flex: 0 1 auto; align-items: center; gap: 4px; min-width: 0; height: 32px; padding: 0 13px; border: 1px solid var(--home-line); border-radius: 999px; background: var(--home-chip); color: var(--user-ink); font-size: 12.5px; font-weight: 500; cursor: pointer; transition: border-color .25s, background .25s, transform .25s var(--home-ease); }
+.home-skill-chip:hover, .home-skill-chip:focus-visible { border-color: var(--home-line-strong); background: var(--home-card-hover); outline: none; transform: translateY(-2px); }
+.home-skill-chip-slash { flex: 0 0 auto; color: var(--home-muted); font-weight: 700; }
+.home-skill-chip-name { min-width: 0; max-width: 9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-skill-chip.is-more { flex: 0 0 auto; color: var(--home-muted); }
+.home-skill-chip.is-more svg { width: 14px; height: 14px; }
+.home-skill-badge { display: inline-flex; flex: 0 0 auto; align-items: center; height: 16px; margin-left: 4px; padding: 0 5px; border-radius: 4px; font-size: 10px; font-style: normal; font-weight: 700; letter-spacing: .02em; }
+.home-skill-badge.is-new { background: var(--home-new-bg); color: var(--home-new); }
+.home-skill-badge.is-hot { background: var(--home-hot-bg); color: var(--home-hot); }
+.home-skill-preview { position: fixed; z-index: 1200; overflow: hidden; border: 1px solid var(--home-line); border-radius: 16px; background: color-mix(in srgb, var(--user-surface) 97%, transparent); backdrop-filter: blur(20px); box-shadow: var(--home-pop-shadow); transform-origin: top center; }
+/* 媒体区固定 16:9：技能封面铺底，预览视频 / 图片加载出首帧后淡入覆盖（封面是 span，需要单独铺满）。 */
+.home-skill-preview-media { position: relative; aspect-ratio: 16 / 9; overflow: hidden; background: var(--home-track); }
+.home-skill-preview-media > :is(video, img, div, span) { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: cover; }
+.home-skill-preview-media > .skill-visual-cover { aspect-ratio: auto; border-radius: 0; background: var(--home-track); }
+.home-skill-preview-media > .skill-visual-cover img { width: 100%; height: 100%; object-fit: cover; }
+.home-skill-preview-layer { opacity: 0; transition: opacity .3s var(--home-ease); }
+.home-skill-preview-layer.is-ready { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { .home-skill-preview-layer { transition: none; } }
+.home-skill-preview-body { padding: 12px 14px; }
+.home-skill-preview-body strong { display: block; margin-bottom: 4px; color: var(--user-ink); font-size: 14px; font-weight: 700; }
+.home-skill-preview-body p { display: -webkit-box; margin: 0; overflow: hidden; color: var(--home-muted); font-size: 12.5px; line-height: 1.6; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.home-skill-preview-body button { display: inline-flex; float: right; align-items: center; gap: 2px; margin-top: 6px; border: 0; background: transparent; color: var(--home-muted); font-size: 12px; cursor: pointer; transition: color .2s; }
+.home-skill-preview-body button:hover { color: var(--user-ink); }
+.home-skill-preview-body button svg { width: 14px; height: 14px; }
+
+/* ---------- 功能区：左侧轮播 + 双行功能卡 ---------- */
+.home-feature-showcase { display: grid; grid-template-columns: clamp(260px, 21%, 420px) minmax(0, 1fr); gap: 12px; margin: 44px auto 8px; }
+.home-banner { position: relative; height: 204px; overflow: hidden; border-radius: 16px; background: var(--home-card); }
+.home-banner-slide { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; padding: 0; background: transparent; text-align: left; cursor: pointer; }
+.home-banner-image { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 6s linear; }
+.home-banner:hover .home-banner-image { transform: scale(1.06); }
+.home-banner-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 35%, rgba(5, 8, 16, .82) 100%); }
+.home-banner-copy { position: absolute; right: 18px; bottom: 30px; left: 18px; display: flex; flex-direction: column; gap: 2px; color: #fff; }
+.home-banner-copy small { font-size: 18px; font-weight: 700; letter-spacing: -.01em; opacity: .9; }
+.home-banner-copy strong { font-size: 24px; font-weight: 800; letter-spacing: -.02em; line-height: 1.2; text-shadow: 0 4px 24px rgba(0, 0, 0, .4); }
+.home-banner-copy span { margin-top: 4px; font-size: 12.5px; opacity: .75; }
+.home-banner-dots { position: absolute; right: 16px; bottom: 14px; display: flex; gap: 5px; }
+.home-banner-dots button { position: relative; overflow: hidden; width: 6px; height: 6px; border: 0; border-radius: 999px; padding: 0; background: rgba(255, 255, 255, .35); cursor: pointer; transition: width .35s var(--home-ease), background .3s; }
+.home-banner-dots button.is-active { width: 22px; background: rgba(255, 255, 255, .3); }
+.home-banner-dots button i { position: absolute; inset: 0; border-radius: inherit; background: #fff; transform-origin: left; }
+.home-feature-rail { position: relative; min-width: 0; }
+.home-feature-track { display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, 96px); grid-auto-columns: minmax(220px, calc((100% - 48px) / 5)); gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+.home-feature-track::-webkit-scrollbar { display: none; }
+.home-feature-card { position: relative; display: flex; align-items: center; gap: 12px; min-width: 0; padding: 10px; overflow: hidden; border: 1px solid transparent; border-radius: 14px; background: var(--home-card); color: var(--user-ink); text-align: left; cursor: pointer; scroll-snap-align: start; transition: background .3s, border-color .3s, transform .35s var(--home-ease), box-shadow .35s; }
+.home-feature-card.is-teal { background: color-mix(in srgb, #1c8f97 9%, var(--home-card)); }
+.home-feature-card:hover, .home-feature-card:focus-visible { border-color: var(--home-line-strong); background: var(--home-card-hover); outline: none; transform: translateY(-3px); box-shadow: var(--home-hover-shadow); }
+.home-feature-thumb { position: relative; flex: 0 0 auto; width: 96px; height: 72px; overflow: hidden; border-radius: 10px; background: var(--home-track); }
+.home-feature-thumb :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .6s var(--home-ease), opacity .4s; }
+.home-feature-thumb video { opacity: 0; }
+.home-feature-card:hover .home-feature-thumb video { opacity: 1; }
+.home-feature-card:hover .home-feature-thumb img { transform: scale(1.08); }
+.home-feature-copy { position: relative; display: flex; min-width: 0; flex: 1 1 auto; flex-direction: column; gap: 4px; }
+.home-feature-copy strong { display: inline-flex; align-items: center; font-size: 14px; font-weight: 700; white-space: nowrap; }
+.home-feature-copy small { overflow: hidden; color: var(--home-muted); font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+.home-feature-badge { position: absolute; top: 8px; right: 8px; z-index: 1; margin: 0; }
+.home-rail-arrow { position: absolute; top: 50%; z-index: 2; display: grid; place-items: center; width: 34px; height: 34px; border: 1px solid var(--home-line-strong); border-radius: 50%; background: color-mix(in srgb, var(--user-surface) 88%, transparent); color: var(--user-ink); opacity: 0; backdrop-filter: blur(12px); box-shadow: var(--home-pop-shadow); cursor: pointer; transform: translateY(-50%) scale(.9); transition: opacity .25s, transform .25s var(--home-ease), background .2s; }
+.home-rail-arrow.is-left { left: -14px; }
+.home-rail-arrow.is-right { right: -14px; }
+.home-rail-arrow svg { width: 17px; height: 17px; }
+.home-feature-rail:hover .home-rail-arrow { opacity: 1; transform: translateY(-50%) scale(1); }
+.home-rail-arrow:hover { background: var(--user-surface); }
+
+/* ---------- 作品分类（参考即梦：分类页签 + 搜索 + 作品网格；暂无作品时显示空状态） ---------- */
+.home-gallery { margin: 40px auto 28px; }
+.home-gallery-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+.home-gallery-tabs { display: flex; align-items: center; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+.home-gallery-tabs::-webkit-scrollbar { display: none; }
+.home-gallery-tab { position: relative; isolation: isolate; display: inline-flex; flex: 0 0 auto; align-items: center; gap: 4px; height: 34px; padding: 0 15px; border: 0; border-radius: 999px; background: transparent; color: var(--home-muted); font-size: 14px; font-weight: 500; cursor: pointer; transition: color .2s; }
+.home-gallery-tab:hover { color: var(--user-ink); }
+.home-gallery-tab.is-active { color: var(--user-ink); font-weight: 600; }
+.home-gallery-tab-pill { position: absolute; inset: 0; z-index: -1; border-radius: inherit; background: var(--home-track); box-shadow: inset 0 0 0 1px var(--home-line); }
+.home-gallery-featured-mark { color: var(--home-accent); }
+.home-gallery-search { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; width: clamp(200px, 18vw, 300px); height: 36px; padding: 0 10px 0 14px; border: 1px solid var(--home-line); border-radius: 999px; background: var(--home-chip); color: var(--home-muted); transition: border-color .25s, box-shadow .25s; }
+.home-gallery-search:focus-within { border-color: color-mix(in srgb, var(--home-accent) 50%, transparent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--home-accent) 12%, transparent); }
+.home-gallery-search > svg { width: 15px; height: 15px; flex: 0 0 auto; }
+.home-gallery-search input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--user-ink); font-size: 13px; }
+.home-gallery-search input::placeholder { color: var(--home-muted); }
+.home-gallery-search button { display: grid; flex: 0 0 auto; place-items: center; width: 20px; height: 20px; border: 0; border-radius: 50%; background: var(--home-track); color: var(--user-ink); cursor: pointer; }
+.home-gallery-search button svg { width: 12px; height: 12px; }
+.home-gallery-section + .home-gallery-section { margin-top: 28px; }
+.home-gallery-section-title { margin: 0 0 12px; color: var(--user-ink); font-size: 14px; font-weight: 600; }
+.home-gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; }
+.home-gallery-card { display: flex; min-width: 0; flex-direction: column; gap: 10px; }
+.home-gallery-cover { position: relative; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 12px; background: var(--home-card); }
+.home-gallery-cover :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--home-ease), opacity .4s; }
+.home-gallery-cover video { opacity: 0; }
+.home-gallery-card:hover .home-gallery-cover video { opacity: 1; }
+.home-gallery-card:hover .home-gallery-cover img { transform: scale(1.05); }
+.home-gallery-use { position: absolute; right: 10px; bottom: 10px; height: 30px; padding: 0 14px; border: 0; border-radius: 999px; background: rgba(255, 255, 255, .94); color: #111216; font-size: 12px; font-weight: 600; opacity: 0; cursor: pointer; transform: translateY(6px); transition: opacity .25s, transform .25s var(--home-ease); }
+.home-gallery-card:hover .home-gallery-use, .home-gallery-use:focus-visible { opacity: 1; transform: none; }
+.home-gallery-meta strong { display: block; overflow: hidden; color: var(--user-ink); font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.home-gallery-author { display: inline-flex; align-items: center; gap: 6px; margin-top: 4px; color: var(--home-muted); font-size: 12px; }
+.home-gallery-author :is(img, i) { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; background: var(--home-track); font-size: 10px; font-style: normal; object-fit: cover; }
+/* 用户投稿模版：整卡可点击进入作品页，显示时长和点赞数。 */
+.home-gallery-card.is-template { cursor: pointer; }
+.home-gallery-card.is-template:focus-visible { outline: 2px solid color-mix(in srgb, var(--home-accent) 60%, transparent); outline-offset: 4px; border-radius: 12px; }
+.home-gallery-duration { position: absolute; right: 8px; bottom: 8px; z-index: 1; padding: 2px 6px; border-radius: 6px; background: rgba(0, 0, 0, .62); color: #fff; font-size: 11px; font-variant-numeric: tabular-nums; }
+.home-gallery-meta-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-width: 0; }
+.home-gallery-meta-row .home-gallery-author { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.home-gallery-likes { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 4px; margin-top: 4px; color: var(--home-muted); font-size: 12px; font-variant-numeric: tabular-nums; }
+.home-gallery-likes svg { width: 13px; height: 13px; }
+.home-gallery-empty { display: flex; min-height: 280px; flex-direction: column; align-items: center; justify-content: center; gap: 8px; border: 1px dashed var(--home-line-strong); border-radius: 18px; background: var(--home-card); text-align: center; }
+.home-gallery-empty strong { margin-top: 10px; color: var(--user-ink); font-size: 15px; font-weight: 600; }
+.home-gallery-empty p { margin: 0; color: var(--home-muted); font-size: 13px; }
+.home-gallery-empty-art { position: relative; width: 100px; height: 74px; }
+.home-gallery-empty-art > span { position: absolute; width: 64px; height: 46px; border-radius: 12px; }
+.home-gallery-empty-art .is-back { top: 4px; left: 4px; background: var(--home-track); transform: rotate(-10deg); }
+.home-gallery-empty-art .is-mid { top: 6px; right: 4px; background: color-mix(in srgb, var(--user-ink) 9%, transparent); transform: rotate(9deg); }
+.home-gallery-empty-art .is-front { top: 20px; left: 50%; display: grid; width: 70px; height: 50px; margin-left: -35px; place-items: center; border: 1px solid var(--home-line-strong); background: var(--user-surface); color: var(--home-accent); box-shadow: var(--home-hover-shadow); animation: home-float 3.4s ease-in-out infinite; }
+@keyframes home-float { 50% { transform: translateY(-4px); } }
+
+/* ---------- 画布面板 ---------- */
+.home-canvas-panel { display: flex; flex-direction: column; gap: 16px; }
+.home-canvas-cards { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; height: 170px; }
+.home-canvas-new { position: relative; display: flex; overflow: hidden; flex-direction: column; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--home-line); border-radius: 16px; background: var(--home-card); color: var(--user-ink); cursor: pointer; transition: border-color .35s, transform .35s var(--home-ease), box-shadow .35s; }
+.home-canvas-new:hover:not(:disabled) { border-color: color-mix(in srgb, var(--home-accent) 40%, transparent); box-shadow: var(--home-hover-shadow); transform: translateY(-3px); }
+.home-canvas-new:disabled { cursor: wait; opacity: .6; }
+.home-canvas-new-icon { position: relative; z-index: 1; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 12px; background: var(--home-pill-bg); color: var(--home-pill-fg); transition: transform .45s var(--home-ease), box-shadow .45s; }
+.home-canvas-new-icon svg { width: 20px; height: 20px; }
+.home-canvas-new:hover .home-canvas-new-icon { box-shadow: 0 0 0 6px var(--home-accent-soft); transform: rotate(90deg) scale(1.06); }
+.home-canvas-new-label { position: relative; z-index: 1; font-size: 13px; font-weight: 600; }
+.home-canvas-art { position: absolute; inset: 0; width: 100%; height: 100%; opacity: .45; transition: opacity .45s var(--home-ease); }
+.home-canvas-new:hover .home-canvas-art { opacity: 1; }
+.home-canvas-wire { fill: none; stroke: var(--home-accent); stroke-dasharray: 5 7; stroke-linecap: round; stroke-width: 1.6; opacity: .45; }
+.home-canvas-new:hover .home-canvas-wire { opacity: .9; animation: home-wire-flow 1.1s linear infinite; }
+.home-canvas-wire.is-b { animation-delay: -.35s !important; }
+.home-canvas-wire.is-c { animation-delay: -.7s !important; }
+.home-canvas-node { fill: color-mix(in srgb, var(--user-ink) 6%, transparent); stroke: color-mix(in srgb, var(--user-ink) 20%, transparent); stroke-width: 1; transform-box: fill-box; transform-origin: center; transition: transform .5s var(--home-ease), fill .4s, stroke .4s; }
+.home-canvas-new:hover .home-canvas-node { fill: var(--home-accent-soft); stroke: color-mix(in srgb, var(--home-accent) 60%, transparent); }
+.home-canvas-new:hover .home-canvas-node.is-1 { transform: translateY(-4px); transition-delay: 0s; }
+.home-canvas-new:hover .home-canvas-node.is-2 { transform: translateY(4px); transition-delay: .06s; }
+.home-canvas-new:hover .home-canvas-node.is-3 { transform: scale(1.06); transition-delay: .12s; }
+.home-canvas-new:hover .home-canvas-node.is-4 { transform: translateY(-3px); transition-delay: .18s; }
+.home-canvas-port { fill: var(--home-accent); opacity: .5; }
+.home-canvas-new:hover .home-canvas-port { opacity: 1; animation: home-port 1.4s ease-in-out infinite; }
+@keyframes home-wire-flow { to { stroke-dashoffset: -24; } }
+@keyframes home-port { 50% { opacity: .35; } }
+.home-canvas-template { position: relative; overflow: hidden; border: 1px solid var(--home-line); border-radius: 16px; padding: 0; background: var(--home-card); cursor: pointer; transition: transform .35s var(--home-ease), box-shadow .35s, border-color .3s; }
+.home-canvas-template :is(img, video) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform .7s var(--home-ease), opacity .4s; }
+.home-canvas-template video { opacity: 0; }
+.home-canvas-template:hover video { opacity: 1; }
+.home-canvas-template:hover img { transform: scale(1.07); }
+.home-canvas-template:hover:not(:disabled) { border-color: var(--home-line-strong); box-shadow: var(--home-hover-shadow); transform: translateY(-3px); }
+.home-canvas-template:disabled { cursor: wait; }
+.home-canvas-template-shade { position: absolute; inset: 0; background: linear-gradient(180deg, transparent 45%, rgba(5, 8, 16, .78)); }
+.home-canvas-template-tag { position: absolute; top: 10px; left: 10px; padding: 2px 8px; border-radius: 6px; background: rgba(10, 14, 24, .55); color: #fff; font-size: 11px; font-style: normal; font-weight: 600; backdrop-filter: blur(8px); }
+.home-canvas-template strong { position: absolute; bottom: 12px; left: 14px; display: inline-flex; align-items: center; gap: 6px; color: #fff; font-size: 15px; font-weight: 700; }
+.home-canvas-template strong svg { width: 14px; height: 14px; }
+.home-canvas-prompt { display: flex; align-items: center; gap: 10px; height: 52px; padding: 0 8px 0 18px; border: 1px solid var(--home-line); border-radius: 16px; background: var(--home-composer); box-shadow: var(--home-composer-shadow); transition: border-color .3s, box-shadow .3s; }
+.home-canvas-prompt:focus-within { border-color: color-mix(in srgb, var(--home-accent) 45%, var(--home-line)); box-shadow: var(--home-composer-shadow), 0 0 0 3px color-mix(in srgb, var(--home-accent) 10%, transparent); }
+.home-canvas-prompt input { flex: 1; min-width: 0; border: 0; outline: 0; background: transparent; color: var(--user-ink); font-size: 14px; }
+.home-canvas-prompt input::placeholder { color: var(--home-muted); }
+.home-canvas-prompt .home-send-wrap { margin-left: 0; }
+.home-canvas-panel .creation-recent-canvases { margin-top: 4px; }
+
+/* ---------- 音乐 / 音频面板 ---------- */
+.home-audio-composer { display: flex; flex-direction: column; gap: 12px; }
+.home-audio-textarea { width: 100%; min-height: 84px; max-height: 240px; resize: none; border: 0; outline: 0; background: transparent; color: var(--user-ink); font: inherit; font-size: 14px; line-height: 1.7; }
+.home-audio-textarea::placeholder { color: var(--home-muted); }
+.home-audio-hint, .home-audio-note { display: flex; align-items: center; gap: 6px; margin: 0; color: var(--home-muted); font-size: 12px; }
+.home-audio-hint svg { width: 14px; height: 14px; color: var(--home-hot); }
+.home-audio-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 10px; margin: 0; padding: 0; list-style: none; }
+.home-audio-result { display: flex; flex-direction: column; gap: 10px; padding: 12px 14px; border: 1px solid var(--home-line); border-radius: 14px; background: var(--home-card); }
+.home-audio-result-head { display: flex; align-items: center; gap: 8px; }
+.home-audio-result-head strong { flex: 1; min-width: 0; overflow: hidden; color: var(--user-ink); font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.home-audio-result-head :is(button, a) { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 8px; background: transparent; color: var(--home-muted); cursor: pointer; }
+.home-audio-result-head :is(button, a):hover { background: var(--home-track); color: var(--user-ink); }
+.home-audio-result-head svg { width: 15px; height: 15px; }
+.home-audio-result audio { width: 100%; height: 36px; }
+.home-audio-wave { display: flex; align-items: center; gap: 3px; height: 36px; color: var(--home-muted); }
+.home-audio-wave > svg { width: 15px; height: 15px; margin-right: 6px; }
+.home-audio-wave i { width: 3px; height: 30%; border-radius: 3px; background: var(--home-accent); animation: home-wave 1.1s ease-in-out infinite; }
+.home-audio-error { margin: 0; color: var(--status-error, #e5484d); font-size: 12px; }
+@keyframes home-wave { 50% { height: 90%; } }
+
+/* ---------- 对话页输入框：与首页同一套面板与控件 ---------- */
+.creation-thread-composer.is-home { padding-inline: 0; }
+.creation-home .creation-thread-composer.is-home .creation-composer-shell.is-home .creation-chat-composer.is-thread { min-height: 0; border-radius: 18px; }
+.creation-home .creation-thread-composer.is-home .creation-chat-composer.is-thread .creation-chat-writing-surface.is-home { display: flex !important; align-items: flex-start; gap: 12px !important; min-height: 64px !important; padding: 12px 16px 2px !important; }
+.creation-home .creation-thread-composer.is-home .home-upload-tile { width: 46px; height: 56px; }
+.creation-home .creation-thread-composer.is-home .creation-chat-mention-editor { min-height: 44px; }
+.creation-home .creation-thread-composer.is-home .creation-chat-dock { padding: 6px 10px 10px 12px; }
+
+/* ---------- 响应式与减少动态 ---------- */
+@media (max-width: 1100px) {
+    .home-feature-showcase { grid-template-columns: 1fr; }
+    .home-banner { height: 200px; }
+}
+@media (max-width: 720px) {
+    .home-canvas-cards { grid-template-columns: 1fr 1fr; height: auto; }
+    .home-canvas-new { grid-column: 1 / -1; height: 150px; }
+    .home-canvas-template { height: 130px; }
+    .home-feature-track { grid-auto-columns: 80%; }
+    .home-history-entry { top: 0; transform: none; }
+    .home-hero { padding-top: 40px; }
+    .home-gallery-head { flex-wrap: wrap; }
+    .home-gallery-search { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .home-hero h1, .home-surface-switch, .home-canvas-wire, .home-canvas-port, .home-subject-art .is-front, .home-audio-wave i, .home-gallery-empty-art .is-front,
+    .creation-composer-shell.is-home .creation-chat-composer::before, .creation-composer-shell.is-home .creation-chat-composer::after { animation: none !important; }
+}

@@ -1,0 +1,10 @@
+@font-face {
+    font-family: "Commerce Sans";
+    src: url("/commerce-fonts/LXGWWenKai-Regular.woff2") format("woff2");
+    font-display: swap;
+}
+@font-face {
+    font-family: "Commerce Serif";
+    src: url("/commerce-fonts/SourceHanSerifSC-Regular.woff2") format("woff2");
+    font-display: swap;
+}

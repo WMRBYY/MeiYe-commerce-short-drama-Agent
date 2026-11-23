@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 270" role="img" aria-label="15秒极致夸张反转提示词的原创示意封面">
+<defs><linearGradient id="bg" x2="1" y2="1"><stop stop-color="#1b2852"/><stop offset="1" stop-color="#486cba"/></linearGradient><radialGradient id="glow"><stop stop-color="#b9d8f5" stop-opacity=".44"/><stop offset="1" stop-color="#b9d8f5" stop-opacity="0"/></radialGradient></defs>
+<rect width="480" height="270" fill="url(#bg)"/><circle cx="135" cy="86" r="205" fill="url(#glow)"/><path d="M-40 217L520 53M-40 240L520 76" stroke="white" stroke-opacity=".07" stroke-width="2"/>
+<g transform="rotate(9 240 130)"><rect x="88" y="49" width="304" height="158" rx="18" fill="#1b2852" opacity=".42" stroke="white" stroke-opacity=".3"/><circle cx="240" cy="128" r="65" fill="#b9d8f5" opacity=".9"/><path d="M240 78v100M190 128h100M205 93l70 70M275 93l-70 70" stroke="#1b2852" stroke-width="6" opacity=".55"/><circle cx="240" cy="128" r="25" fill="#fff9ee"/></g>
+<rect y="209" width="480" height="61" fill="#1b2852" opacity=".85"/><text x="24" y="234" fill="white" font-size="19" font-weight="700" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif">15秒极致夸张反转提示词</text><text x="25" y="254" fill="white" opacity=".72" font-size="11" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif">创作方法 · MEIYEAI SKILL</text>
+</svg>

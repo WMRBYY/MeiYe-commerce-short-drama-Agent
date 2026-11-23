@@ -1,0 +1,152 @@
+/* 小夜头像：去掉圆框与底色，直接展示角色本体；消息出现时跳一下，生成中轻轻摇摆并冒出星星。 */
+.creation-home .creation-message-mark.is-yoru {
+    position: relative;
+    overflow: visible;
+    width: 30px;
+    height: 30px;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.creation-home .creation-message-mark.is-yoru img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center bottom;
+    transform-origin: 50% 100%;
+    filter: drop-shadow(0 3px 6px rgba(76, 157, 255, .35));
+    animation: yoru-mark-hop .7s cubic-bezier(.34, 1.56, .64, 1) both;
+}
+
+.creation-home .creation-assistant-message[data-status="pending"] .creation-message-mark.is-yoru img,
+.creation-home .creation-assistant-message[data-status="streaming"] .creation-message-mark.is-yoru img {
+    animation: yoru-mark-hop .7s cubic-bezier(.34, 1.56, .64, 1) both, yoru-mark-sway 1.6s .7s ease-in-out infinite;
+}
+
+.creation-home .creation-assistant-message[data-status="pending"] .creation-message-mark.is-yoru::before,
+.creation-home .creation-assistant-message[data-status="pending"] .creation-message-mark.is-yoru::after,
+.creation-home .creation-assistant-message[data-status="streaming"] .creation-message-mark.is-yoru::before,
+.creation-home .creation-assistant-message[data-status="streaming"] .creation-message-mark.is-yoru::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    background: #ffc857;
+    clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%);
+    pointer-events: none;
+    animation: yoru-mark-sparkle 1.6s ease-in-out infinite;
+}
+
+.creation-home .creation-assistant-message .creation-message-mark.is-yoru::before { top: -4px; right: -5px; }
+.creation-home .creation-assistant-message .creation-message-mark.is-yoru::after { top: 6px; left: -6px; width: 5px; height: 5px; animation-delay: .8s; }
+
+@keyframes yoru-mark-hop {
+    0% { opacity: 0; transform: translateY(6px) scale(.6, .6); }
+    45% { opacity: 1; transform: translateY(-5px) scale(.94, 1.08); }
+    70% { transform: translateY(0) scale(1.08, .92); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes yoru-mark-sway {
+    0%, 100% { transform: rotate(0); }
+    25% { transform: rotate(-7deg) translateY(-1px); }
+    75% { transform: rotate(7deg) translateY(-1px); }
+}
+
+@keyframes yoru-mark-sparkle {
+    0%, 100% { opacity: 0; transform: scale(.3) rotate(0); }
+    50% { opacity: 1; transform: scale(1) rotate(45deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .creation-home .creation-message-mark.is-yoru img,
+    .creation-home .creation-message-mark.is-yoru::before,
+    .creation-home .creation-message-mark.is-yoru::after { animation: none !important; }
+}
+
+/* 批次结果：提示词与参数一行、图片横排、操作左对齐 */
+.creation-media-result.is-batch { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; }
+.creation-batch-meta { display: flex; max-width: min(100%, 880px); align-items: center; gap: 0; color: var(--creation-muted); font-size: 12px; line-height: 20px; }
+/* 提示词单行省略，完整内容悬浮查看；参数紧随其后、用细分隔线隔开 */
+.creation-batch-meta strong { min-width: 0; max-width: 300px; flex: 0 1 auto; overflow: hidden; margin-right: 10px; color: var(--creation-text); font-size: 13px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+.creation-batch-meta > span, .creation-batch-details-trigger { position: relative; flex: none; padding: 0 10px; white-space: nowrap; }
+.creation-batch-meta > span + span::before, .creation-batch-meta > span + .creation-batch-details-trigger::before { position: absolute; top: 5px; bottom: 5px; left: 0; width: 1px; background: color-mix(in srgb, var(--creation-text) 16%, transparent); content: ""; }
+.creation-batch-details-trigger { display: inline-flex; align-items: center; gap: 4px; border: 0; background: none; color: var(--creation-muted); font-size: 12px; cursor: default; transition: color .16s ease; }
+.creation-batch-details-trigger:hover, .creation-batch-details-trigger:focus-visible { color: var(--creation-text); }
+.creation-batch-details-trigger svg { width: 13px; height: 13px; }
+.creation-batch-details-popover .ant-popover-container { padding: 0 !important; overflow: hidden; border: 1px solid color-mix(in srgb, var(--user-ink, #fff) 9%, transparent); border-radius: 14px !important; background: color-mix(in srgb, var(--user-surface, #17181d) 94%, transparent) !important; backdrop-filter: blur(16px); box-shadow: 0 18px 48px rgb(0 0 0 / 38%) !important; transform-origin: top left; animation: creation-batch-menu-in .24s cubic-bezier(.22,1,.36,1) both; }
+.creation-batch-details { display: grid; gap: 2px; min-width: 232px; margin: 0; padding: 8px; }
+.creation-batch-details > div { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding: 8px 10px; border-radius: 9px; }
+.creation-batch-details > div:hover { background: color-mix(in srgb, var(--user-ink, #fff) 5%, transparent); }
+.creation-batch-details dt { color: var(--user-ink-muted, #9aa0ab); font-size: 12px; }
+.creation-batch-details dd { margin: 0; color: var(--user-ink, #f4f5f8); font-size: 13px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.creation-home .creation-media-result.is-batch:has(> .creation-image-result-grid) {
+    width: 100%;
+    max-width: 912px;
+}
+.creation-home .creation-media-result.is-batch .creation-image-result-grid {
+    display: flex;
+    width: 100%;
+    max-width: 880px;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: var(--space-2);
+}
+.creation-home .creation-media-result.is-batch .creation-image-result {
+    flex: 0 1 var(--creation-image-width);
+    width: min(100%, var(--creation-image-width));
+    min-width: 0;
+    cursor: zoom-in;
+}
+.creation-home .creation-media-result.is-batch .creation-image-result img {
+    height: 100%;
+    max-height: none;
+    object-fit: contain;
+}
+.creation-image-result:focus-visible { outline: 2px solid var(--creation-accent, #5b7cff); outline-offset: -2px; }
+
+/* 悬浮在单张图片上：右上角下载与用作参考图 */
+/* 胶囊工具条：右上角两个圆角图标按钮；显式复位全局 .creation-image-result span/button 样式 */
+.creation-image-result .creation-image-hover-actions { position: absolute; top: 8px; right: 8px; bottom: auto; left: auto; z-index: 2; display: flex; width: auto; height: auto; align-items: center; gap: 2px; padding: 3px; border: 1px solid rgb(255 255 255 / 10%); border-radius: 999px; background: rgb(14 15 20 / 62%); backdrop-filter: blur(12px) saturate(1.2); box-shadow: 0 6px 18px rgb(0 0 0 / 28%); opacity: 0; transform: translateY(-4px); transition: opacity .2s ease, transform .24s cubic-bezier(.22,1,.36,1); pointer-events: none; }
+.creation-image-result:hover .creation-image-hover-actions, .creation-image-result:focus-within .creation-image-hover-actions { opacity: 1; transform: none; pointer-events: auto; }
+.creation-image-result .creation-image-hover-actions button { position: static; display: grid; width: 28px; height: 28px; margin: 0; padding: 0; place-items: center; border: 0; border-radius: 999px; background: transparent; color: rgb(255 255 255 / 88%); opacity: 1; cursor: pointer; transition: background-color .16s ease, color .16s ease; }
+.creation-image-result .creation-image-hover-actions button:hover { background: rgb(255 255 255 / 14%); color: #fff; }
+.creation-image-result .creation-image-hover-actions button:focus-visible { outline: 2px solid var(--creation-accent, #5b7cff); outline-offset: 1px; }
+.creation-image-result .creation-image-hover-actions svg { width: 15px; height: 15px; stroke-width: 1.8; }
+
+/* 结果操作：与创作页一致的安静描边按钮，悬浮才提亮 */
+.creation-batch-actions { display: flex; align-items: center; gap: 6px; }
+.creation-batch-actions > button { display: inline-flex; height: 30px; align-items: center; gap: 6px; padding: 0 11px; border: 1px solid color-mix(in srgb, var(--creation-text) 10%, transparent); border-radius: 999px; background: transparent; color: var(--creation-muted); font-size: 12px; cursor: pointer; transition: border-color .16s ease, background-color .16s ease, color .16s ease, transform .16s cubic-bezier(.22,1,.36,1); }
+.creation-batch-actions > button:hover { border-color: color-mix(in srgb, var(--creation-text) 18%, transparent); background: color-mix(in srgb, var(--creation-text) 5%, transparent); color: var(--creation-text); }
+.creation-batch-actions > button:active { transform: scale(.97); }
+.creation-batch-actions > button:focus-visible { outline: 2px solid var(--creation-accent, #5b7cff); outline-offset: 2px; }
+.creation-batch-actions > button svg { width: 13px; height: 13px; }
+.creation-batch-actions > .creation-batch-more { width: 30px; justify-content: center; padding: 0; }
+.creation-batch-menu .ant-dropdown-menu { border: 1px solid color-mix(in srgb, var(--user-ink, #fff) 9%, transparent) !important; background: color-mix(in srgb, var(--user-surface, #17181d) 94%, transparent) !important; backdrop-filter: blur(16px); box-shadow: 0 18px 48px rgb(0 0 0 / 38%) !important; }
+.creation-batch-menu .ant-dropdown-menu { min-width: 176px; padding: 6px !important; border-radius: 14px !important; transform-origin: top left; animation: creation-batch-menu-in .26s cubic-bezier(.22,1,.36,1) both; }
+.creation-batch-menu .ant-dropdown-menu-item { min-height: 36px; border-radius: 9px !important; color: var(--user-ink, #f4f5f8); font-size: 13px; }
+.creation-batch-menu .ant-dropdown-menu-item-divider { margin: 4px 6px !important; background: color-mix(in srgb, var(--user-ink, #fff) 8%, transparent) !important; }
+@keyframes creation-batch-menu-in { from { opacity: 0; transform: translateY(-6px) scale(.95); filter: blur(3px); } to { opacity: 1; transform: none; filter: none; } }
+
+/* 下载说明卡 */
+.creation-download-card-popover .ant-popover-container { padding: 0 !important; overflow: hidden; border-radius: 16px !important; }
+.creation-download-card { width: 268px; padding: 8px 8px 12px; color: var(--user-ink, #f4f5f8); }
+.creation-download-card-art { position: relative; height: 112px; margin-bottom: 12px; overflow: hidden; border-radius: 11px; background: radial-gradient(circle at 20% 30%, #4d6bff 0, transparent 46%), radial-gradient(circle at 80% 70%, #b04dff 0, transparent 50%), linear-gradient(135deg, #10142a, #1d1438); }
+.creation-download-card-art i { position: absolute; width: 140%; height: 2px; left: -20%; background: linear-gradient(90deg, transparent, rgb(255 255 255 / 55%), transparent); transform: rotate(-14deg); animation: creation-download-streak 3.2s ease-in-out infinite; }
+.creation-download-card-art i:nth-child(1) { top: 34%; }
+.creation-download-card-art i:nth-child(2) { top: 52%; animation-delay: .5s; opacity: .7; }
+.creation-download-card-art i:nth-child(3) { top: 70%; animation-delay: 1s; opacity: .5; }
+.creation-download-card-brand { position: absolute; right: 10px; bottom: 9px; display: inline-flex; align-items: center; gap: 5px; color: #fff; font-size: 12px; font-weight: 700; letter-spacing: .02em; }
+.creation-download-card-brand img { width: 16px; height: 16px; object-fit: contain; }
+.creation-download-card strong { display: block; padding: 0 4px; font-size: 14px; font-weight: 650; }
+.creation-download-card p { margin: 4px 0 12px; padding: 0 4px; color: var(--user-ink-muted, #9aa0ab); font-size: 12px; line-height: 1.6; }
+.creation-download-card button { display: flex; width: 100%; height: 36px; align-items: center; justify-content: center; gap: 6px; border: 0; border-radius: 10px; background: var(--user-accent, #3d6bff); color: #fff; font-size: 13px; font-weight: 600; cursor: pointer; transition: filter .16s ease, transform .16s cubic-bezier(.22,1,.36,1); }
+.creation-download-card button:hover { filter: brightness(1.08); }
+.creation-download-card button:active { transform: scale(.98); }
+.creation-download-card button svg { width: 15px; height: 15px; }
+@keyframes creation-download-streak { 0%, 100% { transform: translateX(-12%) rotate(-14deg); } 50% { transform: translateX(12%) rotate(-14deg); } }
+@media (prefers-reduced-motion: reduce) {
+    .creation-image-hover-actions, .creation-batch-menu .ant-dropdown-menu, .creation-download-card-art i { animation: none; transition: none; }
+}

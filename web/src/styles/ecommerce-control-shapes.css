@@ -1,0 +1,26 @@
+/* Only the ecommerce controls marked in the design review use pill geometry.
+   Keep their existing colors, hover feedback, motion, spacing and hit areas. */
+.sh-home .sp-toolbar .sp-chip,
+.sv-page .svc-model,
+.sv-page .svc-audio,
+.sv-page .svc-audio button,
+.sv-page .svc-audio button i,
+:is(.ss-page, .sv-page) .ecv-filter,
+:is(.ss-page, .sv-page) .ecv-filter button,
+.sp-canvas-home-heading [role="group"] button,
+.sp-canvas-home .sp-workflow-filters button,
+.sdx-page .sdx-market:has(> .sdx-market-logo),
+.sdx-page .sdx-ratios button,
+.sdx-page .sdx-row:has(> .sdx-row-label.is-inline) .sdx-seg,
+.sdx-page .sdx-row:has(> .sdx-row-label.is-inline) .sdx-seg button,
+.sdx-page .sdx-stepper,
+.sdx-page .sdx-stepper button {
+    border-radius: var(--r-full);
+}
+
+/* Shared composer rules already use !important for the model trigger radius. */
+.app-user-workspace .sh-home .sp-toolbar .sp-model-picker.canvas-composer-model-picker,
+.app-user-workspace .ss-page .ss-model-picker.canvas-composer-model-picker,
+.app-user-workspace .sdx-page .sdx-model .canvas-composer-model-picker {
+    border-radius: var(--r-full) !important;
+}

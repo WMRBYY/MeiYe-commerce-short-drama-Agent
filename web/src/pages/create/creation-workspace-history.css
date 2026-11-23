@@ -1,0 +1,274 @@
+/* 历史对话抽屉 v3：与首页同一套白天 / 夜间风格，不使用渐变色。
+   新建按钮用主题胶囊色（白天黑底白字、夜间白底黑字），会话图标统一为单色，选中态左侧墨色强调条。 */
+.creation-history-drawer-root {
+    --row-tone: var(--creation-history-text);
+}
+
+.app-user-workspace .creation-history-drawer .ant-drawer-body,
+.creation-history-drawer-root .creation-history-drawer .ant-drawer-body {
+    background: var(--creation-history-bg);
+}
+
+.creation-history-drawer-root .creation-history-drawer .ant-drawer-header {
+    min-height: 64px;
+    padding: 18px 18px 8px 20px;
+    background: transparent;
+}
+
+.creation-history-drawer-root .creation-history-title {
+    align-items: center;
+    gap: 10px;
+}
+
+.creation-history-drawer-root .creation-history-title > span {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.creation-history-drawer-root .creation-history-title small {
+    display: inline-flex;
+    height: 22px;
+    align-items: center;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--creation-history-text) 7%, transparent);
+    padding: 0 9px;
+    color: var(--creation-history-muted);
+    font-size: 11px;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+}
+
+.creation-history-drawer-root .creation-history-content {
+    padding: 10px 16px 24px;
+}
+
+/* 搜索：更圆润，聚焦时带一圈柔光。 */
+.creation-history-drawer-root .creation-history-search {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    gap: 9px;
+    margin: 0 0 12px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--creation-history-text) 5%, var(--creation-history-surface));
+    padding: 0 10px 0 12px;
+    color: var(--creation-history-muted);
+    transition: border-color 160ms ease, background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.creation-history-drawer-root .creation-history-search > svg {
+    width: 16px;
+    height: 16px;
+    flex: none;
+}
+
+.creation-history-drawer-root .creation-history-search input {
+    min-width: 0;
+    flex: 1;
+    background: transparent;
+    color: var(--creation-history-text);
+    font-size: var(--fs-label);
+    outline: none;
+}
+
+.creation-history-drawer-root .creation-history-search:focus-within {
+    border-color: color-mix(in srgb, var(--creation-history-accent) 50%, transparent);
+    background: var(--creation-history-surface);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--creation-history-accent) 12%, transparent);
+}
+
+.creation-history-search-clear {
+    display: grid;
+    width: 22px;
+    height: 22px;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--creation-history-text) 8%, transparent);
+    color: var(--creation-history-muted);
+    cursor: pointer;
+}
+
+.creation-history-search-clear:hover {
+    color: var(--creation-history-text);
+}
+
+.creation-history-search-clear svg {
+    width: 12px;
+    height: 12px;
+}
+
+/* 新建创作：主题胶囊色实心卡，点击有按压反馈。 */
+.creation-history-drawer-root .creation-history-new {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 18px;
+    border: 0;
+    border-radius: 14px;
+    background: var(--meiye-pill-bg, #17181c);
+    padding: 12px 14px;
+    color: var(--meiye-pill-fg, #fff);
+    text-align: start;
+    box-shadow: none;
+    transition: transform 160ms cubic-bezier(.2, .8, .2, 1), opacity 180ms ease;
+}
+
+.creation-history-drawer-root .creation-history-new:hover {
+    border: 0;
+    background: var(--meiye-pill-bg, #17181c);
+    opacity: .9;
+    transform: translateY(-1px);
+}
+
+.creation-history-drawer-root .creation-history-new:active {
+    transform: scale(.98);
+}
+
+.creation-history-drawer-root .creation-history-new-icon {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    flex: none;
+    place-items: center;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--meiye-pill-fg, #fff) 16%, transparent);
+    color: inherit;
+}
+
+.creation-history-drawer-root .creation-history-new-copy {
+    display: grid;
+    min-width: 0;
+    gap: 2px;
+}
+
+.creation-history-drawer-root .creation-history-new-copy strong {
+    font-size: 13px;
+}
+
+.creation-history-drawer-root .creation-history-new-copy small {
+    color: color-mix(in srgb, var(--meiye-pill-fg, #fff) 70%, transparent);
+}
+
+/* 时间分组：小号标签，吸顶时用抽屉底色遮住下方列表。 */
+.creation-history-drawer-root .creation-history-group-head {
+    margin-top: 8px;
+    padding: 6px 6px 6px;
+    background: var(--creation-history-bg);
+}
+
+.creation-history-drawer-root .creation-history-group-head h4 {
+    color: var(--creation-history-muted);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+}
+
+.creation-history-drawer-root .creation-history-group-head h4::after {
+    background: color-mix(in srgb, var(--creation-history-line) 70%, transparent);
+    transform: translateY(-3px);
+}
+
+.creation-history-drawer-root .creation-history-list {
+    gap: 2px;
+}
+
+/* 会话行 */
+.creation-history-drawer-root .creation-history-row {
+    border-radius: 12px;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.creation-history-drawer-root .creation-history-row:active {
+    transform: scale(.99);
+}
+
+.creation-history-drawer-root .creation-history-row .creation-history-item-main {
+    gap: 12px;
+    border-radius: 12px;
+    padding: 10px 70px 10px 10px;
+}
+
+.creation-history-drawer-root .creation-history-item-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--row-tone) 7%, transparent);
+    color: var(--row-tone);
+}
+
+.creation-history-drawer-root .creation-history-item-icon svg {
+    width: 17px;
+    height: 17px;
+}
+
+.creation-history-drawer-root .creation-history-item-heading {
+    font-size: 13px;
+}
+
+.creation-history-drawer-root .creation-history-snippet {
+    align-items: center;
+    gap: 6px;
+    font-size: 11.5px;
+}
+
+.creation-history-drawer-root .creation-history-snippet em {
+    border-radius: 5px;
+    background: color-mix(in srgb, var(--row-tone) 8%, transparent);
+    padding: 0 5px;
+    color: var(--creation-history-muted);
+    font-size: 10.5px;
+    line-height: 17px;
+}
+
+.creation-history-drawer-root .creation-history-time-slot {
+    right: 12px;
+    font-size: 11px;
+}
+
+.creation-history-drawer-root .creation-history-more {
+    right: 10px;
+    border-radius: 8px;
+}
+
+.creation-history-drawer-root .creation-history-list > li.is-active .creation-history-row,
+.creation-history-drawer-root .creation-history-list > li.is-active .creation-history-row:hover {
+    background: color-mix(in srgb, var(--row-tone) 7%, var(--creation-history-surface));
+    box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--row-tone) 12%, transparent);
+}
+
+.creation-history-drawer-root .creation-history-list > li.is-active .creation-history-row::before {
+    content: "";
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 0;
+    width: 3px;
+    border-radius: 0 3px 3px 0;
+    background: var(--row-tone);
+}
+
+.creation-history-drawer-root .creation-history-list > li.is-active .creation-history-item-icon {
+    background: var(--meiye-pill-bg, #17181c);
+    color: var(--meiye-pill-fg, #fff);
+}
+
+.creation-history-drawer-root .creation-history-list > li.is-active .creation-history-time-slot {
+    color: var(--row-tone);
+    font-weight: 600;
+}
+
+.creation-history-drawer-root .creation-history-empty {
+    min-height: 220px;
+    border: 1px dashed var(--creation-history-line);
+    border-radius: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .creation-history-drawer-root .creation-history-new,
+    .creation-history-drawer-root .creation-history-row { transition: none; }
+}

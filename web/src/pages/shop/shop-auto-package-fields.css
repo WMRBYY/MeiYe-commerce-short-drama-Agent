@@ -1,0 +1,409 @@
+/* 共用输出规格、比例与底栏选项，使用电商表面与标准选择器。 */
+.sap-output {
+    display: grid;
+    gap: var(--space-2);
+}
+
+.sap-output-row {
+    display: grid;
+    grid-template-columns: 48px minmax(0, 1fr);
+    align-items: start;
+    gap: var(--space-2);
+}
+
+.sap-output-label {
+    padding-block: var(--space-2);
+    color: var(--ms-text);
+    font-size: var(--fs-ui);
+    font-weight: 600;
+    line-height: var(--lh-heading);
+}
+
+.sap-model-row {
+    align-items: center;
+    padding-block-end: var(--space-2);
+    border-block-end: 1px solid var(--ms-border);
+}
+
+.sap-model {
+    min-width: 0;
+    max-width: 420px;
+}
+
+.sap-platforms,
+.sap-ratios,
+.sap-footer-controls {
+    display: flex;
+    min-width: 0;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+}
+
+.sap-platform {
+    min-height: 32px;
+    padding-inline: var(--space-3);
+    border-radius: var(--r-full);
+    background: var(--ms-soft);
+    color: var(--ms-text-2);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+    white-space: nowrap;
+    transition:
+        background-color 160ms,
+        box-shadow 160ms,
+        color 160ms;
+}
+
+.sap-platform:hover {
+    background: var(--ms-hover);
+    color: var(--ms-text);
+}
+
+.sap-platform[aria-pressed="true"] {
+    background: var(--control-selected-bg);
+    box-shadow: inset 0 0 0 1px var(--control-selected-border);
+    color: var(--control-selected-fg);
+}
+
+.sap-platform:focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+.sap-count {
+    display: inline-flex;
+    min-inline-size: 88px;
+    min-block-size: 36px;
+    flex: none;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: var(--r-md);
+    padding-inline: var(--space-1);
+    background: var(--ms-soft);
+    color: var(--ms-text);
+    font-size: var(--fs-ui);
+    font-variant-numeric: tabular-nums;
+    font-weight: 600;
+}
+
+.sap-count[data-locked] {
+    min-inline-size: 60px;
+    justify-content: center;
+}
+
+.sap-count output {
+    min-inline-size: 2ch;
+    text-align: center;
+}
+
+.sap-ratio-row .sap-ratios {
+    column-gap: var(--space-1);
+}
+
+.sap-ratios .app-unified-select.sap-ratio-select {
+    inline-size: 76px;
+    min-inline-size: 0;
+}
+
+.sap-ratios .app-unified-select.sap-ratio-all {
+    inline-size: 96px;
+    min-inline-size: 0;
+}
+
+.sap-ratios .ant-select.app-unified-select :is(.ant-select-content, .ant-select-selection-item, .ant-select-placeholder) {
+    padding-inline-start: 0 !important;
+}
+
+.sap-ratios .sap-ratio-all:not(.ant-select-disabled) .ant-select-placeholder {
+    color: var(--ms-text-2);
+}
+
+.sap-ratio-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.sap-ratio-label i {
+    flex: 0 0 auto;
+    border: 1px solid currentColor;
+    border-radius: 2px;
+    opacity: 0.75;
+}
+
+.sap-ratio-hint {
+    flex: 0 0 100%;
+    margin: 0;
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+    line-height: var(--lh-heading);
+}
+
+.sap-footer-controls {
+    flex: 0 1 auto;
+}
+
+.sap-footer-controls .app-unified-select.sap-language-select {
+    inline-size: 152px;
+    min-inline-size: 0;
+}
+
+.sap-footer-controls .app-unified-select.sap-resolution-select {
+    inline-size: 112px;
+    min-inline-size: 0;
+}
+
+.sap-footer-value {
+    display: inline-flex;
+    max-inline-size: 100%;
+    gap: var(--space-1);
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+    white-space: nowrap;
+}
+
+.sap-footer-value > span {
+    flex: none;
+}
+
+.sap-footer-value b {
+    min-inline-size: 0;
+    overflow: hidden;
+    color: var(--ms-text);
+    font-weight: 600;
+    text-overflow: ellipsis;
+}
+
+@container (max-width: 420px) {
+    .sap-footer-controls {
+        flex: 1 0 100%;
+    }
+
+    .sap-footer-controls .app-unified-select:is(.sap-language-select, .sap-resolution-select) {
+        inline-size: auto;
+        flex: 1 1 auto;
+    }
+}
+
+.sap-info-dialog .sap-info-dialog-heading {
+    margin: 0;
+    padding: 20px 52px 16px 24px;
+    border-bottom: 1px solid var(--ms-border);
+    background: var(--ms-surface);
+}
+
+.sap-info-form {
+    display: grid;
+    min-width: 0;
+    max-height: calc(100dvh - 144px);
+    grid-template-rows: minmax(0, 1fr) auto;
+    background: var(--ms-surface);
+    color: var(--ms-text);
+}
+
+.sap-info-scroll {
+    overflow: auto;
+    padding: 16px 24px 24px;
+    scrollbar-gutter: stable;
+    scrollbar-width: thin;
+}
+
+.sap-recognition {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--r-lg);
+    background: var(--ms-soft);
+}
+
+.sap-recognition-copy {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.sap-recognition-copy > svg {
+    flex: none;
+    color: var(--ms-accent-strong);
+}
+
+.sap-recognition-copy span,
+.sap-field {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+
+.sap-recognition-copy strong,
+.sap-product-fields legend,
+.sap-product-fields strong,
+.sap-outline h3 {
+    color: var(--ms-text);
+    font-size: var(--fs-ui);
+    font-weight: 600;
+}
+
+.sap-recognition-copy small,
+.sap-recognition-credits,
+.sap-info-footer > span {
+    color: var(--ms-muted);
+    font-size: var(--fs-caption);
+}
+
+.sap-recognition-credits,
+.sap-info-feedback {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.sap-recognition-credits {
+    font-variant-numeric: tabular-nums;
+}
+
+.sap-info-feedback {
+    width: 100%;
+    margin: 8px 0 0;
+    padding: 8px 12px;
+    border-radius: var(--r-md);
+    background: var(--ms-accent-soft);
+    color: var(--ms-accent-text);
+    font-size: var(--fs-caption);
+}
+
+.sap-info-feedback.is-error {
+    background: color-mix(in srgb, var(--status-error) 9%, var(--ms-surface));
+    color: var(--status-error);
+}
+
+.sap-product-fields,
+.sap-outline {
+    display: grid;
+    gap: 16px;
+    margin-top: 20px;
+}
+
+.sap-product-fields fieldset,
+.sap-outline fieldset {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.sap-product-fields legend,
+.sap-outline legend {
+    margin-bottom: 8px;
+    padding: 0;
+}
+
+.sap-field-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.sap-field > span,
+.sap-outline legend {
+    color: var(--ms-text-2);
+    font-size: var(--fs-caption);
+    font-weight: 500;
+}
+
+.sap-outline {
+    padding-top: 12px;
+    border-top: 1px solid var(--ms-border);
+}
+
+.sap-outline > header,
+.sap-info-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.sap-outline h3,
+.sap-outline ol {
+    margin: 0;
+}
+
+.sap-outline legend span,
+.sap-outline-index {
+    color: var(--ms-muted);
+    font-size: var(--fs-label);
+    font-variant-numeric: tabular-nums;
+}
+
+.sap-outline legend span {
+    margin-inline-start: 4px;
+}
+
+.sap-outline ol {
+    display: grid;
+    gap: 8px;
+    padding: 0;
+    list-style: none;
+}
+
+.sap-outline li {
+    display: grid;
+    grid-template-columns: 24px minmax(0, 3fr) minmax(0, 7fr);
+    align-items: center;
+    gap: 8px;
+}
+
+.sap-outline-index {
+    text-align: center;
+}
+
+.sap-info-footer {
+    --button-primary-bg: var(--ms-ink);
+    --button-primary-hover-bg: color-mix(in srgb, var(--ms-ink) 92%, var(--ms-surface));
+    --button-primary-active-bg: color-mix(in srgb, var(--ms-ink) 86%, var(--ms-surface));
+    --button-primary-fg: var(--ms-ink-text);
+    padding: 12px 24px;
+    border-top: 1px solid var(--ms-border);
+    background: var(--ms-surface-2);
+    font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 560px) {
+    .sap-info-dialog .sap-info-dialog-heading {
+        padding-inline-start: 16px;
+    }
+
+    .sap-info-scroll,
+    .sap-info-footer {
+        padding-inline: 16px;
+    }
+
+    .sap-recognition {
+        flex-wrap: wrap;
+    }
+
+    .sap-field-grid {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .sap-outline li {
+        grid-template-columns: 20px minmax(0, 1fr);
+    }
+
+    .sap-outline li > :last-child {
+        grid-column: 2;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .sap-platform {
+        transition: none;
+    }
+}

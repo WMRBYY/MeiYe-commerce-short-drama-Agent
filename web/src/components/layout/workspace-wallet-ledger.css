@@ -1,0 +1,289 @@
+/* 积分消耗历史：按天分组的卡片列表，类型色只用于图标、标签与金额。 */
+.workspace-wallet-content.is-history.is-ledger-v2 {
+    --ledger-consume: #7a6cf0;
+    --ledger-income: #2f9e6e;
+    --ledger-refund: #e08a2c;
+    --ledger-bonus: #d0559b;
+    gap: 0;
+    padding: 20px 22px 14px;
+    border: 1px solid color-mix(in srgb, var(--user-border) 70%, transparent);
+    border-radius: 20px;
+    background: color-mix(in srgb, var(--user-surface) 88%, transparent);
+    box-shadow: 0 10px 30px color-mix(in srgb, var(--user-ink) 5%, transparent);
+}
+
+.is-ledger-v2 .workspace-wallet-history-toolbar {
+    align-items: center;
+    margin-bottom: 14px;
+}
+
+.is-ledger-v2 .workspace-wallet-history-toolbar h3 {
+    font-size: 17px;
+    font-weight: 650;
+    letter-spacing: -0.01em;
+}
+
+.is-ledger-v2 .workspace-wallet-history-toolbar p {
+    font-size: 12px;
+}
+
+.workspace-wallet-history-summary {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 8px;
+}
+
+.workspace-wallet-history-summary > span {
+    display: inline-flex;
+    height: 30px;
+    align-items: center;
+    gap: 6px;
+    border-radius: 999px;
+    background: var(--user-surface-muted);
+    padding: 0 12px;
+    color: var(--user-ink-muted);
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.workspace-wallet-history-summary b {
+    color: var(--user-ink);
+    font-size: 12px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+}
+
+.workspace-wallet-history-summary .is-income b {
+    color: var(--ledger-income);
+}
+
+.workspace-wallet-history-refresh {
+    display: grid;
+    width: 30px;
+    height: 30px;
+    place-items: center;
+    border: 0;
+    border-radius: 999px;
+    background: var(--user-surface-muted);
+    color: var(--user-ink-muted);
+    cursor: pointer;
+    transition: background-color 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.workspace-wallet-history-refresh:hover:not(:disabled) {
+    background: var(--user-surface-hover);
+    color: var(--user-ink);
+}
+
+.workspace-wallet-history-refresh:active:not(:disabled) {
+    transform: scale(.92);
+}
+
+.workspace-wallet-history-refresh:disabled {
+    cursor: default;
+}
+
+.workspace-wallet-history-refresh svg {
+    width: 14px;
+    height: 14px;
+}
+
+.workspace-wallet-history-refresh svg.is-spinning {
+    animation: workspace-wallet-spin 900ms linear infinite;
+}
+
+@keyframes workspace-wallet-spin {
+    to { transform: rotate(360deg); }
+}
+
+.is-ledger-v2 .workspace-wallet-history-scroll {
+    margin-right: -10px;
+    padding-right: 10px;
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--user-ink) 18%, transparent) transparent;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger {
+    display: grid;
+    gap: 14px;
+}
+
+.workspace-wallet-ledger-day h4 {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    margin: 0;
+    padding: 2px 4px 8px;
+    background: linear-gradient(to bottom, var(--user-surface) 75%, transparent);
+    color: var(--user-ink);
+    font-size: 12px;
+    font-weight: 650;
+}
+
+.workspace-wallet-ledger-day h4 small {
+    color: var(--user-ink-muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.workspace-wallet-ledger-day-list {
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, var(--user-border) 65%, transparent);
+    border-radius: 14px;
+    background: var(--user-surface);
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-row {
+    --ledger-tone: var(--ledger-consume);
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    min-height: 60px;
+    padding: 10px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--user-border) 55%, transparent);
+    transition: background-color 150ms ease;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-row:last-child {
+    border-bottom: 0;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-row:hover {
+    background: color-mix(in srgb, var(--user-surface-muted) 70%, transparent);
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-row.is-income { --ledger-tone: var(--ledger-income); }
+.is-ledger-v2 .workspace-wallet-ledger-row.is-refund { --ledger-tone: var(--ledger-refund); }
+.is-ledger-v2 .workspace-wallet-ledger-row.is-bonus { --ledger-tone: var(--ledger-bonus); }
+
+.is-ledger-v2 .workspace-wallet-ledger-icon {
+    display: grid;
+    width: 36px;
+    height: 36px;
+    place-items: center;
+    border-radius: 11px;
+    background: color-mix(in srgb, var(--ledger-tone) 12%, transparent);
+    color: var(--ledger-tone);
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-icon svg {
+    width: 16px;
+    height: 16px;
+    stroke-width: 1.9;
+}
+
+.workspace-wallet-ledger-main {
+    display: grid;
+    min-width: 0;
+    gap: 4px;
+}
+
+.workspace-wallet-ledger-title {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 6px;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-title strong {
+    flex-shrink: 0;
+    color: var(--user-ink);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.workspace-wallet-ledger-title em,
+.workspace-wallet-ledger-title code {
+    flex-shrink: 0;
+    border-radius: 6px;
+    padding: 0 6px;
+    font-size: 10.5px;
+    font-style: normal;
+    line-height: 18px;
+    white-space: nowrap;
+}
+
+.workspace-wallet-ledger-title em {
+    background: color-mix(in srgb, var(--ledger-tone) 10%, transparent);
+    color: var(--ledger-tone);
+    font-weight: 600;
+}
+
+.workspace-wallet-ledger-title code {
+    min-width: 0;
+    flex-shrink: 1;
+    overflow: hidden;
+    background: var(--user-surface-muted);
+    color: var(--user-ink-muted);
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    text-overflow: ellipsis;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-main > span {
+    overflow: hidden;
+    color: var(--user-ink-muted);
+    font-size: 11.5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.workspace-wallet-ledger-side {
+    display: grid;
+    justify-items: end;
+    gap: 3px;
+    min-width: 96px;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-side b {
+    min-width: 0;
+    color: var(--user-ink);
+    font-size: 14px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+    text-align: right;
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-side b.is-income {
+    color: var(--ledger-income);
+}
+
+.is-ledger-v2 .workspace-wallet-ledger-side time {
+    color: var(--user-ink-muted);
+    font-size: 11px;
+    font-variant-numeric: tabular-nums;
+}
+
+.is-ledger-v2 .workspace-wallet-pagination {
+    margin-top: 10px;
+    padding-top: 12px;
+    border-top: 0;
+}
+
+.is-ledger-v2 .workspace-wallet-pagination button {
+    border: 0;
+    cursor: pointer;
+    transition: background-color 150ms ease, transform 150ms ease;
+}
+
+.is-ledger-v2 .workspace-wallet-pagination button:active:not(:disabled) {
+    transform: scale(.92);
+}
+
+@media (max-width: 700px) {
+    .workspace-wallet-content.is-history.is-ledger-v2 { padding: 16px 14px 12px; }
+    .is-ledger-v2 .workspace-wallet-history-toolbar { align-items: flex-start; flex-direction: column; gap: 10px; }
+    .workspace-wallet-history-summary > span { display: none; }
+    .is-ledger-v2 .workspace-wallet-ledger-row { grid-template-columns: 32px minmax(0, 1fr) auto; gap: 10px; padding: 10px; }
+    .is-ledger-v2 .workspace-wallet-ledger-row time { display: block; }
+    .workspace-wallet-ledger-title code { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .workspace-wallet-history-refresh svg.is-spinning { animation: none; }
+}

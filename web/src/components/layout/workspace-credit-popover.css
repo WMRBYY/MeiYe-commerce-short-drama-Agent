@@ -1,0 +1,32 @@
+.app-user-workspace .app-workspace-topbar-credit-market,
+.app-user-workspace .app-workspace-topbar-credit-balance {
+    display: inline-flex; min-height: 36px; align-items: center; justify-content: center; gap: 7px;
+    border: 1px solid var(--user-border); border-radius: 999px; background: var(--user-surface-raised);
+    padding: 0 13px; color: var(--user-ink); font-size: 12px; font-weight: 650; cursor: pointer;
+    transition: background .18s ease, border-color .18s ease, transform .18s ease;
+}
+.app-user-workspace .app-workspace-topbar-credit-market:hover,
+.app-user-workspace .app-workspace-topbar-credit-balance:hover { transform: translateY(-1px); border-color: var(--user-accent); background: var(--user-surface-hover); }
+.app-user-workspace .app-workspace-topbar-credit-balance svg { width: 15px; height: 15px; color: currentColor; }
+.app-user-workspace .app-workspace-topbar-credit-balance strong { font-variant-numeric: tabular-nums; }
+.app-user-workspace .app-workspace-topbar-credit-market:focus-visible,
+.app-user-workspace .app-workspace-topbar-credit-balance:focus-visible { outline: 2px solid var(--control-focus-ring); outline-offset: 2px; }
+.workspace-credit-popover .ant-popover-inner { width: min(440px, calc(100vw - 24px)); overflow: hidden; border: 1px solid var(--user-border); border-radius: 24px; background: var(--user-surface-raised); padding: 0; box-shadow: 0 20px 60px color-mix(in srgb, var(--user-ink) 15%, transparent); }
+.workspace-credit-popover-content { color: var(--user-ink); }
+.workspace-credit-popover-head { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 24px 22px 20px; }
+.workspace-credit-popover-head > div { display: grid; min-width: 0; gap: 5px; }
+.workspace-credit-popover-head span { color: var(--user-ink-muted); font-size: 13px; }
+.workspace-credit-popover-head strong { max-width: 270px; color: var(--user-accent); font-size: clamp(22px, 5vw, 32px); font-weight: 750; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; line-height: 1.2; }
+.workspace-credit-popover-head button { flex: 0 0 auto; border: 0; border-radius: 999px; background: var(--user-ink); padding: 10px 15px; color: var(--user-page-bg); font-size: 12px; cursor: pointer; }
+.workspace-credit-popover-title { display: flex; align-items: center; justify-content: space-between; margin: 0 20px; padding: 15px 0; border-top: 1px solid var(--user-border); color: var(--user-ink-muted); font-size: 12px; }
+.workspace-credit-popover-title button { border: 0; background: transparent; color: var(--user-ink-muted); cursor: pointer; }
+.workspace-credit-popover-title button:hover { color: var(--user-accent); }
+.workspace-credit-popover-list { max-height: min(430px, 52vh); overflow-y: auto; padding: 0 20px 14px; scrollbar-width: thin; }
+.workspace-credit-popover-entry { display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 72px; }
+.workspace-credit-popover-entry > div { display: grid; min-width: 0; gap: 4px; }
+.workspace-credit-popover-entry strong { color: var(--user-ink); font-size: 13px; font-weight: 600; }
+.workspace-credit-popover-entry time { color: var(--user-ink-muted); font-size: 11px; }
+.workspace-credit-popover-entry b { max-width: 45%; color: var(--user-ink-muted); font-size: 14px; font-variant-numeric: tabular-nums; text-align: right; overflow-wrap: anywhere; }
+.workspace-credit-popover-entry b.is-positive { color: var(--user-accent); }
+.workspace-credit-popover-list > p { padding: 20px 0; color: var(--user-ink-muted); text-align: center; font-size: 12px; }
+@media (prefers-reduced-motion: reduce) { .app-user-workspace .app-workspace-topbar-credit-market, .app-user-workspace .app-workspace-topbar-credit-balance { transition: none; } }
