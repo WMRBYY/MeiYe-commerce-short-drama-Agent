@@ -1,4 +1,6 @@
-# yingce-agent
+# Agent 会话运行时
+
+[会话服务入口](server.mjs) · [容器镜像定义](Dockerfile) · [返回工作台](../README.md)
 
 独立的 Agent Node 运行时。它不连接数据库，也不执行计费、审批或画布写入。
 
